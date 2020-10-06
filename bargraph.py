@@ -3,23 +3,34 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-# Create a dictionary with all the flat types
 def add_flat_types():
-    # Assume that there are only these range of flat types
+    """Create a dictionary with all the flat types
+    Assume that there are only these range of flat types
+
+    Returns:
+    dictionary: flat type as key and empty list as value
+    """
     return {'1 ROOM': [], '2 ROOM': [], '3 ROOM': [], '4 ROOM': [], '5 ROOM': [], 'EXECUTIVE': [],
             'MULTI-GENERATION': []}
 
 
-# Grouping all resale prices based on flat type
-# Optional to filter by region
-def filter_data(region=''):
+def filter_data(region):
+    """Grouping all resale prices based on flat type
+    Optional to filter by region
+
+    Parameters:
+    region (str): region can be empty if no filtering is selected
+
+    Returns:
+    dictionary: flat type as key and list of resale prices based on flat type as value
+    """
     data = add_flat_types()
     csv_data = csv_helper.get_dict_data()
     # Add all the values of each flat type
     if region != '':
         for line in csv_data:
             # Add items based on region
-            if line['region'].upper() == region.upper():
+            if line['region'].upper() == region:
                 data[line['flat_type']].append(float(line['resale_price']))
     else:
         for line in csv_data:
@@ -27,8 +38,15 @@ def filter_data(region=''):
     return data
 
 
-# Calculate average for each flat type
 def get_data(region):
+    """Calculate average for each flat type
+
+    Parameters:
+    region (str): region can be empty if no filtering is selected
+
+    Returns:
+    dictionary: flat type as the key and average resale price as value
+    """
     data = filter_data(region)
     for item in data:
         if len(data[item]) == 0:
@@ -37,15 +55,21 @@ def get_data(region):
     return data
 
 
-# Call this function to plot bar graph
-# Optional to filter results by region
-# E.g. plot_bar_graph('EAST')
 def plot_bar_graph(region=''):
+    """Call this function to plot bar graph
+
+    Parameters:
+    region (str): region can be empty if no filtering is selected
+    """
+
+    region = region.upper()
     data = get_data(region)
-    # Plot bar graph
+    region = 'SINGAPORE' if region == '' else region
+
+    # Bar graph configurations
     ypos = np.arange(len(data))
     plt.barh(ypos, data.values())
     plt.yticks(ypos, data.keys())
     plt.ylabel('Average Resale Value (SGD)')
-    plt.title('Average HDB resale value by flat type')
+    plt.title('Region: (%s)\nAverage HDB resale value by flat type' % region)
     plt.show()
