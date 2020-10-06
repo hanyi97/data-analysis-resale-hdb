@@ -1,5 +1,5 @@
 """This is a module to plot bar graph
-based on average resale prices for different flat types.
+Based on average resale prices for different flat types.
 Can be filtered by different region"""
 
 import csv_helper
