@@ -3,21 +3,15 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+# Create a dictionary with all the flat types
 def add_flat_types():
-    # # Assume that there are only these range of flat types
-    # flat_types = ('1 ROOM', '2 ROOM', '3 ROOM', '4 ROOM', '5 ROOM', 'EXECUTIVE', 'MULTI-GENERATION')
-    # data = {}
-    #
-    # # Add all the flat types in to dictionary
-    # for flat_type in flat_types:
-    #     data[flat_type] = []
-    # return data
-
     # Assume that there are only these range of flat types
     return {'1 ROOM': [], '2 ROOM': [], '3 ROOM': [], '4 ROOM': [], '5 ROOM': [], 'EXECUTIVE': [],
             'MULTI-GENERATION': []}
 
 
+# Grouping all resale prices based on flat type
+# Optional to filter by region
 def filter_data(region=''):
     data = add_flat_types()
     csv_data = csv_helper.get_dict_data()
