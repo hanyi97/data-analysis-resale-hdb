@@ -89,10 +89,10 @@ def plot_bar_graph(town='', year='', export=False):
     # Bar graph configurations
     ypos = np.arange(len(data))
     plt.figure(figsize=(20, 5))
-    plt.barh(ypos, data.values(), color='blue')
+    plt.barh(ypos, data.values(), color='navy')
     plt.yticks(ypos, data.keys())
     plt.ylabel('Average Resale Value (SGD)')
     plt.title('Town: (%s)\nAverage HDB resale value by flat type' % town)
-    plt.show()
     if export:
-        plt.savefig('bargraph.pdf')
+        plt.savefig('bargraph.png', bbox_inches='tight')
+    plt.show()
