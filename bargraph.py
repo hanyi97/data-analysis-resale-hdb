@@ -94,5 +94,5 @@ def plot_bar_graph(town='', year='', export=False):
     plt.ylabel('Average Resale Value (SGD)')
     plt.title('Town: (%s)\nAverage HDB resale value by flat type' % town)
     if export:
-        plt.savefig('bargraph.png', bbox_inches='tight')
+        plt.savefig('resources/bargraph.png', bbox_inches='tight')
     plt.show()
