@@ -1,6 +1,6 @@
 """This is a module to plot bar graph
 Based on average resale prices for different flat types.
-Can be filtered by different region"""
+Can be filtered by different town and year"""
 
 import csv_helper
 import numpy as np
@@ -18,40 +18,59 @@ def add_flat_types():
             'MULTI-GENERATION': []}
 
 
-def filter_data(region):
+def filter_data(town, year):
     """Grouping all resale prices based on flat type
-    Optional to filter by region
+    Optional to filter by town
 
     Parameters:
-    region (str): region can be empty if no filtering is selected
+    town (str): town can be empty if no filtering is selected
+    year (str): year can be empty if no filtering is selected
 
     Returns:
     dictionary: flat type as key and list of resale prices based on flat type as value
     """
     data = add_flat_types()
     csv_data = csv_helper.get_dict_data()
-    # Add all the values of each flat type
-    if region != '':
-        for line in csv_data:
-            # Add items based on region
-            if line['region'].upper() == region:
-                data[line['flat_type']].append(float(line['resale_price']))
-    else:
-        for line in csv_data:
-            data[line['flat_type']].append(float(line['resale_price']))
+
+    for line in csv_data:
+        flat_type = line['flat_type']
+        resale_price = float(line['resale_price'])
+
+        # Filter by both town and year
+        if town != '' and year != '':
+            if line['town'].upper() == town and line['year'] == year:
+                print('Town and year')
+                print(line)
+                data[flat_type].append(resale_price)
+        # Filter by town only
+        elif town != '' and year == '':
+            if line['town'].upper() == town:
+                print('Town')
+                print(line)
+                data[flat_type].append(resale_price)
+        # Filter by year only
+        elif town == '' and year != '':
+            if line['year'] == year:
+                print("Year")
+                print(line)
+                data[flat_type].append(resale_price)
+        # No filter
+        else:
+            data[flat_type].append(resale_price)
     return data
 
 
-def get_data(region):
+def get_data(town, year):
     """Calculate average for each flat type
 
     Parameters:
-    region (str): region can be empty if no filtering is selected
+    town (str): town can be empty if no filtering is selected
+    year (str): year can be empty if no filtering is selected
 
     Returns:
     dictionary: flat type as the key and average resale price as value
     """
-    data = filter_data(region)
+    data = filter_data(town, year)
     for item in data:
         if len(data[item]) == 0:
             data[item].append(0)
@@ -59,21 +78,21 @@ def get_data(region):
     return data
 
 
-def plot_bar_graph(region=''):
+def plot_bar_graph(town='', year=''):
     """Call this function to plot bar graph
 
     Parameters:
-    region (str): region can be empty if no filtering is selected
+    town (str): town can be empty if no filtering is selected
+    year (str): year can be empty if no filtering is selected
     """
 
-    region = region.upper()
-    data = get_data(region)
-    region = 'SINGAPORE' if region == '' else region
-
+    town = town.upper()
+    data = get_data(town, year)
+    town = 'SINGAPORE' if town == '' else town
     # Bar graph configurations
     ypos = np.arange(len(data))
     plt.barh(ypos, data.values())
     plt.yticks(ypos, data.keys())
     plt.ylabel('Average Resale Value (SGD)')
-    plt.title('Region: (%s)\nAverage HDB resale value by flat type' % region)
+    plt.title('Town: (%s)\nAverage HDB resale value by flat type' % town)
     plt.show()
