@@ -39,20 +39,14 @@ def filter_data(town, year):
         # Filter by both town and year
         if town != '' and year != '':
             if line['town'].upper() == town and line['year'] == year:
-                print('Town and year')
-                print(line)
                 data[flat_type].append(resale_price)
         # Filter by town only
         elif town != '' and year == '':
             if line['town'].upper() == town:
-                print('Town')
-                print(line)
                 data[flat_type].append(resale_price)
         # Filter by year only
         elif town == '' and year != '':
             if line['year'] == year:
-                print("Year")
-                print(line)
                 data[flat_type].append(resale_price)
         # No filter
         else:
@@ -70,6 +64,7 @@ def get_data(town, year):
     Returns:
     dictionary: flat type as the key and average resale price as value
     """
+
     data = filter_data(town, year)
     for item in data:
         if len(data[item]) == 0:
