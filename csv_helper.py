@@ -5,7 +5,7 @@ One function to retrieve data as dictionary
 """
 
 import csv
-CONST_filename = 'resale_flat_prices.csv'
+CONST_filename = 'resources/resale_flat_prices.csv'
 
 
 def get_data():
