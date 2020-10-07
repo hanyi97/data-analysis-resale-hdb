@@ -73,12 +73,14 @@ def get_data(town, year):
     return data
 
 
-def plot_bar_graph(town='', year=''):
+def plot_bar_graph(town='', year='', export=False):
     """Call this function to plot bar graph
+    Optional to export graph to pdf
 
     Parameters:
     town (str): town can be empty if no filtering is selected
     year (str): year can be empty if no filtering is selected
+    export (bool): pass in True to save graph as pdf
     """
 
     town = town.upper()
@@ -86,8 +88,11 @@ def plot_bar_graph(town='', year=''):
     town = 'SINGAPORE' if town == '' else town
     # Bar graph configurations
     ypos = np.arange(len(data))
-    plt.barh(ypos, data.values())
+    plt.figure(figsize=(20, 5))
+    plt.barh(ypos, data.values(), color='blue')
     plt.yticks(ypos, data.keys())
     plt.ylabel('Average Resale Value (SGD)')
     plt.title('Town: (%s)\nAverage HDB resale value by flat type' % town)
     plt.show()
+    if export:
+        plt.savefig('bargraph.pdf')
