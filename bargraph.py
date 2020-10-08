@@ -39,7 +39,8 @@ def plot_bar_graph(town='', year='', export=False):
     """
     try:
         town = town.upper()
-        df = get_filtered_data(town, int(year))
+        year = int(year) if year != '' else year
+        df = get_filtered_data(town, year)
         town = 'SINGAPORE' if town == '' else town
         # Bar graph configurations
         plt.clf()
@@ -55,3 +56,4 @@ def plot_bar_graph(town='', year='', export=False):
     except IndexError:
         print("No data found!")
 
+plot_bar_graph('yishun')
