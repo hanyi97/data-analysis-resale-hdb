@@ -64,7 +64,7 @@ class ViewCharts(tk.Frame):
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Resale Flats Summary", font=NORM_FONT)
+        label = tk.Label(self, text="Overview of Resale Flats Prices", font=NORM_FONT)
         label.pack(pady=10, padx=10)
 
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
