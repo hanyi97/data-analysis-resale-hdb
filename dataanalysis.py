@@ -5,6 +5,10 @@ import csv_helper
 
 # read the dataset into a data table using Pandas
 df = csv_helper.get_dict_data()
+
+# display all the data
+#df.show()
+
 # the data type, number of columns, number of entries, number of non-null values
 df.info()
 
