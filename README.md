@@ -23,8 +23,8 @@
 ```git add <file name>```
 
 4. Commit your changes  
-```git commit -m “<commit message>”```
-or
+```git commit -m “<commit message>”```  
+or  
 ```git commit``` Press enter and type the summary and description for the commit. Then press esc and type :wq  
 
 5. Push your changes to Github  
