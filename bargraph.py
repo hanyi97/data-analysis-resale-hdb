@@ -55,5 +55,3 @@ def plot_bar_graph(town='', year='', export=False):
         print("Year is not an integer!")
     except IndexError:
         print("No data found!")
-
-plot_bar_graph('yishun')
