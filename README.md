@@ -31,13 +31,13 @@ or
 ```git push```
 
 Once the feature is completed, merge it to develop branch:  
-6. Checkout develop branch  
+1. Checkout develop branch  
 ```git checkout develop```  
-7. Merge your feature branch to develop branch  
+2. Merge your feature branch to develop branch  
 ```git merge <featurename>```  
-8. Delete local feature branch   
+3. Delete local feature branch   
 ```git branch -d <featurename>```  
-9. Delete remote feature branch  
+4. Delete remote feature branch  
 ```git push origin --delete <featurename>```  
 
 Note: Best practice to commit your changes regularly
