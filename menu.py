@@ -14,11 +14,8 @@ class WelcomeWindow(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
 
-        for F in (SelectOptions, ViewCharts,ViewSummary):
+        for F in (SelectOptions, ViewCharts, ViewSummary):
             frame = F(container, self)
-
-            self.frames[F] = frame
-            frame = F(container, controller=self)
 
             self.frames[F] = frame
 
@@ -33,13 +30,17 @@ class WelcomeWindow(tk.Tk):
 class SelectOptions(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        header = tk.Label(text="HDB Resale Flats Analyser", font=LARGE_FONT)
-        label = tk.Label(
-            text="This service enables you to check the resale flat prices within the last 3 years based on regions, towns and flat-types.",
+        self.createLabels()
+        self.createButtons(controller)
+
+    def createLabels(self):
+        header = tk.Label(self,text="HDB Resale Flats Analyser", font=LARGE_FONT)
+        label = tk.Label(self,
+            text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
+                 "towns and flat-types.",
             font=SMALL_FONT, wraplength=450)
         header.pack(padx=0, pady=20)
         label.pack(padx=10, pady=10)
-        self.createButtons(controller)
 
     def createButtons(self, controller):
         chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=SMALL_FONT,
@@ -54,10 +55,10 @@ class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
-        label.pack(padx=10,pady=10)
+        label.pack(padx=10, pady=10)
 
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
-        backbutton.pack(padx=10,pady=10)
+        backbutton.pack(padx=10, pady=10)
 
 
 class ViewSummary(tk.Frame):
