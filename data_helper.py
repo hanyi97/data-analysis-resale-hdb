@@ -11,7 +11,21 @@ CONST_filename = 'resources/resale_flat_prices.csv'
 
 
 def get_dataframe():
+    """Reads data from CSV using Pandas library
+
+    Returns:
+    dataframe: dataframe of all rows in the csv
+    """
     return pd.read_csv(CONST_filename)
+
+
+def get_all_towns():
+    """Retrieve all towns and sort them in ascending order
+
+    Returns:
+    list: list of all unique towns
+    """
+    return sorted(get_dataframe()['town'].unique())
 
 
 def get_data():
@@ -34,3 +48,5 @@ def get_dict_data():
     """
     with open(CONST_filename, 'r', encoding='utf-8-sig') as csv_file:
         return list(csv.DictReader(csv_file, delimiter=','))
+
+
