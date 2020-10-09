@@ -3,7 +3,7 @@ import bargraph
 # from matplotlib.figure import Figure
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTk, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 
 
@@ -60,7 +60,8 @@ if __name__ == "__main__":
             label.pack(padx=10, pady=10)
 
         def createButtons(self, controller):
-            #lambda creates a throwaway function that will only be here when it is called. cannot be used to pass parameters through
+            #lambda creates a throwaway function that will only be here when it is called.
+            #it cannot be used to pass parameters through
             # shows the ViewCharts class page upon clicking the button
             chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=SMALL_FONT,
                                   command=lambda: controller.show_frame(ViewCharts))
@@ -78,16 +79,9 @@ if __name__ == "__main__":
             label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
             label.pack(padx=10, pady=10)
 
-
-            # graph = bargraph.plot_bar_graph().get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-            # graph._tkcanvas.pack()
-            # toolbar = bargraph.NavigationToolbar2Tk(graph, self)
-            # toolbar.update()
-            # toolbar._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-            # graph.plt.show()
-
-            # scatter3 = FigureCanvasTk(bargraph.plot_bar_graph())
-            # scatter3.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
+            # Adds the graph from bargraph.py into the ViewCharts windwo
+            canvas = FigureCanvasTkAgg(bargraph.plot_bar_graph(), master=self)
+            canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
             backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
             backbutton.pack(padx=10, pady=10)
