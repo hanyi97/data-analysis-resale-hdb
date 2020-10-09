@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import csv_helper
+import data_helper
 
 
 def get_remaining_lease_data(remaining_lease=""):
@@ -14,7 +14,7 @@ def get_remaining_lease_data(remaining_lease=""):
     dataframe: dataframe of filtered results
     """
     # read the dataset into a data table using Pandas
-    df = csv_helper.get_dataframe()
+    df = data_helper.get_dataframe()
     if remaining_lease != "":
         df = df[(df['remaining_lease'] == remaining_lease)]
     return df.groupby('remaining_lease').size()
@@ -54,7 +54,7 @@ def get_FAS_data(floor_area_sqm='', resale_price=''):
     Returns:
     dataframe: dataframe of filtered results
     """
-    df = csv_helper.get_dataframe()
+    df = data_helper.get_dataframe()
     if floor_area_sqm != '' and resale_price != '':
         df = df[(df['floor_area_sqm'] == floor_area_sqm) & (df['resale_price'] == resale_price)]
     elif floor_area_sqm != '':
@@ -90,5 +90,3 @@ def plot_FAS_RSP_Bargraph(floor_area_sqm='', resale_price='', export=False):
 
     except:
         print("No data found!")
-
-plot_rlBargraph()
