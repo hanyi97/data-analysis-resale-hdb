@@ -99,5 +99,5 @@ if __name__ == "__main__":
 
     app = WelcomeWindow()
     app.title("HDB Resale Flats Analyser") #sets title of window
-    app.geometry("600x600") #sets dimensions of tkinter window
+    app.geometry("1920x1080") #sets dimensions of tkinter window
     app.mainloop() #infinite loop so that events get processed
