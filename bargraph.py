@@ -45,14 +45,16 @@ def plot_bar_graph(town='', year=''):
 
         # Creating a figure
         fig = Figure(figsize=(20, 5))
-
         # adding the subplot
         ax = fig.add_subplot(111)
         # Bar graph configuration
         bargraph = df.plot.barh(color='navy', ax=ax)
-        bargraph.set_xlabel('Average Resale Value (SGD)', fontdict={'fontsize': 10, 'fontweight': 'heavy'})
-        bargraph.set_ylabel('HDB Flat Type', fontdict={'fontsize': 10, 'fontweight': 'heavy'})
-        bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town, fontdict={'fontsize': 12, 'fontweight': 'heavy'})
+        bargraph.set_xlabel('Average Resale Value (SGD)',
+                            fontdict={'fontsize': 10, 'fontweight': 'heavy'})
+        bargraph.set_ylabel('HDB Flat Type',
+                            fontdict={'fontsize': 10, 'fontweight': 'heavy'})
+        bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
+                           fontdict={'fontsize': 12, 'fontweight': 'heavy'})
         bargraph.get_figure().savefig('resources/bargraph.png', bbox_inches='tight')
         return fig
 
