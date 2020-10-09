@@ -1,10 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sn
-import csv_helper
+import data_helper
 
 # read the dataset into a data table using Pandas
-df = csv_helper.get_dict_data()
+df = data_helper.get_dict_data()
 
 # display all the data
 #df.show()
