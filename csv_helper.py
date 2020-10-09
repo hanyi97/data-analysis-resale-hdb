@@ -1,11 +1,17 @@
 """This is a module to handle the csv data
-It includes two functions
+It includes three functions
+One function to retrieve data as a dataframe
 One function to retrieve data as a list
 One function to retrieve data as dictionary
 """
 
 import csv
-CONST_filename = 'resale_flat_prices.csv'
+import pandas as pd
+CONST_filename = 'resources/resale_flat_prices.csv'
+
+
+def get_dataframe():
+    return pd.read_csv(CONST_filename)
 
 
 def get_data():
