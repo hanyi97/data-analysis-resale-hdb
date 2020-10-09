@@ -4,9 +4,9 @@ Can be filtered by town and year
 Can export graph as png image"""
 
 import csv_helper
+import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import tkinter as tk
 
 
 def get_filtered_data(town='', year=''):
@@ -64,15 +64,14 @@ def plot_bar_graph(town='', year='', export=False):
         if export:
             bargraph.get_figure().savefig('resources/bargraph.png', bbox_inches='tight')
 
-        # creating the Tkinter canvas
-        # containing the Matplotlib figure
+        # Creating the Tkinter canvas containing the Matplotlib figure
         canvas = FigureCanvasTkAgg(fig, master=window)
         canvas.draw()
 
-        # placing the toolbar on the Tkinter window
+        # Placing the toolbar on the Tkinter window
         canvas.get_tk_widget().pack()
 
-        # run the gui
+        # Run the gui
         window.mainloop()
     except ValueError:
         print("Year is not an integer!")
