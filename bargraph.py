@@ -3,7 +3,7 @@ Based on average resale prices for different flat types.
 Can be filtered by town and year
 Can export graph as png image"""
 
-import csv_helper
+import data_helper
 from matplotlib import pyplot as plt
 
 
@@ -18,7 +18,7 @@ def get_filtered_data(town='', year=''):
     Returns:
     dataframe: dataframe of filtered results
     """
-    df = csv_helper.get_dataframe()
+    df = data_helper.get_dataframe()
     if town != '' and year != '':
         df = df[(df['town'] == town) & (df['year'] == year)]
     elif town != '':
@@ -54,4 +54,3 @@ def plot_bar_graph(town='', year='', export=False):
         print("Year is not an integer!")
     except IndexError:
         print("No data found!")
-
