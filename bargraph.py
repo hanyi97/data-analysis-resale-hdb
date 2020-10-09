@@ -28,7 +28,7 @@ def get_filtered_data(town='', year=''):
     return df.groupby('flat_type')['resale_price'].mean().round(2)
 
 
-def plot_bar_graph(town='', year='', export=False):
+def plot_bar_graph(town='', year=''):
     """Call this function to plot bar graph
     Able to save graph as png image
 
@@ -48,17 +48,15 @@ def plot_bar_graph(town='', year='', export=False):
 
         # adding the subplot
         ax = fig.add_subplot(111)
-
         # Bar graph configuration
         bargraph = df.plot.barh(color='navy', ax=ax)
-        bargraph.set_xlabel('Average Resale Value (SGD)')
-        bargraph.set_ylabel('HDB Flat Type')
-        bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town)
-        if export:
-            bargraph.get_figure().savefig('resources/bargraph.png', bbox_inches='tight')
+        bargraph.set_xlabel('Average Resale Value (SGD)', fontdict={'fontsize': 10, 'fontweight': 'heavy'})
+        bargraph.set_ylabel('HDB Flat Type', fontdict={'fontsize': 10, 'fontweight': 'heavy'})
+        bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town, fontdict={'fontsize': 12, 'fontweight': 'heavy'})
+        bargraph.get_figure().savefig('resources/bargraph.png', bbox_inches='tight')
         return fig
 
     except ValueError:
-        print("Year is not an integer!")
+        print('Year is not an integer!')
     except IndexError:
-        print("No data found!")
+        print('No data found!')
