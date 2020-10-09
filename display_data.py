@@ -1,3 +1,6 @@
+"""This is a module to display dataset as a summary table
+    For user to view everything in the dataset"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -10,12 +13,12 @@ df = csv_helper.get_dataframe()
 # Check data types
 print(df.dtypes)
 
-# display dataset function
+# Function to display dataset.
 def display_dataset():
     return print(df)
 
 
-# display no. of rows and columns in dataset
+# Display no. of rows and columns in dataset
 print('This dataset has %d rows and %d columns.' % (df.shape[0], df.shape[1]))
-# display dataset
+# Call function to display dataset
 display_dataset()
