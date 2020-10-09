@@ -3,10 +3,8 @@ Based on average resale prices for different flat types.
 Can be filtered by town and year
 Can export graph as png image"""
 
-import csv_helper
-import tkinter as tk
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import data_helper
+from matplotlib import pyplot as plt
 
 
 def get_filtered_data(town='', year=''):
@@ -20,7 +18,7 @@ def get_filtered_data(town='', year=''):
     Returns:
     dataframe: dataframe of filtered results
     """
-    df = csv_helper.get_dataframe()
+    df = data_helper.get_dataframe()
     if town != '' and year != '':
         df = df[(df['town'] == town) & (df['year'] == year)]
     elif town != '':
