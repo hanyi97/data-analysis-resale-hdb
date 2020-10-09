@@ -4,7 +4,9 @@ Can be filtered by town and year
 Can export graph as png image"""
 
 import csv_helper
-from matplotlib import pyplot as plt
+import tkinter as tk
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 def get_filtered_data(town='', year=''):
@@ -42,15 +44,35 @@ def plot_bar_graph(town='', year='', export=False):
         year = int(year) if year != '' else year
         df = get_filtered_data(town, year)
         town = 'SINGAPORE' if town == '' else town
-        # Bar graph configurations
-        plt.clf()
-        bargraph = df.plot.barh(color='navy', figsize=(20, 5))
+
+        # GUI configurations
+        window = tk.Tk()
+        window.title('Bar graph based on average resale price by flat type')
+        window.geometry("1920x480")
+
+        # Creating a figure
+        fig = Figure(figsize=(20, 5))
+
+        # adding the subplot
+        ax = fig.add_subplot(111)
+
+        # Bar graph configuration
+        bargraph = df.plot.barh(color='navy', ax=ax)
         bargraph.set_xlabel('Average Resale Value (SGD)')
-        bargraph.set_ylabel('Flat Type')
+        bargraph.set_ylabel('HDB Flat Type')
         bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town)
         if export:
-            plt.savefig('resources/bargraph.png', bbox_inches='tight')
-        plt.show()
+            bargraph.get_figure().savefig('resources/bargraph.png', bbox_inches='tight')
+
+        # Creating the Tkinter canvas containing the Matplotlib figure
+        canvas = FigureCanvasTkAgg(fig, master=window)
+        canvas.draw()
+
+        # Placing the toolbar on the Tkinter window
+        canvas.get_tk_widget().pack()
+
+        # Run the gui
+        window.mainloop()
     except ValueError:
         print("Year is not an integer!")
     except IndexError:
