@@ -1,6 +1,7 @@
-"""This is a module to search data"""
+"""This is a module to filter/search data in the summary table.
+    The summary table will be changed based on what user has filtered/searched."""
 
-import csv_helper
+# import csv_helper
 import numpy as np
 from matplotlib import pyplot as plt
 import pandas as pd
