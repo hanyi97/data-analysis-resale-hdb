@@ -9,6 +9,10 @@ class demo(tk.Tk):
 
         df = data_helper.get_dataframe()
         testdata = df.values.tolist()
+        testdata = sorted(testdata, key=lambda x: x[0]) # Sort by ascending year
+        testdata = sorted(testdata, key=lambda x: x[1]) # Sort by ascending month
+        head = df.columns
+        headerList = head.values.tolist()
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
@@ -18,24 +22,19 @@ class demo(tk.Tk):
         self.sheet = Sheet(self.frame,
                            page_up_down_select_row=True,
                            # empty_vertical = 0,
-                           column_width=120,
+                           column_width=95,
                            startup_select=(0, 1, "rows"),
                            data=testdata, #to set sheet data at startup
-                           # headers = [f"Column {c}\nnewline1\nnewline2" for c in range(30)],
+                           headers = headerList,
                            # row_index = [f"Row {r}\nnewline1\nnewline2" for r in range(2000)],
                            # set_all_heights_and_widths = True, #to fit all cell sizes to text at start up
                            # headers = 0, #to set headers as first row at startup
-                           # headers = [f"Column {c}\nnewline1\nnewline2" for c in range(30)],
-                           # theme = "light green",
+                           # theme = "blue",
                            # row_index = 0, #to set row_index as first column at startup
-                           # total_rows = 2000, #if you want to set empty sheet dimensions at startup
-                           # total_columns = 30, #if you want to set empty sheet dimensions at startup
                            height=500,  # height and width arguments are optional
-                           width=1200  # For full startup arguments see DOCUMENTATION.md
+                           width=1000  # For full startup arguments see DOCUMENTATION.md
                            )
-        # self.sheet.hide("row_index")
-        # self.sheet.hide("header")
-        # self.sheet.hide("top_left")
+
         self.sheet.enable_bindings(("single_select",  # "single_select" or "toggle_select"
                                     "drag_select",  # enables shift click selection as well
                                     "column_drag_and_drop",
@@ -51,22 +50,22 @@ class demo(tk.Tk):
                                     "double_click_row_resize",
                                     "right_click_popup_menu",
                                     "rc_select",
-                                    "rc_insert_column",
-                                    "rc_delete_column",
-                                    "rc_insert_row",
-                                    "rc_delete_row",
                                     "hide_columns",
                                     "copy",
-                                    "cut",
-                                    "paste",
-                                    "delete",
-                                    "undo",
-                                    "edit_cell"))
-        # self.sheet.disable_bindings() #uses the same strings
-        # self.sheet.enable_bindings()
+                                    "undo"
+                                    ))
 
         self.frame.grid(row=0, column=0, sticky="nswe")
         self.sheet.grid(row=0, column=0, sticky="nswe")
+
+        # __________ DISPLAY SUBSET OF COLUMNS __________
+        indexList = []
+        for i in range(len(df.columns)):
+            indexList.append(i)  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        self.sheet.display_subset_of_columns(indexes=indexList, enable=True)
+        # self.sheet.display_columns(enable = False)
+        self.sheet.insert_columns(columns=0, idx=len(testdata), mod_column_positions=False)
+
 
         """_________________________ EXAMPLES _________________________ """
         """_____________________________________________________________"""
@@ -75,18 +74,11 @@ class demo(tk.Tk):
 
         # self.sheet.change_theme("light green")
 
-        # __________ DISPLAY SUBSET OF COLUMNS __________
-        indexList = []
-        for i in range(len(df.columns)):
-            indexList.append(i) # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-        self.sheet.display_subset_of_columns(indexes=indexList, enable=True)
-        # self.sheet.display_columns(enable = False)
-        self.sheet.insert_column(idx=0)
-        self.sheet.insert_columns(columns=7, idx=len(testdata), mod_column_positions=False)
+
 
         # __________ CELL / ROW / COLUMN ALIGNMENTS __________
 
-        self.sheet.align_cells(row=1, column=1, align="e")
+        #self.sheet.align_cells(row=1, column=1, align="e")
         # self.sheet.align_rows(rows=3, align="e")
         # self.sheet.align_columns(columns=4, align="e")
 
@@ -211,8 +203,8 @@ class demo(tk.Tk):
 
     """
 
-    def all_extra_bindings(self, event):
-        print(event)
+    # def all_extra_bindings(self, event):
+    #     print(event)
 
     # def begin_edit_cell(self, event):
     #     print(event)  # event[2] is keystroke
@@ -221,9 +213,9 @@ class demo(tk.Tk):
     # def end_edit_cell(self, event):
     #     print(event)
 
-    def window_resized(self, event):
-        pass
-        # print (event)
+    # def window_resized(self, event):
+    #     pass
+    #     # print (event)
 
 app = demo()
 app.mainloop()
