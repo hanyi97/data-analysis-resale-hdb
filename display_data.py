@@ -4,12 +4,17 @@
 import pandas as pd
 import data_helper
 from tkinter import *
-from tkinter import ttk
-from tkinter import filedialog
-
-from tkinter import *
 from pandastable import Table, TableModel
 
+# read the dataset into a data table using Pandas
+df = data_helper.get_dataframe()
+
+# Check data types
+print(df.dtypes)
+
+# Function to display dataset.
+def display_dataset():
+    return print(df)
 
 class Top10ViewWindow(Frame):
     """Basic test frame for the table"""
