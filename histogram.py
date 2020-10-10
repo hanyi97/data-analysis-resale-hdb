@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import csv_helper
+import data_helper
 
 
 def get_remaining_lease_data(remaining_lease=""):
@@ -14,7 +14,7 @@ def get_remaining_lease_data(remaining_lease=""):
     dataframe: dataframe of filtered results
     """
     # read the dataset into a data table using Pandas
-    df = csv_helper.get_dataframe()
+    df = data_helper.get_dataframe()
     if remaining_lease != "":
         df = df[(df['remaining_lease'] == remaining_lease)]
     return df.groupby('remaining_lease').size()
