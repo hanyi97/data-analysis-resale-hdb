@@ -1,41 +1,35 @@
+"""This is a module to display visualisation and display statistics data
+    For the analysis report to conclude our hypothesis"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import csv_helper
+import data_helper
 
 # read the dataset into a data table using Pandas
-df = csv_helper.get_dataframe()
+df = data_helper.get_dataframe()
 
-# display all the data
-#df.show()
-
-# the data type, number of columns, number of entries, number of non-null values
+# display the number of columns, number of entries, number of non-null values and data type
 df.info()
 
-# distribution of 'region' - number of available resale housing in 2017,2018 and 2019
-print(df.groupby('region').size())
+# display distribution of 'year' - number of available resale housing in 2017,2018 and 2019
+print(df.groupby('year').size())
 
+# display the minimum and maximum value of the resale price from 2017 to 2019
 print('Max resale price: ', df['resale_price'].max())
 print('Min resale price: ', df['resale_price'].min())
 
-# first visualise the box and whisker plot
+# display the box and whisker plot of the resale price from year 2017 to 2019
 print(df.boxplot(column='resale_price'))
 plt.show()
 
-# further discover statistics on variable 'resale_price'
-# A low standard deviation (std) means that the data points tend to
-# be close to the mean.
-# A high std indicates that the data points are scattered.
-# coefficient of variation(CV) to visualise the dispersion.
-# skewness level to know the distribution level: positively skewed/ normally distributed/ negatively skewed.
+
 print('MEAN:', round(df['resale_price'].mean(), 2))
 print('STD :', round(df['resale_price'].std(), 2))
 print('CV  :', round(df['resale_price'].std() * 100 / df['resale_price'].mean(), 2))
 print('Skewness :', round(df['resale_price'].skew(), 5))
 
-#descriptive statistics summary
+# descriptive statistics summary
 print(df['resale_price'].describe())
-
-
 
 # incomplete - some are in my local
