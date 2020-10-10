@@ -1,13 +1,22 @@
 import tkinter as tk
+from idlelib import tree
 from tkinter import ttk
+
+import matplotlib
 import pandas as pd
+from numpy.distutils.fcompiler import none
+
 import data_helper
 from pandastable import Table, TableModel, BOTH
+from search import *
+from display_data import *
+
 
 LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
 
+# read the dataset into a data table using Pandas
 df = data_helper.get_dataframe()
 
 
@@ -76,15 +85,22 @@ class ViewSummary(tk.Frame):
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack()
 
-        filterOptions=["Year","Month","Town","Flat Type","Flat Model","Lease Commence Date","Remaining Lease","Resale Price","Region"]
+        # # List of filers from the csv file
+        # listofFilters = sorted(get_filtered_data(in_col))
+        # print(in_col)
+        # for column in listofFilters:
+        #     # combobox
+        #     self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
+        #     self.comboBoxOrderGroup.pack(pady=0, padx=0)
+        #     # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
+        #     #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
+        #     self.comboBoxOrderGroup['values'] = listofFilters[column]
+        #     self.comboBoxOrderGroup.current(0)
 
-        # combobox
-        self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
-        self.comboBoxOrderGroup.pack(pady=0, padx=0)
-        # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
-        #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
-        self.comboBoxOrderGroup['values'] = filterOptions
-        self.comboBoxOrderGroup.current(0)
+        #Creating summary table
+
+        #retrieve csv data
+        print("test2",df)
 
 
 app = WelcomeWindow()
