@@ -23,6 +23,9 @@ class displaySummary(tk.Frame):
         self.comboBoxOrderGroup['values'] = filterOptions
         self.comboBoxOrderGroup.current(0)
 
+
+
+
     # def __init__(self, parent, rows=10, columns=9):
     #     tk.Frame.__init__(self, parent, background="black")
     #     self._widgets = []
