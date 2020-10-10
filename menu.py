@@ -1,23 +1,21 @@
 import tkinter as tk
-from idlelib import tree
 from tkinter import ttk
 
-import matplotlib
-import pandas as pd
-from numpy.distutils.fcompiler import none
-
-import data_helper
-from pandastable import Table, TableModel, BOTH
-from search import *
 from display_data import *
+from search import *
+
+import pandas as pd
+from pandastable import Table
+
 
 
 LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
 
+
 # read the dataset into a data table using Pandas
-df = data_helper.get_dataframe()
+# df = data_helper.get_dataframe()
 
 
 class WelcomeWindow(tk.Tk):
@@ -29,7 +27,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
 
-        for F in (SelectOptions, ViewCharts, ViewSummary):
+        for F in (SelectOptions, ViewCharts, ViewSummary, Top10ViewWindow):
             frame = F(container, self)
 
             self.frames[F] = frame
@@ -62,7 +60,7 @@ class SelectOptions(tk.Frame):
                               command=lambda: controller.show_frame(ViewCharts))
         chartsBTN.pack(pady=10, padx=10)
         summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=SMALL_FONT,
-                               command=lambda: controller.show_frame(ViewSummary))
+                               command=lambda: controller.show_frame(Top10ViewWindow))
         summaryBTN.pack()
 
 
@@ -85,22 +83,56 @@ class ViewSummary(tk.Frame):
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack()
 
-        # # List of filers from the csv file
-        # listofFilters = sorted(get_filtered_data(in_col))
-        # print(in_col)
-        # for column in listofFilters:
-        #     # combobox
-        #     self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
-        #     self.comboBoxOrderGroup.pack(pady=0, padx=0)
-        #     # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
-        #     #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
-        #     self.comboBoxOrderGroup['values'] = listofFilters[column]
-        #     self.comboBoxOrderGroup.current(0)
+        # List of filters from the csv file
+        listofFilters = sorted(get_filtered_data(in_col))
+        # combobox
+        self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
+        self.comboBoxOrderGroup.pack(pady=0, padx=0)
+        # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
+        #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
+        self.comboBoxOrderGroup['values'] = listofFilters
+        self.comboBoxOrderGroup.current(0)
 
-        #Creating summary table
+        scrollbar = tk.Scrollbar(self)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        #retrieve csv data
-        print("test2",df)
+        # treeview = ttk.Treeview(self)
+        # df_col = df.columns.values
+        # treeview["columns"] = df_col
+        # # counter = len(df)
+        # # rowLabels = df.index.tolist()
+        # print(df_col)
+        #
+        # for x in range(len(df_col)):
+        #     #iterate each item in array
+        #     print(df_col[x])
+        #     treeview.column(df_col[x])
+        #     # treeview.heading(df_col[x], text=df_col[x])
+        # # for i in range(counter):
+        # #     treeview.insert('', i, text=rowLabels[i], values=df.iloc[i, :].tolist())
+        #
+        # treeview.pack(expand=True, fill='both')
+
+        # tableData = data_helper.get_dataframe()
+        # self.table = Table(dataframe=tableData, showtoolbar=True, showstatusbar=True)
+
+
+class Top10ViewWindow(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Overview of Resale Flats Prices", font=NORM_FONT)
+        label.pack()
+
+        backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+        backbutton.pack(padx=10, pady=10)
+
+        df = data_helper.get_dataframe()
+        print("test", df)
+
+        table = Table(dataframe=df)
+        table.pack()
+
+
 
 
 app = WelcomeWindow()
