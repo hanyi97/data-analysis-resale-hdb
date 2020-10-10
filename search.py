@@ -12,10 +12,8 @@ in_col = {"year": 2019, "town": "YISHUN"}
 
 def get_filtered_data(in_col):
     """Select the data rows according to the user input
-
     Parameters:
     in_col dictionary. key = column, value = column data value
-
     Returns:
     dataframe: dataframe of filtered results
     """
