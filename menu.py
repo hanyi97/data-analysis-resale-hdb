@@ -1,8 +1,14 @@
 import tkinter as tk
+from tkinter import ttk
+import pandas as pd
+import data_helper
+from pandastable import Table, TableModel, BOTH
 
 LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
+
+df = data_helper.get_dataframe()
 
 
 class WelcomeWindow(tk.Tk):
@@ -34,11 +40,11 @@ class SelectOptions(tk.Frame):
         self.createButtons(controller)
 
     def createLabels(self):
-        header = tk.Label(self,text="HDB Resale Flats Analyser", font=LARGE_FONT)
+        header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)
         label = tk.Label(self,
-            text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
-                 "towns and flat-types.",
-            font=SMALL_FONT, wraplength=450)
+                         text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
+                              "towns and flat-types.",
+                         font=SMALL_FONT, wraplength=450)
         header.pack(padx=0, pady=20)
         label.pack(padx=10, pady=10)
 
@@ -69,6 +75,16 @@ class ViewSummary(tk.Frame):
 
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack()
+
+        filterOptions=["Year","Month","Town","Flat Type","Flat Model","Lease Commence Date","Remaining Lease","Resale Price","Region"]
+
+        # combobox
+        self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
+        self.comboBoxOrderGroup.pack(pady=0, padx=0)
+        # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
+        #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
+        self.comboBoxOrderGroup['values'] = filterOptions
+        self.comboBoxOrderGroup.current(0)
 
 
 app = WelcomeWindow()
