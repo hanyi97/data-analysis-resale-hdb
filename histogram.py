@@ -54,7 +54,7 @@ def get_FAS_data(floor_area_sqm='', resale_price=''):
     Returns:
     dataframe: dataframe of filtered results
     """
-    df = csv_helper.get_dataframe()
+    df = data_helper.get_dataframe()
     if floor_area_sqm != '' and resale_price != '':
         df = df[(df['floor_area_sqm'] == floor_area_sqm) & (df['resale_price'] == resale_price)]
     elif floor_area_sqm != '':
@@ -90,5 +90,3 @@ def plot_FAS_RSP_Bargraph(floor_area_sqm='', resale_price='', export=False):
 
     except:
         print("No data found!")
-
-plot_rlBargraph()
