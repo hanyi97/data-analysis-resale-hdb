@@ -14,7 +14,7 @@ SMALL_FONT = ("Open Sans", 15)
 df = data_helper.get_dataframe()
 
 
-#Main Window
+# Main Window
 class WelcomeWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -36,7 +36,8 @@ class WelcomeWindow(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-#Selection Window
+
+# Selection Window
 class SelectOptions(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -60,7 +61,8 @@ class SelectOptions(tk.Frame):
                                command=lambda: controller.show_frame(ViewSummary))
         summaryBTN.pack()
 
-#Top10 Window
+
+# Top10 Window
 class Top10Window(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -78,7 +80,8 @@ class Top10Window(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-#Hanyi Function
+
+# Hanyi Function
 class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -88,7 +91,8 @@ class ViewCharts(tk.Frame):
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack(padx=10, pady=10)
 
-#Kah En Function
+
+# Kah En Function
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -98,9 +102,16 @@ class ViewSummary(tk.Frame):
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack()
 
-        # List of filters from the csv file
-        # listofFilters = sorted(get_filtered_data(in_col))
-        #
+        df = data_helper.get_dataframe()
+
+        columns = data_helper.get_columnname()
+        for x in columns:
+           if (x=="region" or x=='town' or x=='flat_type'):
+            self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
+            self.comboBoxOrderGroup.pack(pady=0, padx=0)
+            self.comboBoxOrderGroup['values'] = x
+            self.comboBoxOrderGroup.current(0)
+
         # for x in listofFilters:
         #      # combobox
         #     self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
@@ -115,10 +126,9 @@ class ViewSummary(tk.Frame):
         #     self.comboBoxOrderGroup['values'] = listofFilters
         #     self.comboBoxOrderGroup.current(0)
 
-        scrollbar = tk.Scrollbar(self)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        # scrollbar = tk.Scrollbar(self)
+        # scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        df = data_helper.get_dataframe()
         df = df.sort_values(by=['year', 'month'])  # sort dataframe in ascending chronological order
         frame = Frame(self)
         frame.pack()
@@ -136,7 +146,8 @@ class ViewSummary(tk.Frame):
         mainApp.geometry("900x900")
         mainApp.mainloop()
 
-#Kah En Function
+
+# Kah En Function
 class View10Top(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)

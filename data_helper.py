@@ -18,6 +18,10 @@ def get_dataframe():
     """
     return pd.read_csv(CONST_filename)
 
+def get_columnname():
+   return get_dataframe().columns
+
+
 
 def get_all_towns():
     """Retrieve all towns and sort them in ascending order
