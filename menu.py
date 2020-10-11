@@ -125,11 +125,10 @@ class Top10ViewWindow(tk.Frame):
         backbutton.pack(padx=10, pady=10)
 
         df = data_helper.get_dataframe()
-
-        self.main = self.master
-        frame = Frame(self.main)
-        table = Table(frame, dataframe=df)
-        table.pack()
+        frame = Frame(self)
+        frame.pack()
+        table = Table(frame, dataframe=df, showtoolbar=True, showstatusbar=True)
+        table.show()
 
 
 app = WelcomeWindow()
