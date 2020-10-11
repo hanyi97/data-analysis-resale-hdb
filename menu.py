@@ -11,9 +11,8 @@ LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
 
-
 # read the dataset into a data table using Pandas
-# df = data_helper.get_dataframe()
+df = data_helper.get_dataframe()
 
 
 class WelcomeWindow(tk.Tk):
@@ -83,13 +82,20 @@ class ViewSummary(tk.Frame):
 
         # List of filters from the csv file
         listofFilters = sorted(get_filtered_data(in_col))
-        # combobox
-        self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
-        self.comboBoxOrderGroup.pack(pady=0, padx=0)
-        # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
-        #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
-        self.comboBoxOrderGroup['values'] = listofFilters
-        self.comboBoxOrderGroup.current(0)
+
+        for x in listofFilters:
+            # combobox
+            self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
+            self.comboBoxOrderGroup.pack(pady=0, padx=0)
+            # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
+            #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
+            columnvalues = df.values.ravel()
+            print(columnvalues)
+            unqiue = pd.unique(listofFilters)
+            print(unqiue)
+
+            self.comboBoxOrderGroup['values'] = listofFilters
+            self.comboBoxOrderGroup.current(0)
 
         scrollbar = tk.Scrollbar(self)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -113,6 +119,24 @@ class ViewSummary(tk.Frame):
 
         # tableData = data_helper.get_dataframe()
         # self.table = Table(dataframe=tableData, showtoolbar=True, showstatusbar=True)
+
+
+# class Top10ViewWindow(tk.Frame):
+#     def __init__(self, parent, controller):
+#         tk.Frame.__init__(self, parent)
+#
+#         label = tk.Label(self, text="Overview of Resale Flats Prices", font=NORM_FONT)
+#         label.pack()
+#
+#         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+#         backbutton.pack(padx=10, pady=10)
+#
+#         df = data_helper.get_dataframe()
+#
+#         print("test", df)
+#
+#         table = Table(dataframe=df)
+#         table.show()
 
 
 class Top10ViewWindow(tk.Frame):
