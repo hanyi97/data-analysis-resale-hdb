@@ -24,7 +24,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
 
-        for F in (SelectOptions, ViewCharts, ViewSummary, Top10ViewWindow):
+        for F in (SelectOptions, ViewCharts, ViewSummary):
             frame = F(container, self)
 
             self.frames[F] = frame
@@ -57,8 +57,15 @@ class SelectOptions(tk.Frame):
                               command=lambda: controller.show_frame(ViewCharts))
         chartsBTN.pack(pady=10, padx=10)
         summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=SMALL_FONT,
-                               command=lambda: controller.show_frame(Top10ViewWindow))
+                               command=lambda: controller.show_frame(ViewSummary))
         summaryBTN.pack()
+
+    # def displaySummary(self):
+    #
+    #     mainApp = ViewSummaryWindow()
+    #     mainApp.title("Overview of Resale Flat Prices")
+    #     mainApp.geometry("900x900")
+    #     mainApp.mainloop()
 
 
 class ViewCharts(tk.Frame):
@@ -71,6 +78,26 @@ class ViewCharts(tk.Frame):
         backbutton.pack(padx=10, pady=10)
 
 
+# class ViewSummaryWindow(tk.Tk):
+#
+#     def __init__(self, *args, **kwargs):
+#         tk.Tk.__init__(self, *args, **kwargs)
+#         container = tk.Frame(self)
+#         container.pack(side="top", fill="both", expand=True)
+#         container.grid_rowconfigure(0, weight=1)
+#         container.grid_columnconfigure(0, weight=1)
+#         self.frames = {}
+#         frame = ViewSummary(container, self)
+#         self.frames[ViewSummary] = frame
+#         frame.grid(row=0, column=0, sticky="nsew")
+#         self.show_frame(ViewSummary)
+#
+#
+#     def show_frame(self, cont):
+#         frame = self.frames[cont]
+#         frame.tkraise()
+
+
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -81,81 +108,34 @@ class ViewSummary(tk.Frame):
         backbutton.pack()
 
         # List of filters from the csv file
-        listofFilters = sorted(get_filtered_data(in_col))
-
-        for x in listofFilters:
-            # combobox
-            self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
-            self.comboBoxOrderGroup.pack(pady=0, padx=0)
-            # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
-            #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
-            columnvalues = df.values.ravel()
-            print(columnvalues)
-            unqiue = pd.unique(listofFilters)
-            print(unqiue)
-
-            self.comboBoxOrderGroup['values'] = listofFilters
-            self.comboBoxOrderGroup.current(0)
+        # listofFilters = sorted(get_filtered_data(in_col))
+        #
+        # for x in listofFilters:
+        #      # combobox
+        #     self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
+        #     self.comboBoxOrderGroup.pack(pady=0, padx=0)
+        #     # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
+        #     #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
+        #     columnvalues = df.values.ravel()
+        #     print(columnvalues)
+        #     unqiue= pd.unique(listofFilters)
+        #     print(unqiue)
+        #
+        #     self.comboBoxOrderGroup['values'] = listofFilters
+        #     self.comboBoxOrderGroup.current(0)
 
         scrollbar = tk.Scrollbar(self)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # treeview = ttk.Treeview(self)
-        # df_col = df.columns.values
-        # treeview["columns"] = df_col
-        # # counter = len(df)
-        # # rowLabels = df.index.tolist()
-        # print(df_col)
-        #
-        # for x in range(len(df_col)):
-        #     #iterate each item in array
-        #     print(df_col[x])
-        #     treeview.column(df_col[x])
-        #     # treeview.heading(df_col[x], text=df_col[x])
-        # # for i in range(counter):
-        # #     treeview.insert('', i, text=rowLabels[i], values=df.iloc[i, :].tolist())
-        #
-        # treeview.pack(expand=True, fill='both')
-
-        # tableData = data_helper.get_dataframe()
-        # self.table = Table(dataframe=tableData, showtoolbar=True, showstatusbar=True)
-
-
-# class Top10ViewWindow(tk.Frame):
-#     def __init__(self, parent, controller):
-#         tk.Frame.__init__(self, parent)
-#
-#         label = tk.Label(self, text="Overview of Resale Flats Prices", font=NORM_FONT)
-#         label.pack()
-#
-#         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
-#         backbutton.pack(padx=10, pady=10)
-#
-#         df = data_helper.get_dataframe()
-#
-#         print("test", df)
-#
-#         table = Table(dataframe=df)
-#         table.show()
-
-
-class Top10ViewWindow(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Overview of Resale Flats Prices", font=NORM_FONT)
-        label.pack()
-
-        backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
-        backbutton.pack(padx=10, pady=10)
 
         df = data_helper.get_dataframe()
 
-        self.main = self.master
-        frame = Frame(self.main)
 
-        self.table = pt = Table(frame, dataframe=df, showtoolbar=True, showstatusbar=True)
-        pt.show()
-        return
+        frame = Frame(self)
+        frame.pack()
+        table = Table(frame, dataframe=df)
+        table.show()
+
 
 
 app = WelcomeWindow()
