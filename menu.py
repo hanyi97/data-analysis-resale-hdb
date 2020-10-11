@@ -149,9 +149,11 @@ class Top10ViewWindow(tk.Frame):
         backbutton.pack(padx=10, pady=10)
 
         df = data_helper.get_dataframe()
+        df =  df.sort_values(by=['year', 'month']) # sort dataframe in ascending chronological order
         frame = Frame(self)
         frame.pack()
-        table = Table(frame, dataframe=df, showtoolbar=True, showstatusbar=True)
+        table = Table(frame, dataframe=df, showstatusbar=True,
+                      height=400, width=1100)
         table.show()
 
 
