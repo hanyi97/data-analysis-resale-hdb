@@ -105,29 +105,29 @@ class ViewSummary(tk.Frame):
         df = data_helper.get_dataframe()
 
         columns = data_helper.get_columnname()
+        print(columns)
+        towns = data_helper.get_all_towns()
+        regions = data_helper.get_all_regions()
+        flatTypes = data_helper.get_all_flatTypes()
+        print(towns)
+        print(regions)
+        print(flatTypes)
         for x in columns:
-           if (x=="region" or x=='town' or x=='flat_type'):
-            self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
-            self.comboBoxOrderGroup.pack(pady=0, padx=0)
-            self.comboBoxOrderGroup['values'] = x
-            self.comboBoxOrderGroup.current(0)
+            if(x=='town' or x=='region' or x=='flat_type'):
+                print(x)
+                self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
+                self.comboBoxOrderGroup.pack(pady=0, padx=0)
+                if(x=="town"):
+                    self.comboBoxOrderGroup['values'] = towns
+                    self.comboBoxOrderGroup.current(0)
 
-        # for x in listofFilters:
-        #      # combobox
-        #     self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
-        #     self.comboBoxOrderGroup.pack(pady=0, padx=0)
-        #     # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
-        #     #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
-        #     columnvalues = df.values.ravel()
-        #     print(columnvalues)
-        #     unqiue= pd.unique(listofFilters)
-        #     print(unqiue)
-        #
-        #     self.comboBoxOrderGroup['values'] = listofFilters
-        #     self.comboBoxOrderGroup.current(0)
+                elif(x=="region"):
+                    self.comboBoxOrderGroup['values'] = regions
+                    self.comboBoxOrderGroup.current(0)
 
-        # scrollbar = tk.Scrollbar(self)
-        # scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+                else:
+                    self.comboBoxOrderGroup['values'] = flatTypes
+                    self.comboBoxOrderGroup.current(0)
 
         df = df.sort_values(by=['year', 'month'])  # sort dataframe in ascending chronological order
         frame = Frame(self)
