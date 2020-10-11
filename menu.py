@@ -10,9 +10,6 @@ LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
 
-# read the dataset into a data table using Pandas
-df = data_helper.get_dataframe()
-
 
 # Main Window
 class WelcomeWindow(tk.Tk):
@@ -128,6 +125,7 @@ class ViewSummary(tk.Frame):
                 else:
                     self.comboBoxOrderGroup['values'] = flatTypes
                     self.comboBoxOrderGroup.current(0)
+
 
         df = df.sort_values(by=['year', 'month'])  # sort dataframe in ascending chronological order
         frame = Frame(self)
