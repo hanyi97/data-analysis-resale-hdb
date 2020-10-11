@@ -7,8 +7,6 @@ from search import *
 import pandas as pd
 from pandastable import Table
 
-
-
 LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
@@ -127,12 +125,11 @@ class Top10ViewWindow(tk.Frame):
         backbutton.pack(padx=10, pady=10)
 
         df = data_helper.get_dataframe()
-        print("test", df)
 
-        table = Table(dataframe=df)
+        self.main = self.master
+        frame = Frame(self.main)
+        table = Table(frame, dataframe=df)
         table.pack()
-
-
 
 
 app = WelcomeWindow()
