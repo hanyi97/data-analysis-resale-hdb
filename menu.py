@@ -129,6 +129,7 @@ class ViewSummary(tk.Frame):
 
 
         df = data_helper.get_dataframe()
+<<<<<<< HEAD
 
 
         frame = Frame(self)
@@ -136,6 +137,14 @@ class ViewSummary(tk.Frame):
         table = Table(frame, dataframe=df)
         table.show()
 
+=======
+        df = df.sort_values(by=['year', 'month']) # sort dataframe in ascending chronological order
+        frame = Frame(self)
+        frame.pack()
+        table = Table(frame, dataframe=df, showstatusbar=True,
+                      height=400, width=1100)
+        table.show()
+>>>>>>> 49a1f7d682925c09fef9699eb90579bb0e7f3aa0
 
 
 app = WelcomeWindow()
