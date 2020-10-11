@@ -4,7 +4,6 @@ from tkinter import ttk
 from display_data import *
 from search import *
 
-import pandas as pd
 from pandastable import Table
 
 LARGE_FONT = ("Open Sans", 30)
@@ -15,6 +14,7 @@ SMALL_FONT = ("Open Sans", 15)
 df = data_helper.get_dataframe()
 
 
+#Main Window
 class WelcomeWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -36,7 +36,7 @@ class WelcomeWindow(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-
+#Selection Window
 class SelectOptions(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -60,18 +60,7 @@ class SelectOptions(tk.Frame):
                                command=lambda: controller.show_frame(ViewSummary))
         summaryBTN.pack()
 
-
-class ViewCharts(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
-        label.pack(padx=10, pady=10)
-
-        backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
-        backbutton.pack(padx=10, pady=10)
-
-
-# new window for top10
+#Top10 Window
 class Top10Window(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -89,14 +78,17 @@ class Top10Window(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-
-class displayTop10(tk.Frame):
+#Hanyi Function
+class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
-        label.pack(pady=10, padx=10)
+        label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
+        label.pack(padx=10, pady=10)
 
+        backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+        backbutton.pack(padx=10, pady=10)
 
+#Kah En Function
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -144,14 +136,12 @@ class ViewSummary(tk.Frame):
         mainApp.geometry("900x900")
         mainApp.mainloop()
 
-
+#Kah En Function
 class View10Top(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
         label.pack(pady=10, padx=10)
-
-
 
 
 app = WelcomeWindow()
