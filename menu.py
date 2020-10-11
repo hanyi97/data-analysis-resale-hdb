@@ -1,5 +1,7 @@
 import tkinter as tk
+from tkinter import ttk
 import bargraph
+import data_helper
 # from matplotlib.figure import Figure
 import matplotlib
 matplotlib.use("TkAgg")
@@ -79,9 +81,33 @@ if __name__ == "__main__":
             label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
             label.pack(padx=10, pady=10)
 
-            # Adds the graph from bargraph.py into the ViewCharts windwo
-            canvas = FigureCanvasTkAgg(bargraph.plot_bar_graph(), master=self)
-            canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+            # Run this function when user selects from the dropdown list
+            def selected(event):
+                # Clear the previous chart first if it is currently on the screen
+                try:
+                    self.canvas.get_tk_widget().pack_forget()
+                except AttributeError:
+                    pass
+
+                # Add the graph from bargraph.py into the ViewCharts window
+                self.canvas = FigureCanvasTkAgg(bargraph.plot_bar_graph(self.town_combobox.get()), master=self)
+                self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+            #Add dropdown list with list of towns:
+            town_list_options = data_helper.get_all_towns()
+            # town_list_options.insert(0, "SINGAPORE")
+            clicked = tk.StringVar()
+            clicked.set(town_list_options[0])
+
+            #Option Menu - not using
+            # town_menu = tk.OptionMenu(self, clicked, *town_list_options, command=selected)
+            # town_menu.pack(pady=20)
+
+            #Add Combobox with the list of towns onto the GUI:
+            self.town_combobox = ttk.Combobox(self, value=town_list_options)
+            self.town_combobox.current(0)
+            self.town_combobox.bind("<<ComboboxSelected>>", selected)
+            self.town_combobox.pack()
 
             backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
             backbutton.pack(padx=10, pady=10)
