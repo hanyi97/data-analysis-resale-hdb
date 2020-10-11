@@ -11,10 +11,8 @@ LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
 
-
 # read the dataset into a data table using Pandas
 df = data_helper.get_dataframe()
-
 
 
 class WelcomeWindow(tk.Tk):
@@ -26,7 +24,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
 
-        for F in (SelectOptions, ViewCharts, ViewSummary):
+        for F in (SelectOptions, ViewCharts, ViewSummary, Top10ViewWindow):
             frame = F(container, self)
 
             self.frames[F] = frame
@@ -59,7 +57,7 @@ class SelectOptions(tk.Frame):
                               command=lambda: controller.show_frame(ViewCharts))
         chartsBTN.pack(pady=10, padx=10)
         summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=SMALL_FONT,
-                               command=lambda: controller.show_frame(ViewSummary))
+                               command=lambda: controller.show_frame(Top10ViewWindow))
         summaryBTN.pack()
 
 
@@ -86,14 +84,14 @@ class ViewSummary(tk.Frame):
         listofFilters = sorted(get_filtered_data(in_col))
 
         for x in listofFilters:
-             # combobox
+            # combobox
             self.comboBoxOrderGroup = ttk.Combobox(self, state="readonly")
             self.comboBoxOrderGroup.pack(pady=0, padx=0)
             # self.comboBoxOrderGroup.bind('<<ComboboxSelected>>',
             #                              lambda x: self.updateGraphNic(self.comboBoxOrderGroup.get()))
             columnvalues = df.values.ravel()
             print(columnvalues)
-            unqiue= pd.unique(listofFilters)
+            unqiue = pd.unique(listofFilters)
             print(unqiue)
 
             self.comboBoxOrderGroup['values'] = listofFilters
@@ -123,7 +121,6 @@ class ViewSummary(tk.Frame):
         # self.table = Table(dataframe=tableData, showtoolbar=True, showstatusbar=True)
 
 
-
 # class Top10ViewWindow(tk.Frame):
 #     def __init__(self, parent, controller):
 #         tk.Frame.__init__(self, parent)
@@ -140,6 +137,25 @@ class ViewSummary(tk.Frame):
 #
 #         table = Table(dataframe=df)
 #         table.show()
+
+
+class Top10ViewWindow(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Overview of Resale Flats Prices", font=NORM_FONT)
+        label.pack()
+
+        backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+        backbutton.pack(padx=10, pady=10)
+
+        df = data_helper.get_dataframe()
+
+        self.main = self.master
+        frame = Frame(self.main)
+
+        self.table = pt = Table(frame, dataframe=df, showtoolbar=True, showstatusbar=True)
+        pt.show()
+        return
 
 
 app = WelcomeWindow()
