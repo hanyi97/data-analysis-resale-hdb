@@ -24,7 +24,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
 
-        for F in (SelectOptions, ViewCharts, ViewSummary):
+        for F in (SelectOptions, ViewCharts, ViewSummary, View10Top):
             frame = F(container, self)
 
             self.frames[F] = frame
@@ -60,13 +60,6 @@ class SelectOptions(tk.Frame):
                                command=lambda: controller.show_frame(ViewSummary))
         summaryBTN.pack()
 
-    # def displaySummary(self):
-    #
-    #     mainApp = ViewSummaryWindow()
-    #     mainApp.title("Overview of Resale Flat Prices")
-    #     mainApp.geometry("900x900")
-    #     mainApp.mainloop()
-
 
 class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
@@ -78,24 +71,30 @@ class ViewCharts(tk.Frame):
         backbutton.pack(padx=10, pady=10)
 
 
-# class ViewSummaryWindow(tk.Tk):
-#
-#     def __init__(self, *args, **kwargs):
-#         tk.Tk.__init__(self, *args, **kwargs)
-#         container = tk.Frame(self)
-#         container.pack(side="top", fill="both", expand=True)
-#         container.grid_rowconfigure(0, weight=1)
-#         container.grid_columnconfigure(0, weight=1)
-#         self.frames = {}
-#         frame = ViewSummary(container, self)
-#         self.frames[ViewSummary] = frame
-#         frame.grid(row=0, column=0, sticky="nsew")
-#         self.show_frame(ViewSummary)
-#
-#
-#     def show_frame(self, cont):
-#         frame = self.frames[cont]
-#         frame.tkraise()
+# new window for top10
+class Top10Window(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+        self.frames = {}
+        frame = View10Top(container, self)
+        self.frames[View10Top] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.show_frame(View10Top)
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
+
+
+class displayTop10(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
+        label.pack(pady=10, padx=10)
 
 
 class ViewSummary(tk.Frame):
@@ -127,24 +126,32 @@ class ViewSummary(tk.Frame):
         scrollbar = tk.Scrollbar(self)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-
         df = data_helper.get_dataframe()
-<<<<<<< HEAD
-
-
+        df = df.sort_values(by=['year', 'month'])  # sort dataframe in ascending chronological order
         frame = Frame(self)
         frame.pack()
-        table = Table(frame, dataframe=df)
-        table.show()
-
-=======
-        df = df.sort_values(by=['year', 'month']) # sort dataframe in ascending chronological order
-        frame = Frame(self)
-        frame.pack()
-        table = Table(frame, dataframe=df, showstatusbar=True,
+        table = Table(frame, dataframe=df,
                       height=400, width=1100)
         table.show()
->>>>>>> 49a1f7d682925c09fef9699eb90579bb0e7f3aa0
+
+        top10button = tk.Button(self, text="View Top 10", font=SMALL_FONT,
+                                command=lambda: self.displayTop10())
+        top10button.pack(padx=10, pady=10)
+
+    def displayTop10(self):
+        mainApp = Top10Window()
+        mainApp.title("Top 10 Resale Flats")
+        mainApp.geometry("900x900")
+        mainApp.mainloop()
+
+
+class View10Top(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
+        label.pack(pady=10, padx=10)
+
+
 
 
 app = WelcomeWindow()
