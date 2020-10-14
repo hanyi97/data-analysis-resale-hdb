@@ -28,6 +28,7 @@ class Top10ViewWindow(Frame):
         f = Frame(self.main)
         f.pack(fill=BOTH,expand=1)
         df = data_helper.get_dataframe()
+        df = df.sort_values(by=['year', 'month'])
         self.table = pt = Table(f, dataframe=df,
                                 showtoolbar=True, showstatusbar=True)
         pt.show()
