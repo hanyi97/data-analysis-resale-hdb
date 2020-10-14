@@ -9,7 +9,6 @@ from pandastable import Table, TableModel
 # read the dataset into a data table using Pandas
 df = data_helper.get_dataframe()
 
-
 # Function to display dataset.
 def display_dataset():
     return print(df)
