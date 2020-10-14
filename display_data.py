@@ -30,7 +30,7 @@ class Top10ViewWindow(Frame):
         df = data_helper.get_dataframe()
         df = df.sort_values(by=['year', 'month'])
         self.table = pt = Table(f, dataframe=df,
-                                showtoolbar=True, showstatusbar=True)
+                                showstatusbar=True)
         pt.show()
         return
 
