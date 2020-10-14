@@ -1,5 +1,5 @@
 """This is a module to display dataset as a summary table
-    For user to view everything in the dataset"""
+    For user to view every detail in the dataset"""
 
 import pandas as pd
 import data_helper
@@ -13,8 +13,9 @@ df = data_helper.get_dataframe()
 def display_dataset():
     return print(df)
 
+# Display the Top10View Window after user click the 'View Top 10 Cheapest Resale Flat' btn.
 class Top10ViewWindow(Frame):
-    """Basic test frame for the table"""
+    """Frame for the table"""
     def __init__(self, parent=None):
         self.parent = parent
         Frame.__init__(self)
@@ -24,8 +25,9 @@ class Top10ViewWindow(Frame):
         f = Frame(self.main)
         f.pack(fill=BOTH,expand=1)
         df = data_helper.get_dataframe()
+        df = df.sort_values(by=['year', 'month'])
         self.table = pt = Table(f, dataframe=df,
-                                showtoolbar=True, showstatusbar=True)
+                                showstatusbar=True)
         pt.show()
         return
 
