@@ -69,7 +69,7 @@ def plot_bar_graph(town='', year=''):
         # Set average resale value to bar labels
         for i in bargraph.patches:
             price = i.get_width()
-            bargraph.text(price + .4, i.get_y() + .15, str("${:,}".format(int(price))),
+            bargraph.text(price + .3, i.get_y() + .15, str(" ${:,}".format(int(price))),
                           fontsize=10,
                           color='dimgrey')
         # Style labels and title
