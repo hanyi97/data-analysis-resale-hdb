@@ -1,8 +1,8 @@
 """This is a module to export data as PDF
 """
 
-import data_helper
 import os.path as path
+from data_helper import get_dataframe
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, landscape, A4
 from reportlab.pdfbase.pdfmetrics import registerFont
@@ -27,7 +27,7 @@ def setup_data_summary_page(pdf):
     Parameters:
     pdf (canvas): canvas object for pdf document
     """
-    df = data_helper.get_dataframe().head(10)
+    df = get_dataframe().head(10)
     data = [df.columns.values.tolist()] + df.values.tolist()
     data[0] = list(map(lambda col_name: col_name.upper().replace('_', ' '), data[0]))
 
