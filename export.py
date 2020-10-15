@@ -89,7 +89,7 @@ def setup_treemap_page(pdf):
     pdf.drawCentredString(415, 550, "Tree Map")
     # Insert treemap image
     if path.isfile(CONST_TREEMAP_PATH):
-        pdf.drawImage(CONST_TREEMAP_PATH, x=18, y=280, width=26 * cm, height=7 * cm)
+        pdf.drawImage(CONST_TREEMAP_PATH, x=25, y=50, width=24 * cm, height=17 * cm)
     pdf.showPage()
 
 
