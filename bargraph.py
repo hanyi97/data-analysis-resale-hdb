@@ -8,6 +8,8 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 from data_helper import get_dataframe
 
+CONST_FILE_PATH = "resources/bargraph.png"
+
 
 def get_filtered_data(town='', year=''):
     """Group all resale prices based on flat type
@@ -69,7 +71,7 @@ def plot_bar_graph(town='', year=''):
         # Set average resale value to bar labels
         for i in bargraph.patches:
             price = i.get_width()
-            bargraph.text(price + .4, i.get_y() + .15, str("${:,}".format(int(price))),
+            bargraph.text(price + .3, i.get_y() + .15, str(" ${:,}".format(int(price))),
                           fontsize=10,
                           color='dimgrey')
         # Style labels and title
@@ -81,7 +83,7 @@ def plot_bar_graph(town='', year=''):
         bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
                            fontdict={'fontsize': 12, 'fontweight': 'heavy'})
         # Save bar graph as png
-        bargraph.get_figure().savefig('resources/bargraph.png', bbox_inches='tight', dpi=300)
+        bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
 
         return fig
     except ValueError:
