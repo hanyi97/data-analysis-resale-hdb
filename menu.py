@@ -12,6 +12,7 @@ import matplotlib
 
 matplotlib.use("TkAgg")
 
+#Reusable font sizes
 LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
@@ -40,7 +41,7 @@ class WelcomeWindow(tk.Tk):
         frame.tkraise()
 
 
-# Selection Window
+# Select Options Window
 class SelectOptions(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -65,23 +66,23 @@ class SelectOptions(tk.Frame):
         summaryBTN.pack()
 
 
-# Top10 Window
-class Top10Window(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-        self.frames = {}
-        frame = View10Top(container, self)
-        self.frames[View10Top] = frame
-        frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(View10Top)
-
-    def show_frame(self, cont):
-        frame = self.frames[cont]
-        frame.tkraise()
+# # Top10 Data Window
+# class Top10Window(tk.Tk):
+#     def __init__(self, *args, **kwargs):
+#         tk.Tk.__init__(self, *args, **kwargs)
+#         container = tk.Frame(self)
+#         container.pack(side="top", fill="both", expand=True)
+#         container.grid_rowconfigure(0, weight=1)
+#         container.grid_columnconfigure(0, weight=1)
+#         self.frames = {}
+#         frame = View10Top(container, self)
+#         self.frames[View10Top] = frame
+#         frame.grid(row=0, column=0, sticky="nsew")
+#         self.show_frame(View10Top)
+#
+#     def show_frame(self, cont):
+#         frame = self.frames[cont]
+#         frame.tkraise()
 
 
 # Hanyi Function
@@ -104,6 +105,7 @@ class ViewSummary(tk.Frame):
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack()
 
+        #get towns, regions,flatTypes data from csv
         df = data_helper.get_dataframe()
         towns = data_helper.get_all_towns()
         regions = data_helper.get_all_regions()
@@ -117,7 +119,6 @@ class ViewSummary(tk.Frame):
         self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox("region"))
         self.comboBoxRegion['values'] = listofRegions
         self.comboBoxRegion.current(0)
-
 
         # Setting values for town combo box
         listofTowns = sorted(towns)
@@ -138,9 +139,7 @@ class ViewSummary(tk.Frame):
         filterButton.pack()
 
 
-        # df = df.sort_values(by=['year', 'month'])  # sort dataframe in ascending chronological order
-
-        #creating summary table
+        #Creating table for summary
         frame = Frame(self)
         frame.pack()
         self.table = Table(frame, dataframe=df,
@@ -151,15 +150,9 @@ class ViewSummary(tk.Frame):
                                 command=lambda: self.displayTop10())
         top10button.pack(padx=10, pady=10)
 
-    def displayTop10(self):
-        mainApp = Top10Window()
-        mainApp.title("Top 10 Resale Flats")
-        mainApp.geometry("800x800")
-        mainApp.mainloop()
-
+    #resets town dropdown based on region
     def updateComboBox(self,control):
         if control == "region":
-            #resets town dropdown based on region
             listofTowns = get_town_acrd_region(self.comboBoxRegion.get())
             self.comboBoxTown['values'] = listofTowns
             self.comboBoxTown.current(0)
@@ -177,21 +170,28 @@ class ViewSummary(tk.Frame):
 
 
         #replot table with updated data
+        #not complete
         frame = Frame(self)
         frame.pack()
         table = Table(frame, dataframe=valuesBasedOnFilters
                            , height=400, width=1100)
         table.update()
 
+    # def displayTop10(self):
+    #     mainApp = Top10Window()
+    #     mainApp.title("Top 10 Resale Flats")
+    #     mainApp.geometry("800x800")
+    #     mainApp.mainloop()
 
 
-# Kah En Function
-class View10Top(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
-        label.pack(pady=10, padx=10)
 
+# # Kah En Function
+# class View10Top(tk.Frame):
+#     def __init__(self, parent, controller):
+#         tk.Frame.__init__(self, parent)
+#         label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
+#         label.pack(pady=10, padx=10)
+#
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
