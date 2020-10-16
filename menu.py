@@ -144,37 +144,43 @@ class ViewSummary(tk.Frame):
 
 
 
-        df = df.sort_values(by=['year', 'month'])  # sort dataframe in ascending chronological order
+        # df = df.sort_values(by=['year', 'month'])  # sort dataframe in ascending chronological order
+
+        #creating summary table
         frame = Frame(self)
         frame.pack()
-        table = Table(frame, dataframe=df,
+        self.table = Table(frame, dataframe=df,
                       height=400, width=1100)
-        table.show()
+        self.table.show()
 
-        top10button = tk.Button(self, text="View Top 10", font=SMALL_FONT,
-                                command=lambda: self.displayTop10())
-        top10button.pack(padx=10, pady=10)
-
-    def displayTop10(self):
-        mainApp = Top10Window()
-        mainApp.title("Top 10 Resale Flats")
-        mainApp.geometry("900x900")
-        mainApp.mainloop()
+    #     top10button = tk.Button(self, text="View Top 10", font=SMALL_FONT,
+    #                             command=lambda: self.displayTop10())
+    #     top10button.pack(padx=10, pady=10)
+    #
+    # def displayTop10(self):
+    #     mainApp = Top10Window()
+    #     mainApp.title("Top 10 Resale Flats")
+    #     mainApp.geometry("900x900")
+    #     mainApp.mainloop()
 
     def updateTable(self, control):
-        # self.comboBoxTown['values'] = get_town_acrd_region(self.comboBoxTown.get())
+
         if control == "region":
             #resets town dropdown based on region
             listofTowns = get_town_acrd_region(self.comboBoxRegion.get())
             self.comboBoxTown['values'] = listofTowns
             self.comboBoxTown.current(0)
 
-        # Retrieve dict for speific region
-        valuesBasedOnTown = get_town_acrd_region(self.comboBoxRegion.get())
 
-        # keys = valuesBasedOnTown.keys()
-        # values = valuesBasedOnTown.values()
+        valuesBasedOnTowns= get_filtered_data(self.comboBoxRegion.get())
+        print("region", valuesBasedOnTowns)
+        # valuesBasedOnTowns = get_filtered_data(self.comboBoxTown.get())
+        # print("town", valuesBasedOnTowns)
+        # valuesBasedOnFlats = get_filtered_data(self.comboxBoxFlatTypes.get())
+        # print("flat types", valuesBasedOnFlats)
 
+
+        # clear existing data in table
 
 
 
