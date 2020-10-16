@@ -48,7 +48,7 @@ def plot_bar_graph(town='', year=''):
         # Set town to Singapore when no town is selected
         town = 'SINGAPORE' if town == '' else town
 
-        # Creating a figure
+        # Create a figure
         fig = Figure(figsize=(20, 5))
         # adding the subplot
         ax = fig.add_subplot(111)
