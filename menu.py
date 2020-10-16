@@ -163,7 +163,7 @@ class ViewSummary(tk.Frame):
 
     def updateTable(self, control):
         # self.comboBoxTown['values'] = get_town_acrd_region(self.comboBoxTown.get())
-        if control == "CENTRAL":
+        if control == "region":
             #resets town dropdown based on region
             listofTowns = get_town_acrd_region(self.comboBoxRegion.get())
             self.comboBoxTown['values'] = listofTowns
