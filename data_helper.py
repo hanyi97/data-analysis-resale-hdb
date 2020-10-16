@@ -7,7 +7,7 @@ One function to retrieve data as dictionary
 
 import csv
 import pandas as pd
-CONST_filename = 'resources/resale_flat_prices.csv'
+CONS_FILE_NAME = 'resources/resale_flat_prices.csv'
 
 
 def get_dataframe():
@@ -16,7 +16,8 @@ def get_dataframe():
     Returns:
     dataframe: dataframe of all rows in the csv
     """
-    return pd.read_csv(CONST_filename)
+    return pd.read_csv(CONS_FILE_NAME)
+
 
 def get_columnname():
    return get_dataframe().columns
@@ -53,7 +54,7 @@ def get_data():
     Returns:
     list: list of all rows in csv file including header row
     """
-    with open(CONST_filename, 'r', encoding='utf-8-sig') as csv_file:
+    with open(CONS_FILE_NAME, 'r', encoding='utf-8-sig') as csv_file:
         return list(csv.reader(csv_file, delimiter=','))
 
 
@@ -63,5 +64,5 @@ def get_dict_data():
     Returns:
     list: list of dictionaries of each row of data
     """
-    with open(CONST_filename, 'r', encoding='utf-8-sig') as csv_file:
+    with open(CONS_FILE_NAME, 'r', encoding='utf-8-sig') as csv_file:
         return list(csv.DictReader(csv_file, delimiter=','))
