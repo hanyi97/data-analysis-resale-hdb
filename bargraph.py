@@ -3,7 +3,8 @@ Based on average resale prices for different flat types.
 Can be filtered by town and year
 Can export graph as png image"""
 
-import numpy as np
+
+from numpy import arange
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 from data_helper import get_dataframe
@@ -50,13 +51,12 @@ def plot_bar_graph(town='', year=''):
 
         # Create a figure
         fig = Figure(figsize=(20, 5))
-        # adding the subplot
         ax = fig.add_subplot(111)
         # Bar graph configuration
         bargraph = df.plot.barh(color='#24AEDE', ax=ax, zorder=2)
         # Set x ticks to frequency of 100,000
         start, end = bargraph.get_xlim()
-        bargraph.xaxis.set_ticks(np.arange(start, end, 100000))
+        bargraph.xaxis.set_ticks(arange(start, end, 100000))
         # Add comma to resale flat prices
         bargraph.get_xaxis().set_major_formatter(FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
         # Remove borders
