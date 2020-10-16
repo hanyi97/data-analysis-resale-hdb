@@ -11,7 +11,6 @@ import matplotlib
 
 
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
@@ -107,6 +106,7 @@ class ViewSummary(tk.Frame):
         backbutton.pack()
 
         df = data_helper.get_dataframe()
+        print("df",df)
 
         columns = data_helper.get_columnname()
         print(columns)
@@ -121,7 +121,7 @@ class ViewSummary(tk.Frame):
         listofRegions = sorted(regions)
         self.comboBoxRegion = ttk.Combobox(self, state="readonly")
         self.comboBoxRegion.pack(pady=0, padx=0)
-        self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateTable("region"))
+        self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox("region"))
         self.comboBoxRegion['values'] = listofRegions
         self.comboBoxRegion.current(0)
 
@@ -130,7 +130,7 @@ class ViewSummary(tk.Frame):
         listofTowns = sorted(towns)
         self.comboBoxTown = ttk.Combobox(self, state="readonly")
         self.comboBoxTown.pack(pady=0, padx=0)
-        self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateTable(""))
+        self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox(""))
         self.comboBoxTown['values'] = listofTowns
         self.comboBoxTown.current(0)
 
@@ -138,10 +138,11 @@ class ViewSummary(tk.Frame):
         listofFlatTypes = sorted(flatTypes)
         self.comboxBoxFlatTypes = ttk.Combobox(self, state="readonly")
         self.comboxBoxFlatTypes.pack(pady=0, padx=0)
-        # self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateGraph(csvPath, "company"))
         self.comboxBoxFlatTypes['values'] = listofFlatTypes
         self.comboxBoxFlatTypes.current(0)
 
+        filterButton = tk.Button(self, text="Filter", command=self.updateTable)
+        filterButton.pack()
 
 
         # df = df.sort_values(by=['year', 'month'])  # sort dataframe in ascending chronological order
@@ -163,8 +164,7 @@ class ViewSummary(tk.Frame):
     #     mainApp.geometry("900x900")
     #     mainApp.mainloop()
 
-    def updateTable(self, control):
-
+    def updateComboBox(self,control):
         if control == "region":
             #resets town dropdown based on region
             listofTowns = get_town_acrd_region(self.comboBoxRegion.get())
@@ -172,15 +172,26 @@ class ViewSummary(tk.Frame):
             self.comboBoxTown.current(0)
 
 
-        valuesBasedOnTowns= get_filtered_data(self.comboBoxRegion.get())
-        print("region", valuesBasedOnTowns)
-        # valuesBasedOnTowns = get_filtered_data(self.comboBoxTown.get())
-        # print("town", valuesBasedOnTowns)
-        # valuesBasedOnFlats = get_filtered_data(self.comboxBoxFlatTypes.get())
-        # print("flat types", valuesBasedOnFlats)
+    def updateTable(self):
+        #repopulate dictionary for table based on new selected drop down value
+        filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
+        print("filters",filters)
+        valuesBasedOnFilters = get_filtered_data(filters)
+        print("values",valuesBasedOnFilters)
 
 
-        # clear existing data in table
+
+        # #clears existing summmary table
+        self.table.clearTable()
+
+        #replot table with new data
+        frame = Frame(self)
+        frame.pack()
+        self.table = Table(frame, dataframe=valuesBasedOnFilters,
+                           height=400, width=1100)
+        self.table.show()
+
+
 
 
 

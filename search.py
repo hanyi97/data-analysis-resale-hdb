@@ -112,20 +112,10 @@ def get_filtered_data(in_dict):
         return df
 
 
-# def getDictForSingleRow(regionValue, townValue, flatValue):
-#     myDict={}
-#
-#     region = data_helper.get_columnname(regionValue);
-#     town = data_helper.get_columnname(townValue);
-#     flat = data_helper.get_columnname(flatValue);
-#
-#
-#     print(region,town,flat)
 
 
 
 # to test the functions
-# print(dict_input("region", "NORTH"))
-# print(dict_input("town", "YISHUN"))
-# # call to get_filtered_data function to display filtered dataset
-print('dict', get_filtered_data(in_dict)['region'])
+print(dict_input("region", "NORTH"))
+print(dict_input("town", "YISHUN"))
+# call to get_filtered_data function to display filtered dataset
