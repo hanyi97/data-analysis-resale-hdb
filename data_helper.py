@@ -36,7 +36,7 @@ def get_filtered_towns(region):
     """
     df = get_dataframe()
     towns = df[df['region'] == region.upper()]['town'].unique()
-    return list(towns)
+    return sorted(towns)
 
 
 def get_data():
