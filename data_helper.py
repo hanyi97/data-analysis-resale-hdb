@@ -47,6 +47,17 @@ def get_all_flatTypes():
     """
     return sorted(get_dataframe()['flat_type'].unique())
 
+def get_filtered_towns(region):
+    """Retrieve all towns based on region
+
+    Returns:
+    list: list of towns
+    """
+    df = get_dataframe()
+    towns = df[df['region'] == region.upper()]['town'].unique()
+    return sorted(towns)
+
+
 def get_data():
     """Reads data from CSV and returns a list of each row
     Note: first item in list are the columns of the dataset
