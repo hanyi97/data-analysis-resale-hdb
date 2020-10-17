@@ -74,7 +74,7 @@ def setup_data_summary_page(pdf):
                 index += 21
                 end_index = index + rows_per_page
                 data_count -= 21
-            # Add 20 rows to subsequent pages
+            # Add 30 rows to subsequent pages
             else:
                 if data_count > rows_per_page:
                     y = 30
@@ -127,9 +127,9 @@ def setup_treemap_page(pdf):
 
 def export_to_pdf():
     """Function to export summary data to PDF
-    Page 1: Data summary table
-    Page 2: Bar graph
-    Page 3: Tree map
+    Page 1: Bar graph
+    Page 2: Tree map
+    Page 3: Data summary table
     """
     try:
         pdf = canvas.Canvas(CONST_PDF_PATH, pagesize=landscape(letter))
