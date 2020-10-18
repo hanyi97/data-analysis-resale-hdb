@@ -117,7 +117,7 @@ class ViewSummary(tk.Frame):
         self.comboBoxRegion = ttk.Combobox(self, state="readonly")
         self.comboBoxRegion.pack(pady=0, padx=0)
         self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox("region"))
-        self.comboBoxRegion['values'] = listofRegions
+        self.comboBoxRegion['values'] = ["Select Region"]+listofRegions
         self.comboBoxRegion.current(0)
 
         # Setting values for town combo box
@@ -125,15 +125,16 @@ class ViewSummary(tk.Frame):
         self.comboBoxTown = ttk.Combobox(self, state="readonly")
         self.comboBoxTown.pack(pady=0, padx=0)
         self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox(""))
-        self.comboBoxTown['values'] = listofTowns
+        self.comboBoxTown['values'] = ["Select Town"]+listofTowns
         self.comboBoxTown.current(0)
 
         # Setting values for flat types combo box
         listofFlatTypes = sorted(flatTypes)
         self.comboxBoxFlatTypes = ttk.Combobox(self, state="readonly")
         self.comboxBoxFlatTypes.pack(pady=0, padx=0)
-        self.comboxBoxFlatTypes['values'] = listofFlatTypes
-        self.comboxBoxFlatTypes.set("Select Flat Type")
+        self.comboxBoxFlatTypes['values'] = ["Select Flat Type"]+listofFlatTypes
+        # self.comboxBoxFlatTypes.set("Select Flat Type")
+        self.comboxBoxFlatTypes.current(0)
 
         filterButton = tk.Button(self, text="Filter", command=self.updateTable)
         filterButton.pack()
@@ -160,6 +161,11 @@ class ViewSummary(tk.Frame):
     def updateTable(self):
         #repopulate dictionary for table based on new selected drop down value
         filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
+        # Replace default values to ""
+        for item in filters:
+            if filters[item] == "Select Town" or filters[item] == "Select Flat Type":
+                filters[item] = ""
+
         print("filters",filters)
         valuesBasedOnFilters = get_filtered_data(filters)
         print("values", valuesBasedOnFilters)
