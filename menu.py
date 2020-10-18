@@ -179,9 +179,8 @@ class ViewSummary(tk.Frame):
         #not complete
         frame = Frame(self)
         frame.pack()
-        table = Table(frame, dataframe=valuesBasedOnFilters
-                           , height=400, width=1100)
-        table.update()
+        self.table.updateModel(TableModel(valuesBasedOnFilters))
+        self.table.redraw()
 
     # def displayTop10(self):
     #     mainApp = Top10Window()
