@@ -140,14 +140,14 @@ def setup_treemap_page(pdf):
     pdf.showPage()
 
 
-def export_to_pdf():
+def export_to_pdf(file_path):
     """Function to export summary data to PDF
     Page 1: Bar graph
     Page 2: Tree map
     Page 3: Data summary table
     """
     try:
-        pdf = canvas.Canvas(CONST_PDF_PATH, pagesize=landscape(letter))
+        pdf = canvas.Canvas(file_path, pagesize=landscape(letter))
         setup_bargraph_page(pdf)
         setup_treemap_page(pdf)
         setup_data_summary_page(pdf)
@@ -156,13 +156,13 @@ def export_to_pdf():
         print(e)
 
 
-def export_to_csv():
+def export_to_csv(file_path):
     """Function to export filtered data to CSV
     Call get_filtered_data function from search module to retrieve user filtered data
     """
     df = get_filtered_data(filter_input)
-    df.to_csv(CONS_CSV_PATH, index=False)
+    df.to_csv(file_path, index=False)
 
 
-export_to_pdf()
-export_to_csv()
+# export_to_pdf()
+# export_to_csv()
