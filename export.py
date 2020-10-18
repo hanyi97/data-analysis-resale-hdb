@@ -2,7 +2,7 @@
 """
 
 import os.path as path
-from data_helper import get_dataframe
+from search import get_filtered_data, in_dict as filter_input
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, landscape, A4
 from reportlab.pdfbase.pdfmetrics import registerFont
@@ -17,8 +17,22 @@ registerFont(TTFont('Arial', 'ARIAL.ttf'))
 registerFont(TTFont('Arial-Bold', 'ARIAL BOLD.ttf'))
 # Declare constant variables
 CONST_PDF_PATH = 'resources/summary.pdf'
+CONS_CSV_PATH = 'resources/summary.csv'
 CONST_BARGRAPH_PATH = 'resources/bargraph.png'
 CONST_TREEMAP_PATH = 'resources/treemap.png'
+
+
+def get_cheapest_hdb():
+    """Get cheapest HDB based on user filtered result
+    Top 5 cheapest HDB based on each flat type
+
+    Returns:
+    dataframe: dataframe of top 5 cheapest HDB based on all flat types
+    """
+    return get_filtered_data(filter_input) \
+        .sort_values(['flat_type', 'resale_price']) \
+        .groupby('flat_type').head(5) \
+        .reset_index(drop=True)
 
 
 def setup_data_summary_page(pdf):
@@ -29,13 +43,14 @@ def setup_data_summary_page(pdf):
     pdf (canvas): canvas object for pdf document
     """
     # Retrieve data
-    df = get_dataframe().head(1000)
+    # df = get_filtered_data(input).head(100)
+    df = get_cheapest_hdb()
     data = [df.columns.values.tolist()] + df.values.tolist()
     data[0] = list(map(lambda col_name: col_name.upper().replace('_', ' '), data[0]))
 
     # Page heading configurations
     pdf.setFont('Arial-Bold', 20, None)
-    pdf.drawCentredString(415, 550, "Data Summary")
+    pdf.drawCentredString(415, 550, "Cheapest Flats")
 
     # Format each text to allow word wrapping
     pstyle = ParagraphStyle(name='BodyText', fontName='Arial', fontSize=6, wordWrap='CJK')
@@ -74,7 +89,7 @@ def setup_data_summary_page(pdf):
                 index += 21
                 end_index = index + rows_per_page
                 data_count -= 21
-            # Add 20 rows to subsequent pages
+            # Add 30 rows to subsequent pages
             else:
                 if data_count > rows_per_page:
                     y = 30
@@ -127,9 +142,9 @@ def setup_treemap_page(pdf):
 
 def export_to_pdf():
     """Function to export summary data to PDF
-    Page 1: Data summary table
-    Page 2: Bar graph
-    Page 3: Tree map
+    Page 1: Bar graph
+    Page 2: Tree map
+    Page 3: Data summary table
     """
     try:
         pdf = canvas.Canvas(CONST_PDF_PATH, pagesize=landscape(letter))
@@ -141,4 +156,13 @@ def export_to_pdf():
         print(e)
 
 
+def export_to_csv():
+    """Function to export filtered data to CSV
+    Call get_filtered_data function from search module to retrieve user filtered data
+    """
+    df = get_filtered_data(filter_input)
+    df.to_csv(CONS_CSV_PATH, index=False)
+
+
 export_to_pdf()
+export_to_csv()
