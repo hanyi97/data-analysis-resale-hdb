@@ -145,8 +145,7 @@ class ViewSummary(tk.Frame):
         global frame
         frame = Frame(self)
         frame.pack()
-        self.table = Table(frame, dataframe=df,
-                      height=400, width=1100,showstatusbar=True)
+        self.table = Table(frame, dataframe=df,showstatusbar=True)
         self.table.show()
 
         top10button = tk.Button(self, text="View Top 10", font=SMALL_FONT,
@@ -181,9 +180,9 @@ class ViewSummary(tk.Frame):
 
 
         frame.pack()
-        self.table = Table(frame, dataframe=valuesBasedOnFilters,
-                           height=400, width=1100, showstatusbar=True)
+        self.table = Table(frame, dataframe=valuesBasedOnFilters, showstatusbar=True)
         self.table.show()
+
 
 
 
