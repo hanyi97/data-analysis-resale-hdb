@@ -3,7 +3,8 @@ Based on average resale prices for different flat types.
 Can be filtered by town and year
 Can export graph as png image"""
 
-import numpy as np
+
+from numpy import arange
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 from data_helper import get_dataframe
@@ -48,17 +49,16 @@ def plot_bar_graph(town='', year=''):
         # Set town to Singapore when no town is selected
         town = 'SINGAPORE' if town == '' else town
 
-        # Creating a figure
+        # Create a figure
         fig = Figure(figsize=(20, 5))
-        # adding the subplot
         ax = fig.add_subplot(111)
         # Bar graph configuration
-        bargraph = df.plot.barh(color='#24AEDE', ax=ax, zorder=2)
+        bargraph = df.plot.barh(color='#24AEDE', ax=ax, zorder=2, label='Average Resale Pricing')
         # Set x ticks to frequency of 100,000
         start, end = bargraph.get_xlim()
-        bargraph.xaxis.set_ticks(np.arange(start, end, 100000))
+        bargraph.xaxis.set_ticks(arange(start, end, 100000))
         # Add comma to resale flat prices
-        bargraph.get_xaxis().set_major_formatter(FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+        bargraph.get_xaxis().set_major_formatter(FuncFormatter(lambda x, loc: '{:,}'.format(int(x))))
         # Remove borders
         bargraph.spines['right'].set_visible(False)
         bargraph.spines['top'].set_visible(False)
@@ -82,6 +82,7 @@ def plot_bar_graph(town='', year=''):
                             fontdict=label_style)
         bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
                            fontdict={'fontsize': 12, 'fontweight': 'heavy'})
+        bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02) , borderaxespad=0.)
         # Save bar graph as png
         bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
 
