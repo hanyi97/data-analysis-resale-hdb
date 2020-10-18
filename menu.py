@@ -66,23 +66,23 @@ class SelectOptions(tk.Frame):
         summaryBTN.pack()
 
 
-# # Top10 Data Window
-# class Top10Window(tk.Tk):
-#     def __init__(self, *args, **kwargs):
-#         tk.Tk.__init__(self, *args, **kwargs)
-#         container = tk.Frame(self)
-#         container.pack(side="top", fill="both", expand=True)
-#         container.grid_rowconfigure(0, weight=1)
-#         container.grid_columnconfigure(0, weight=1)
-#         self.frames = {}
-#         frame = View10Top(container, self)
-#         self.frames[View10Top] = frame
-#         frame.grid(row=0, column=0, sticky="nsew")
-#         self.show_frame(View10Top)
-#
-#     def show_frame(self, cont):
-#         frame = self.frames[cont]
-#         frame.tkraise()
+# Top10 Data Window
+class Top10Window(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+        self.frames = {}
+        frame = View10Top(container, self)
+        self.frames[View10Top] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.show_frame(View10Top)
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
 
 
 # Hanyi Function
@@ -106,6 +106,7 @@ class ViewSummary(tk.Frame):
         backbutton.pack()
 
         #get towns, regions,flatTypes data from csv
+        global df
         df = data_helper.get_dataframe()
         towns = data_helper.get_all_towns()
         regions = data_helper.get_all_regions()
@@ -141,10 +142,11 @@ class ViewSummary(tk.Frame):
 
 
         #Creating table for summary
+        global frame
         frame = Frame(self)
         frame.pack()
         self.table = Table(frame, dataframe=df,
-                      height=400, width=1100)
+                      height=400, width=1100,showstatusbar=True)
         self.table.show()
 
         top10button = tk.Button(self, text="View Top 10", font=SMALL_FONT,
@@ -169,35 +171,37 @@ class ViewSummary(tk.Frame):
         print("filters",filters)
         valuesBasedOnFilters = get_filtered_data(filters)
         print("values", valuesBasedOnFilters)
-
+        # print(df.dtypes)
+        df.update(valuesBasedOnFilters, overwrite=True)
 
         # #clears existing summmary table
         # self.table.clearTable()
 
 
-        #replot table with updated data
-        #not complete
-        frame = Frame(self)
+
+
         frame.pack()
-        table = Table(frame, dataframe=valuesBasedOnFilters
-                           , height=400, width=1100)
-        table.update()
-
-    # def displayTop10(self):
-    #     mainApp = Top10Window()
-    #     mainApp.title("Top 10 Resale Flats")
-    #     mainApp.geometry("800x800")
-    #     mainApp.mainloop()
+        self.table = Table(frame, dataframe=valuesBasedOnFilters,
+                           height=400, width=1100, showstatusbar=True)
+        self.table.show()
 
 
 
-# # Kah En Function
-# class View10Top(tk.Frame):
-#     def __init__(self, parent, controller):
-#         tk.Frame.__init__(self, parent)
-#         label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
-#         label.pack(pady=10, padx=10)
-#
+    def displayTop10(self):
+        mainApp = Top10Window()
+        mainApp.title("Top 10 Resale Flats")
+        mainApp.geometry("800x800")
+        mainApp.mainloop()
+
+
+
+# Kah En Function
+class View10Top(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
+        label.pack(pady=10, padx=10)
+
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")

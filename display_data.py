@@ -31,6 +31,6 @@ class Top10ViewWindow(Frame):
         pt.show()
         return
 
-app = Top10ViewWindow()
-#launch the app
-app.mainloop()
+# app = Top10ViewWindow()
+# #launch the app
+# app.mainloop()
