@@ -133,7 +133,7 @@ class ViewSummary(tk.Frame):
         self.comboxBoxFlatTypes = ttk.Combobox(self, state="readonly")
         self.comboxBoxFlatTypes.pack(pady=0, padx=0)
         self.comboxBoxFlatTypes['values'] = listofFlatTypes
-        self.comboxBoxFlatTypes.current(0)
+        self.comboxBoxFlatTypes.set("Select Flat Type")
 
         filterButton = tk.Button(self, text="Filter", command=self.updateTable)
         filterButton.pack()
