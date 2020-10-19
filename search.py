@@ -20,14 +20,14 @@ def get_unique(column):
     all the values in the column
     """
     column_value = df[column].unique()
-    column_value = list(map(str, column_value))
+    column_value = sorted(list(map(str, column_value)))
     return column_value
 
 
 # get column name/ name of combo box and selected input for the combobox, call in GUI
 # input eg. filter_option_year, filter_option_month, filter_option_town...etc
 # incomplete: if user select an input then decided not to filter anything for that column (b4 sumission)
-def dict_input(filter_option_, selected_input):
+def dict_input(filter_option, selected_input):
     """Get all user input and store it as a dictionary.
     It will be updated for each input the user select.
     It will be updated for any changes in the input selection.
@@ -39,47 +39,15 @@ def dict_input(filter_option_, selected_input):
     Returns:
     in_dict dictionary. key = column, value = column data value
     """
-    in_dict.update({filter_option_: selected_input})
+    in_dict.update({filter_option: selected_input})
     # if the filter option is in the in_dict dictionary, the new input will be updated
-    if filter_option_ in in_dict:
-        in_dict[filter_option_] = selected_input
+    if filter_option in in_dict:
+        in_dict[filter_option] = selected_input
     # if the filter_option is region, the available inputs for town will be updated
-    if filter_option_ == "region":
+    if filter_option == "region":
         region_input = selected_input
-        return get_town_acrd_region(region_input)
-    return (in_dict)
-
-
-# allocate the town in each region to hide values in region - might find other ways to not hardcode it
-def get_town_acrd_region(region_selected_input):
-    """Display the all towns available to filter after user select an input for region
-
-    Parameters:
-    region_selected_input is the input value that the user select for region
-
-    Returns:
-    the available values in the town column
-    """
-    global town_options
-    if region_selected_input == "EAST":
-        town_options = ['HOUGANG', 'BEDOK', 'KALLANG/WHAMPOA', 'PASIR RIS', 'PUNGGOL', 'SERANGOON', 'TAMPINES']
-    elif region_selected_input == "WEST":
-        town_options = ['JURONG EAST', 'JURONG WEST', 'BUKIT BATOK', 'BUKIT PANJANG', 'CHOA CHU KANG', 'CLEMENTI']
-    elif region_selected_input == "NORTH":
-        town_options = ['YISHUN', 'SEMBAWANG', 'SENGKANG', 'WOODLANDS']
-    elif region_selected_input == "CENTRAL":
-        town_options = ['ANG MO KIO', 'BISHAN', 'CENTRAL AREA', 'GEYLANG', 'MARINE PARADE', 'TOA PAYOH']
-    elif region_selected_input == "SOUTH":
-        town_options = ['BUKIT MERAH', 'BUKIT PANJANG', 'BUKIT TIMAH', 'QUEENSTOWN']
-        # will delete if not neccessary
-    elif region_selected_input == "":
-        town_options = ['HOUGANG', 'BEDOK', 'KALLANG/WHAMPOA', 'PASIR RIS', 'PUNGGOL', 'SERANGOON', 'TAMPINES',
-                        'JURONG EAST', 'JURONG WEST', 'BUKIT BATOK', 'BUKIT PANJANG', 'CHOA CHU KANG', 'CLEMENTI',
-                        'YISHUN', 'SEMBAWANG', 'SENGKANG', 'WOODLANDS', 'ANG MO KIO', 'BISHAN', 'CENTRAL AREA',
-                        'GEYLANG', 'MARINE PARADE', 'TOA PAYOH', 'BUKIT MERAH', 'BUKIT PANJANG', 'BUKIT TIMAH',
-                        'QUEENSTOWN']
-
-    return town_options
+        return data_helper.get_filtered_towns(region_input)
+    return in_dict
 
 
 # call when clicked on button
