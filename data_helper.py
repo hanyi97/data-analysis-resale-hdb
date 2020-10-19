@@ -7,7 +7,7 @@ One function to retrieve data as dictionary
 
 import csv
 import pandas as pd
-CONST_filename = 'resources/resale_flat_prices.csv'
+CONS_FILE_NAME = 'resources/resale_flat_prices.csv'
 
 
 def get_dataframe():
@@ -16,7 +16,7 @@ def get_dataframe():
     Returns:
     dataframe: dataframe of all rows in the csv
     """
-    return pd.read_csv(CONST_filename)
+    return pd.read_csv(CONS_FILE_NAME)
 
 
 def get_all_towns():
@@ -28,13 +28,24 @@ def get_all_towns():
     return sorted(get_dataframe()['town'].unique())
 
 
+def get_filtered_towns(region):
+    """Retrieve all towns based on region
+
+    Returns:
+    list: list of towns
+    """
+    df = get_dataframe()
+    towns = df[df['region'] == region.upper()]['town'].unique()
+    return sorted(towns)
+
+
 def get_data():
     """Reads data from CSV and returns a list of each row
     Note: first item in list are the columns of the dataset
     Returns:
     list: list of all rows in csv file including header row
     """
-    with open(CONST_filename, 'r', encoding='utf-8-sig') as csv_file:
+    with open(CONS_FILE_NAME, 'r', encoding='utf-8-sig') as csv_file:
         return list(csv.reader(csv_file, delimiter=','))
 
 
@@ -44,5 +55,5 @@ def get_dict_data():
     Returns:
     list: list of dictionaries of each row of data
     """
-    with open(CONST_filename, 'r', encoding='utf-8-sig') as csv_file:
+    with open(CONS_FILE_NAME, 'r', encoding='utf-8-sig') as csv_file:
         return list(csv.DictReader(csv_file, delimiter=','))
