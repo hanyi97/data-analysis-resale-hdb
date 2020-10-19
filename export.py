@@ -126,7 +126,7 @@ def export_to_pdf(file_path=CONST_PDF_PATH):
         print(e)
 
 
-def export_to_csv(file_path):
+def export_to_csv(file_path=CONS_CSV_PATH):
     """Function to export filtered data to CSV
     Call get_filtered_data function from search module to retrieve user filtered data
     """
