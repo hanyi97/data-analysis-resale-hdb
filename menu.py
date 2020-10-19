@@ -17,7 +17,6 @@ SMALL_FONT = ("Open Sans", 15)
 SMALLEST_FONT = ("Open Sans", 12)
 
 
-
 # Main Window
 class WelcomeWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -113,7 +112,7 @@ class ViewSummary(tk.Frame):
         flatTypes = data_helper.get_all_flatTypes()
 
         label = tk.Label(self, text="All the fields below are required",
-                                  font=SMALL_FONT)
+                         font=SMALL_FONT)
         label.pack(padx=20, pady=20)
 
         # Setting values for regions combo box
@@ -151,7 +150,7 @@ class ViewSummary(tk.Frame):
         global frame
         frame = tk.Frame(self)
         frame.pack()
-        self.table = Table(frame, dataframe=df, showstatusbar=True)
+        self.table = Table(frame, dataframe=df)
         self.table.show()
 
         exportButton = tk.Button(self, text="Export Results", font=SMALL_FONT,
@@ -166,46 +165,65 @@ class ViewSummary(tk.Frame):
             self.comboBoxTown.current(0)
 
     def updateTable(self, topframe):
-
         for child in topframe.winfo_children():
             child.destroy()
 
-        #combobox
+        # No options selected, return unfiltered table
         if self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
             label = tk.Label(topframe, text="Please select an option for region, town and flat type",
                              font=SMALLEST_FONT, fg="red")
             label.pack(padx=20, pady=20)
-
-        else:
-            label = tk.Label(self, text="Your Results",
-                             font=NORM_FONT)
-            label.pack(padx=20, pady=20)
-
-            regionLabel = tk.Label(topframe, text="Region:" + self.comboBoxRegion.get())
-            regionLabel.pack()
-            townLabel = tk.Label(topframe, text="Town:" + self.comboBoxTown.get())
-            townLabel.pack()
-            flatLabel = tk.Label(topframe, text="Flat Type:" + self.comboxBoxFlatTypes.get())
-            flatLabel.pack()
-
-        if self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
-            self.table = Table(frame, dataframe=df, showstatusbar=True)
+            self.table = Table(frame, dataframe=df)
             self.table.show()
 
+        # Options selected, return filtered table
+        elif not self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
+            resultsLabel = tk.Label(topframe, text="Your Results", font=NORM_FONT)
+            resultsLabel.pack()
+            # Return selected option for region
+            regionLabel = tk.Label(topframe, text="Region: " + self.comboBoxRegion.get())
+            regionLabel.pack()
+            # Return selected option for town
+            townLabel = tk.Label(topframe, text="Town: " + self.comboBoxTown.get())
+            townLabel.pack()
+            # Return selected option for flat type
+            flatLabel = tk.Label(topframe, text="Flat Type: " + self.comboxBoxFlatTypes.get())
+            flatLabel.pack()
 
-        else:
-            # repopulate dictionary for table based on new selected drop down value
+            # Get the filter options from combobox
             filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
-            # Replace default values to ""
+
+            # Replace default values to " "
             for item in filters:
                 if filters[item] == "Select Town" or filters[item] == "Select Flat Type":
                     filters[item] = ""
 
-            # filtered df
+            # Update df according to filtered options
+            global valuesBasedOnFilters
             valuesBasedOnFilters = get_filtered_data(filters)
-            # repopulate table with filtered data
+
+            # Return total number of records
+            global totalRecords
+            totalRecords = str(len(valuesBasedOnFilters))
+
+            totalrowsLabel = tk.Label(topframe, text="Total number of records found: " + totalRecords)
+            totalrowsLabel.pack()
+
+            # Repopulate table with filtered results
             self.table.updateModel(TableModel(valuesBasedOnFilters))
             self.table.redraw()
+
+            if(totalRecords=="0"):
+                del valuesBasedOnFilters
+                self.table.clearFormatting()
+
+                label = tk.Label(topframe, text="Sorry, no matching records found based on filters. Please try another search criterion.", fg="red")
+                label.pack()
+
+    # def refreshData(self):
+    #     mainApp = SelectOptions()
+    #     self.comboxBoxFlatTypes['values'] = ["Select Flat Type"]
+
 
     def displayExport(self):
         mainApp = ExportResults()
