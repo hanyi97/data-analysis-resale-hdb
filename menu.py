@@ -1,13 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-
 from search import *
-from data_helper import *
-
+import data_helper as dh
 from pandastable import Table, TableModel
 import bargraph
 import matplotlib
-
 matplotlib.use("TkAgg")
 
 #Reusable font sizes
@@ -15,7 +12,6 @@ LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 16)
 SMALL_FONT = ("Open Sans", 15)
 VALIDAITON_FONT = ("Open Sans", 12)
-
 
 # Main Window
 class WelcomeWindow(tk.Tk):
@@ -38,7 +34,6 @@ class WelcomeWindow(tk.Tk):
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
-
 
 # Select Options Window
 class SelectOptions(tk.Frame):
@@ -65,7 +60,6 @@ class SelectOptions(tk.Frame):
                                command=lambda: controller.show_frame(ViewSummary))
         summaryBTN.pack()
 
-
 # Export Data Window
 class ExportResults(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -83,9 +77,6 @@ class ExportResults(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-
-
-
 # Hanyi, Faiz Function
 class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
@@ -95,7 +86,6 @@ class ViewCharts(tk.Frame):
 
         backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack(padx=10, pady=10)
-
 
 # Joey Function
 class ViewSummary(tk.Frame):
@@ -108,10 +98,10 @@ class ViewSummary(tk.Frame):
 
         #Get regions, towns and flat types from datahelper
         global df
-        df = data_helper.get_dataframe()
-        towns = data_helper.get_all_towns()
-        regions = data_helper.get_all_regions()
-        flatTypes = data_helper.get_all_flatTypes()
+        df = dh.get_dataframe()
+        towns = dh.get_all_towns()
+        regions = dh.get_all_regions()
+        flatTypes = dh.get_all_flatTypes()
 
         label = tk.Label(self, text="All the fields below are required",
                          font=NORM_FONT)
@@ -228,7 +218,6 @@ class ViewSummary(tk.Frame):
         mainApp.title("Export Results")
         mainApp.geometry("800x800")
         mainApp.mainloop()
-
 
 
 app = WelcomeWindow()
