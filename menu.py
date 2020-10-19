@@ -10,11 +10,11 @@ import matplotlib
 
 matplotlib.use("TkAgg")
 
-# Reusable font sizes
+#Reusable font sizes
 LARGE_FONT = ("Open Sans", 30)
-NORM_FONT = ("Open Sans", 20)
+NORM_FONT = ("Open Sans", 16)
 SMALL_FONT = ("Open Sans", 15)
-SMALLEST_FONT = ("Open Sans", 12)
+VALIDAITON_FONT = ("Open Sans", 12)
 
 
 # Main Window
@@ -52,15 +52,16 @@ class SelectOptions(tk.Frame):
         label = tk.Label(self,
                          text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
                               "towns and flat-types.",
-                         font=SMALL_FONT, wraplength=450)
+                         font=NORM_FONT, wraplength=450)
         header.pack(padx=0, pady=20)
         label.pack(padx=10, pady=10)
 
     def createButtons(self, controller):
-        chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=SMALL_FONT,
+        chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=NORM_FONT,
                               command=lambda: controller.show_frame(ViewCharts))
         chartsBTN.pack(pady=10, padx=10)
-        summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=SMALL_FONT,
+        summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=NORM_FONT
+                               ,
                                command=lambda: controller.show_frame(ViewSummary))
         summaryBTN.pack()
 
@@ -69,7 +70,7 @@ class SelectOptions(tk.Frame):
 class ExportResults(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="Export your results", font=NORM_FONT)
+        label = tk.Label(self, text="Export your results", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
         # container = tk.Frame(self)
@@ -89,10 +90,10 @@ class ExportResults(tk.Tk):
 class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
+        label = tk.Label(self, text="Analyse Resale Flats by Region", font=LARGE_FONT)
         label.pack(padx=10, pady=10)
 
-        backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+        backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack(padx=10, pady=10)
 
 
@@ -100,9 +101,9 @@ class ViewCharts(tk.Frame):
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Overview of Resale Flats Prices", font=NORM_FONT)
+        label = tk.Label(self, text="Overview of Resale Flats Prices", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
-        backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+        backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack(padx=5, pady=5)
 
         #Get regions, towns and flat types from datahelper
@@ -112,9 +113,9 @@ class ViewSummary(tk.Frame):
         regions = data_helper.get_all_regions()
         flatTypes = data_helper.get_all_flatTypes()
 
-        validationLabel = tk.Label(self, text="All the fields below are required",
-                         font=SMALL_FONT)
-        validationLabel.pack(padx=20, pady=20)
+        label = tk.Label(self, text="All the fields below are required",
+                         font=NORM_FONT)
+        label.pack(padx=20, pady=20)
 
         #Setting values for regions combo box
         listofRegions = sorted(regions)
@@ -171,7 +172,7 @@ class ViewSummary(tk.Frame):
         #No options selected, return unfiltered table
         if self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
             label = tk.Label(topframe, text="Please select an option for region, town and flat type",
-                             font=SMALLEST_FONT, fg="red")
+                             font=VALIDAITON_FONT, fg="red")
             label.pack(padx=20, pady=20)
             self.table = Table(frame, dataframe=df)
             self.table.show()
@@ -218,7 +219,7 @@ class ViewSummary(tk.Frame):
                 del valuesBasedOnFilters
                 self.table.clearFormatting()
 
-                validationLabel = tk.Label(topframe, text="Sorry, no matching records found based on filters. Please try another search criterion.", fg="red")
+                validationLabel = tk.Label(topframe, text="Sorry, no matching records found based on filters. Please try another search criterion.", font=VALIDAITON_FONT, fg="red")
                 validationLabel.pack()
 
     #Export Window
