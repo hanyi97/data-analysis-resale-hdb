@@ -65,9 +65,8 @@ class SelectOptions(tk.Frame):
                                command=lambda: controller.show_frame(ViewSummary))
         summaryBTN.pack()
 
-
-# Top10 Data Window
-class Top10Window(tk.Tk):
+# Export Data Window
+class ExportResults(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
@@ -75,10 +74,10 @@ class Top10Window(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        frame = View10Top(container, self)
-        self.frames[View10Top] = frame
+        frame = ViewExportSummary(container, self)
+        self.frames[ViewExportSummary] = frame
         frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(View10Top)
+        self.show_frame(ViewExportSummary)
 
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -105,6 +104,7 @@ class ViewSummary(tk.Frame):
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack()
 
+
         #get towns, regions,flatTypes data from csv
         global df
         df = data_helper.get_dataframe()
@@ -121,6 +121,7 @@ class ViewSummary(tk.Frame):
         self.comboBoxRegion['values'] = ["Select Region"]+listofRegions
         self.comboBoxRegion.current(0)
 
+
         # Setting values for town combo box
         listofTowns = sorted(towns)
         self.comboBoxTown = ttk.Combobox(self, state="readonly")
@@ -128,6 +129,7 @@ class ViewSummary(tk.Frame):
         self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox(""))
         self.comboBoxTown['values'] = ["Select Town"]+listofTowns
         self.comboBoxTown.current(0)
+
 
         # Setting values for flat types combo box
         listofFlatTypes = sorted(flatTypes)
@@ -137,20 +139,21 @@ class ViewSummary(tk.Frame):
         # self.comboxBoxFlatTypes.set("Select Flat Type")
         self.comboxBoxFlatTypes.current(0)
 
+
         filterButton = tk.Button(self, text="Filter", command=self.updateTable)
         filterButton.pack()
 
 
         #Creating table for summary
         global frame
-        frame = Frame(self)
+        frame = tk.Frame(self)
         frame.pack()
         self.table = Table(frame, dataframe=df,showstatusbar=True)
         self.table.show()
 
-        top10button = tk.Button(self, text="View Top 10", font=SMALL_FONT,
-                                command=lambda: self.displayTop10())
-        top10button.pack(padx=10, pady=10)
+        exportButton = tk.Button(self, text="Export Results", font=SMALL_FONT,
+                                command=lambda: self.displayExport())
+        exportButton.pack(padx=10, pady=10)
 
     #resets town dropdown based on region
     def updateComboBox(self,control):
@@ -173,33 +176,35 @@ class ViewSummary(tk.Frame):
         # print(df.dtypes)
         df.update(valuesBasedOnFilters, overwrite=True)
 
-        # #clears existing summmary table
-        # self.table.clearTable()
-
-
-
 
         frame.pack()
         self.table = Table(frame, dataframe=valuesBasedOnFilters, showstatusbar=True)
         self.table.show()
 
-
-
-
-    def displayTop10(self):
-        mainApp = Top10Window()
-        mainApp.title("Top 10 Resale Flats")
+    def displayExport(self):
+        mainApp = ExportResults()
+        mainApp.title("Export Results")
         mainApp.geometry("800x800")
         mainApp.mainloop()
 
 
 
 # Kah En Function
-class View10Top(tk.Frame):
+class ViewExportSummary(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Top 10 Resale Flats Prices", font=NORM_FONT)
+        label = tk.Label(self, text="Export your results", font=NORM_FONT)
         label.pack(pady=10, padx=10)
+
+        regions = data_helper.get_all_regions()
+
+        # Setting values for regions combo box
+        listofRegions = sorted(regions)
+        self.comboBoxRegion = ttk.Combobox(self, state="readonly")
+        self.comboBoxRegion.pack(pady=0, padx=0)
+        self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox("region"))
+        self.comboBoxRegion['values'] = ["Select Region"] + listofRegions
+        self.comboBoxRegion.current(0)
 
 
 app = WelcomeWindow()
