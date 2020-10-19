@@ -44,9 +44,6 @@ def get_cheapest_hdb(rows=10):
 def setup_data_summary_page():
     """Function to set up data summary page
     Load filtered data and display it in a page in the pdf
-
-    Parameters:
-    pdf (canvas): canvas object for pdf document
     """
     # Retrieve data
     df = get_cheapest_hdb(10)
@@ -84,9 +81,6 @@ def setup_data_summary_page():
 def setup_bargraph_page():
     """Function to set up bar graph page
     Inserts the bar graph image into the pdf
-
-    Parameters:
-    pdf (canvas): canvas object for pdf document
     """
     elements = []
     if path.isfile(CONST_BARGRAPH_PATH):
@@ -99,9 +93,6 @@ def setup_bargraph_page():
 def setup_treemap_page():
     """Function to set up tree map page
     Inserts the tree map image into the pdf
-
-    Parameters:
-    pdf (canvas): canvas object for pdf document
     """
     elements = []
     if path.isfile(CONST_TREEMAP_PATH):
@@ -115,7 +106,7 @@ def export_to_pdf(file_path=CONST_PDF_PATH):
     """Function to export summary data to PDF
     Page 1: Bar graph
     Page 2: Tree map
-    Page 3: Data summary table
+    Page 3: Cheapest flat table
     """
     try:
         pdf = SimpleDocTemplate(file_path, pagesize=landscape(A4))
@@ -134,5 +125,5 @@ def export_to_csv(file_path=CONS_CSV_PATH):
     df.to_csv(file_path, index=False)
 
 
-# export_to_pdf()
+export_to_pdf()
 # export_to_csv()
