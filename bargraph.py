@@ -28,7 +28,7 @@ def get_filtered_data(town=''):
     return df.groupby('flat_type')['resale_price'].mean().round(2)
 
 
-def plot_bar_graph(town=''):
+def plot_bar_graph(town='abc'):
     """Call this function to plot bar graph
     The updated graph will be auto saved whenever this function is called
 
@@ -40,6 +40,8 @@ def plot_bar_graph(town=''):
     try:
         town = town.upper()
         df = get_filtered_data(town)
+        if len(df) == 0:
+            raise IndexError("No data found!")
         # Set town to Singapore when no town is selected
         town = 'SINGAPORE' if town == '' else town
 
@@ -82,6 +84,6 @@ def plot_bar_graph(town=''):
 
         return fig
     except ValueError:
-        print('Year is not an integer!')
-    except IndexError:
-        print('No data found!')
+        print('Cannot convert data to an integer!')
+    except IndexError as e:
+        print(e)
