@@ -136,7 +136,6 @@ class ViewSummary(tk.Frame):
         self.comboxBoxFlatTypes = ttk.Combobox(self, state="readonly")
         self.comboxBoxFlatTypes.pack(padx=5, pady=5)
         self.comboxBoxFlatTypes['values'] = ["Select Flat Type"] + listofFlatTypes
-        # self.comboxBoxFlatTypes.set("Select Flat Type")
         self.comboxBoxFlatTypes.current(0)
 
         topframe = tk.Frame(self)
@@ -159,10 +158,9 @@ class ViewSummary(tk.Frame):
 
     # resets town dropdown based on region
     def updateComboBox(self, control):
-        if control == "region":
-            listofTowns = get_town_acrd_region(self.comboBoxRegion.get())
-            self.comboBoxTown['values'] = listofTowns
-            self.comboBoxTown.current(0)
+        listofTowns = dict_input("region",self.comboBoxRegion.get())
+        self.comboBoxTown['values'] = listofTowns
+        self.comboBoxTown.current(0)
 
     def updateTable(self, topframe):
         for child in topframe.winfo_children():
