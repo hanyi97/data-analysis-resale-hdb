@@ -69,22 +69,23 @@ class SelectOptions(tk.Frame):
 class ExportResults(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-        self.frames = {}
-        frame = ViewExportSummary(container, self)
-        self.frames[ViewExportSummary] = frame
-        frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(ViewExportSummary)
+        label = tk.Label(self, text="Export your results", font=NORM_FONT)
+        label.pack(pady=10, padx=10)
+
+        # container = tk.Frame(self)
+        # container.pack(side="top", fill="both", expand=True)
+        # container.grid_rowconfigure(0, weight=1)
+        # container.grid_columnconfigure(0, weight=1)
+        # self.frames = {}
 
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
 
 
-# Hanyi Function
+
+
+# Hanyi, Faiz Function
 class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -95,7 +96,7 @@ class ViewCharts(tk.Frame):
         backbutton.pack(padx=10, pady=10)
 
 
-# Kah En Function
+# Joey Function
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -104,22 +105,22 @@ class ViewSummary(tk.Frame):
         backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack(padx=5, pady=5)
 
-        # get towns, regions,flatTypes data from csv
+        #Get regions, towns and flat types from datahelper
         global df
         df = data_helper.get_dataframe()
         towns = data_helper.get_all_towns()
         regions = data_helper.get_all_regions()
         flatTypes = data_helper.get_all_flatTypes()
 
-        label = tk.Label(self, text="All the fields below are required",
+        validationLabel = tk.Label(self, text="All the fields below are required",
                          font=SMALL_FONT)
-        label.pack(padx=20, pady=20)
+        validationLabel.pack(padx=20, pady=20)
 
-        # Setting values for regions combo box
+        #Setting values for regions combo box
         listofRegions = sorted(regions)
         self.comboBoxRegion = ttk.Combobox(self, state="readonly")
         self.comboBoxRegion.pack(padx=5, pady=5)
-        self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox("region"))
+        self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox("region"))
         self.comboBoxRegion['values'] = ["Select Region"] + listofRegions
         self.comboBoxRegion.current(0)
 
@@ -127,7 +128,7 @@ class ViewSummary(tk.Frame):
         listofTowns = sorted(towns)
         self.comboBoxTown = ttk.Combobox(self, state="readonly")
         self.comboBoxTown.pack(padx=5, pady=5)
-        self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox(""))
+        self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox(""))
         self.comboBoxTown['values'] = ["Select Town"] + listofTowns
         self.comboBoxTown.current(0)
 
@@ -138,14 +139,15 @@ class ViewSummary(tk.Frame):
         self.comboxBoxFlatTypes['values'] = ["Select Flat Type"] + listofFlatTypes
         self.comboxBoxFlatTypes.current(0)
 
+        #Search results frame
         topframe = tk.Frame(self)
         topframe.pack(side=tk.TOP)
 
-        filter = tk.Button(self, text="Filter", font=SMALL_FONT,
-                           command=lambda: self.updateTable(topframe))
-        filter.pack(padx=10, pady=10)
+        filterButton = tk.Button(self, text="Filter", font=SMALL_FONT,
+                           command=lambda: self.updateTableAfterFiltering(topframe))
+        filterButton.pack(padx=10, pady=10)
 
-        # Creating table for summary
+        #Plot summary table
         global frame
         frame = tk.Frame(self)
         frame.pack()
@@ -156,17 +158,17 @@ class ViewSummary(tk.Frame):
                                  command=lambda: self.displayExport())
         exportButton.pack(padx=10, pady=10)
 
-    # resets town dropdown based on region
-    def updateComboBox(self, control):
+    #Setting values of town combobox according to region combobox
+    def updateTownComboBox(self,control):
         listofTowns = dict_input("region",self.comboBoxRegion.get())
         self.comboBoxTown['values'] = listofTowns
         self.comboBoxTown.current(0)
 
-    def updateTable(self, topframe):
+    def updateTableAfterFiltering(self, topframe):
         for child in topframe.winfo_children():
             child.destroy()
 
-        # No options selected, return unfiltered table
+        #No options selected, return unfiltered table
         if self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
             label = tk.Label(topframe, text="Please select an option for region, town and flat type",
                              font=SMALLEST_FONT, fg="red")
@@ -174,7 +176,7 @@ class ViewSummary(tk.Frame):
             self.table = Table(frame, dataframe=df)
             self.table.show()
 
-        # Options selected, return filtered table
+        #Options selected, return filtered table
         elif not self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
             resultsLabel = tk.Label(topframe, text="Your Results", font=NORM_FONT)
             resultsLabel.pack()
@@ -188,7 +190,7 @@ class ViewSummary(tk.Frame):
             flatLabel = tk.Label(topframe, text="Flat Type: " + self.comboxBoxFlatTypes.get())
             flatLabel.pack()
 
-            # Get the filter options from combobox
+            #Get the filter options from combobox
             filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
 
             # Replace default values to " "
@@ -196,33 +198,30 @@ class ViewSummary(tk.Frame):
                 if filters[item] == "Select Town" or filters[item] == "Select Flat Type":
                     filters[item] = ""
 
-            # Update df according to filtered options
+            #Update df according to updated filtered options
             global valuesBasedOnFilters
             valuesBasedOnFilters = get_filtered_data(filters)
 
-            # Return total number of records
+            #Return total number of records for search results
             global totalRecords
             totalRecords = str(len(valuesBasedOnFilters))
 
             totalrowsLabel = tk.Label(topframe, text="Total number of records found: " + totalRecords)
             totalrowsLabel.pack()
 
-            # Repopulate table with filtered results
+            #Repopulate table with filtered results
             self.table.updateModel(TableModel(valuesBasedOnFilters))
             self.table.redraw()
 
+            #Validation when total records is 0
             if(totalRecords=="0"):
                 del valuesBasedOnFilters
                 self.table.clearFormatting()
 
-                label = tk.Label(topframe, text="Sorry, no matching records found based on filters. Please try another search criterion.", fg="red")
-                label.pack()
+                validationLabel = tk.Label(topframe, text="Sorry, no matching records found based on filters. Please try another search criterion.", fg="red")
+                validationLabel.pack()
 
-    # def refreshData(self):
-    #     mainApp = SelectOptions()
-    #     self.comboxBoxFlatTypes['values'] = ["Select Flat Type"]
-
-
+    #Export Window
     def displayExport(self):
         mainApp = ExportResults()
         mainApp.title("Export Results")
@@ -230,25 +229,8 @@ class ViewSummary(tk.Frame):
         mainApp.mainloop()
 
 
-# Kah En Function
-class ViewExportSummary(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Export your results", font=NORM_FONT)
-        label.pack(pady=10, padx=10)
-
-        regions = data_helper.get_all_regions()
-
-        # Setting values for regions combo box
-        listofRegions = sorted(regions)
-        self.comboBoxRegion = ttk.Combobox(self, state="readonly")
-        self.comboBoxRegion.pack(pady=0, padx=0)
-        self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateComboBox("region"))
-        self.comboBoxRegion['values'] = ["Select Region"] + listofRegions
-        self.comboBoxRegion.current(0)
-
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
-app.geometry("900x700")
+app.geometry("900x800")
 app.mainloop()
