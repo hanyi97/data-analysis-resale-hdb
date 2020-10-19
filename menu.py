@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-from display_data import *
 from search import *
 from data_helper import *
 
