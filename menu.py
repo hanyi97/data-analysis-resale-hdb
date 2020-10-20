@@ -67,7 +67,7 @@ class SelectOptions(tk.Frame):
         ViewTop10.pack(padx=10, pady=10)
 
 
-# Export Data Window
+#Export Data Window
 class ExportResults(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
