@@ -39,6 +39,17 @@ def get_filtered_towns(region):
     return sorted(towns)
 
 
+def get_filtered_region(town):
+    """Retrieve the region based on town
+
+    Returns:
+    list: list of regions
+    """
+    df = get_dataframe()
+    regions = df[df['town'] == town.upper()]['region'].unique()
+    return sorted(regions)
+
+
 def get_data():
     """Reads data from CSV and returns a list of each row
     Note: first item in list are the columns of the dataset
