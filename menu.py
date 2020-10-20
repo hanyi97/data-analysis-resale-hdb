@@ -447,6 +447,9 @@ if __name__ == "__main__":
             label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
             label.pack(padx=10, pady=10)
 
+            backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT, command=lambda: controller.show_frame(SelectOptions))
+            backbutton.pack()
+
             # Add dropdown list with list of towns:
             town_list_options = dh.get_all_towns()
             clicked = tk.StringVar()
@@ -456,10 +459,7 @@ if __name__ == "__main__":
             self.town_combobox = ttk.Combobox(self, value=town_list_options)
             self.town_combobox.current(0)
             self.town_combobox.bind("<<ComboboxSelected>>", self.selected)
-            self.town_combobox.pack()
-
-            backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
-            backbutton.pack(padx=10, pady=10)
+            self.town_combobox.pack(pady=10)
 
 
     class MainBrowser(tk.Frame):
@@ -468,7 +468,7 @@ if __name__ == "__main__":
             self.focus_set()
             self.bind("<Configure>", self.on_configure)
 
-            backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+            backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT, command=lambda: controller.show_frame(SelectOptions))
             backbutton.grid(row=0, column=0, pady=10)
 
             # Browser
