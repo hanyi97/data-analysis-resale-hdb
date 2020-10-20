@@ -105,9 +105,9 @@ class ViewSummary(tk.Frame):
                                command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack(padx=5, pady=5)
 
-        refreshButton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                               command=lambda: self.refresh())
-        refreshButton.pack(padx=5, pady=5)
+        # refreshButton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+        #                        command=lambda: self.refresh())
+        # refreshButton.pack(padx=5, pady=5)
 
         self.is_table_deleted = False
 
@@ -246,8 +246,8 @@ class ViewSummary(tk.Frame):
         mainApp.geometry("800x800")
         mainApp.mainloop()
 
-    def refresh(self):
-        ViewSummary()
+    # def refresh(self):
+    #     self. __init__()
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")

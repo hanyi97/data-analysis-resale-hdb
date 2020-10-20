@@ -78,7 +78,7 @@ def plot_bar_graph(town=''):
                             fontdict=label_style)
         bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
                            fontdict={'fontsize': 12, 'fontweight': 'heavy'})
-        bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02) , borderaxespad=0.)
+        bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02), borderaxespad=0.)
         # Save bar graph as png
         bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
 
