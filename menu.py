@@ -36,7 +36,6 @@ class WelcomeWindow(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-
 # Select Options Window
 class SelectOptions(tk.Frame):
     def __init__(self, parent, controller):
@@ -67,7 +66,7 @@ class SelectOptions(tk.Frame):
         ViewTop10.pack(padx=10, pady=10)
 
 
-#Export Data Window
+# Export Data Window
 class ExportResults(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -96,9 +95,7 @@ class ViewCharts(tk.Frame):
                                command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack(padx=10, pady=10)
 
-
-
-#Kah En Function
+# Kah En Function
 class ViewTop10CheapestFlats(tk.Frame):
         def __init__(self, parent, controller):
             tk.Frame.__init__(self, parent)
@@ -204,8 +201,6 @@ class ViewTop10CheapestFlats(tk.Frame):
                                                     "try another search criterion.", font=VALIDAITON_FONT,
                                                fg="red")
                     validationLabel.pack()
-
-
 
 # Joey Function
 class ViewSummary(tk.Frame):
@@ -341,8 +336,6 @@ class ViewSummary(tk.Frame):
             # Validation when total records is 0
             if totalRecords == "0":
                 del valuesBasedOnFilters
-                # self.table.clearFormatting()
-                # self.table.remove()
                 self.frame.pack_forget()
                 self.exportButton.pack_forget()
                 self.is_table_deleted = True
@@ -358,7 +351,7 @@ class ViewSummary(tk.Frame):
         mainApp.geometry("800x800")
         mainApp.mainloop()
 
-
+    # Refresh combobox
     # def refresh(self):
     #     self. __init__()
 
