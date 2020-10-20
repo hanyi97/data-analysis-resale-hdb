@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-import bargraph
+# import bargraph
+from bargraph import get_filtered_data
 import data_helper
 # from matplotlib.figure import Figure
 import matplotlib
@@ -12,10 +13,14 @@ from tkinter.tix import *
 # import urllib.request
 from cefpython3 import cefpython as cef
 import sys
+from numpy import arange
+from matplotlib.figure import Figure
+from matplotlib.ticker import FuncFormatter
 
 LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
 SMALL_FONT = ("Open Sans", 15)
+CONST_FILE_PATH = "resources/bargraph.png"
 
 if __name__ == "__main__":
 
@@ -85,6 +90,56 @@ if __name__ == "__main__":
     # Setting up the ViewCharts page
     class ViewCharts(tk.Frame):
 
+        def plot_bar_graph(self, town='', year=''):
+            try:
+                town = town.upper()
+                year = int(year) if year != '' else year
+                df = get_filtered_data(town, year)
+                # Set town to Singapore when no town is selected
+                town = 'SINGAPORE' if town == '' else town
+
+                # Create a figure
+                fig = Figure(figsize=(20, 5))
+                ax = fig.add_subplot(111)
+                # Bar graph configuration
+                bargraph = df.plot.barh(color='#24AEDE', ax=ax, zorder=2, label='Average Resale Pricing')
+                # Set x ticks to frequency of 100,000
+                start, end = bargraph.get_xlim()
+                bargraph.xaxis.set_ticks(arange(start, end, 100000))
+                # Add comma to resale flat prices
+                bargraph.get_xaxis().set_major_formatter(FuncFormatter(lambda x, loc: '{:,}'.format(int(x))))
+                # Remove borders
+                bargraph.spines['right'].set_visible(False)
+                bargraph.spines['top'].set_visible(False)
+                bargraph.spines['left'].set_visible(False)
+                bargraph.spines['bottom'].set_visible(False)
+                # Draw vertical axis lines
+                ticks = ax.get_xticks()
+                for tick in ticks:
+                    bargraph.axvline(x=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
+                # Set average resale value to bar labels
+                for i in bargraph.patches:
+                    price = i.get_width()
+                    bargraph.text(price + .3, i.get_y() + .15, str(" ${:,}".format(int(price))),
+                                  fontsize=10,
+                                  color='dimgrey')
+                # Style labels and title
+                label_style = {'fontsize': 10, 'fontweight': 'heavy'}
+                bargraph.set_xlabel('Average Resale Value (SGD)',
+                                    fontdict=label_style)
+                bargraph.set_ylabel('HDB Flat Type',
+                                    fontdict=label_style)
+                bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
+                                   fontdict={'fontsize': 12, 'fontweight': 'heavy'})
+                bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02), borderaxespad=0.)
+                # Save bar graph as png
+                bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
+                return fig
+            except ValueError:
+                print('Year is not an integer!')
+            except IndexError:
+                print('No data found!')
+
         # Run this function when user selects from the dropdown list
         def selected(self, event):
             # Clear the previous chart & toolbar first if it is currently on the screen
@@ -95,7 +150,7 @@ if __name__ == "__main__":
                 pass
 
             # Add the graph from bargraph.py into the ViewCharts window
-            self.canvas = FigureCanvasTkAgg(bargraph.plot_bar_graph(self.town_combobox.get()), master=self)
+            self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
 
             # to display toolbar
             self.toolbar = NavigationToolbar2Tk(self.canvas, self)
