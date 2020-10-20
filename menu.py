@@ -236,6 +236,7 @@ if __name__ == "__main__":
 
             # Get regions, towns and flat types from datahelper
             global df
+            global towns
             df = dh.get_dataframe()
             towns = dh.get_all_towns()
             regions = dh.get_all_regions()
@@ -304,6 +305,17 @@ if __name__ == "__main__":
                 label.pack(padx=20, pady=20)
                 self.table = Table(self.frame, dataframe=df)
                 self.table.show()
+                if self.comboBoxRegion.get == "Select Region":
+                    print("test")
+                    # Setting values for town combo box
+                    listofTowns = sorted(towns)
+                    self.comboBoxTown = ttk.Combobox(self, state="readonly")
+                    self.comboBoxTown.pack(padx=5, pady=5)
+                    # self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox(""))
+                    self.comboBoxTown['values'] = listofTowns
+                    self.comboBoxTown.current(0)
+
+
 
             # Options selected, return filtered table
             elif not self.comboBoxRegion.get() == "Select Region" \
@@ -556,10 +568,10 @@ if __name__ == "__main__":
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
-app.geometry("1920x1080")
+# app.geometry("1920x1080")
 cef.Initialize()
 app.mainloop()
 cef.Shutdown()
-app.mainloop()
-# root = tk.Tk
-# root.attributes('-fullscreen', True)
+# app.mainloop()
+root = tk.Tk
+root.attributes('-fullscreen', True)
