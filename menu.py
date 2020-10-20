@@ -24,7 +24,6 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-
         for F in (SelectOptions, ViewCharts, ViewSummary):
             frame = F(container, self)
 
@@ -95,6 +94,7 @@ class ViewCharts(tk.Frame):
         backbutton.pack(padx=10, pady=10)
 
 
+
 # Joey Function
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
@@ -104,6 +104,11 @@ class ViewSummary(tk.Frame):
         backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
                                command=lambda: controller.show_frame(SelectOptions))
         backbutton.pack(padx=5, pady=5)
+
+        refreshButton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+                               command=lambda: self.refresh())
+        refreshButton.pack(padx=5, pady=5)
+
         self.is_table_deleted = False
 
         # Get regions, towns and flat types from datahelper
@@ -140,13 +145,14 @@ class ViewSummary(tk.Frame):
         self.comboxBoxFlatTypes['values'] = ["Select Flat Type"] + listofFlatTypes
         self.comboxBoxFlatTypes.current(0)
 
-        # Search results frame
-        topframe = tk.Frame(self)
-        topframe.pack(side=tk.TOP)
 
         filterButton = tk.Button(self, text="Filter", font=SMALL_FONT,
                                  command=lambda: self.updateTableAfterFiltering(topframe))
         filterButton.pack(padx=10, pady=10)
+        # Search results frame
+        topframe = tk.Frame(self)
+        topframe.pack(side=tk.TOP)
+
 
         # Plot summary table
         self.frame = tk.Frame(self)
@@ -207,7 +213,7 @@ class ViewSummary(tk.Frame):
             totalRecords = str(len(valuesBasedOnFilters))
 
             totalrowsLabel = tk.Label(topframe, text="Total number of records found: " + totalRecords)
-            totalrowsLabel.pack()
+            totalrowsLabel.pack(padx=10, pady=0)
 
             # Repopulate table with filtered results
             if self.is_table_deleted:
@@ -240,6 +246,8 @@ class ViewSummary(tk.Frame):
         mainApp.geometry("800x800")
         mainApp.mainloop()
 
+    def refresh(self):
+        ViewSummary()
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
