@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import data_helper
 from tabulate import tabulate
-import search
 
 # read the dataset into a data table using Pandas
 df = data_helper.get_dataframe()
@@ -34,18 +33,21 @@ def resale_price_year(year):
     low_limit = q1 - (1.5 * iqr)
     up_limit = q3 + (1.5 * iqr)
     # the outliers
-    rp_int_list = list(map(int, search.get_unique("resale_price")))
+    rp_int_list = list(map(int, df["resale_price"].unique()))
     outlier_count = 0
     for x in rp_int_list:
         if not x <= up_limit:
             outlier_count += 1
 
     # description of resale price in table format
-    resale_table = [["Min resale price:", df['resale_price'].min()], ['lower limit:', low_limit],
+    resale_table = [["Min resale price:", df['resale_price'].min()],
+                    ['lower limit:', low_limit],
                     ['Q1 resale price:', q1],
-                    ['Q2 resale price:', q2], ['Q3 resale price: ', q3],
-                    ["Max resale price:", df['resale_price'].max()], ['IQR resale price:', iqr],
+                    ['Q2 resale price:', q2],
+                    ['Q3 resale price: ', q3],
                     ['upper limit:', up_limit],
+                    ["Max resale price:", df['resale_price'].max()],
+                    ['IQR resale price:', iqr],
                     ['MEAN resale price:', (df['resale_price'].mean())],
                     ['STD resale price:', (df['resale_price'].std())],
                     ['CV resale price:', (df['resale_price'].std() * 100 / df['resale_price'].mean())],
