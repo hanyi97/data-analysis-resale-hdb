@@ -190,12 +190,16 @@ if __name__ == "__main__":
             self.focus_set()
             self.bind("<Configure>", self.on_configure)
 
+            backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+            backbutton.grid(row=0, column=0, pady=10)
+
             # Browser
             self.browser_frame = Browser(self, controller)
             self.browser_frame.grid(row=1, column=0,
                                     sticky=(tk.N + tk.S + tk.E + tk.W))
             tk.Grid.rowconfigure(self, 1, weight=1)
             tk.Grid.columnconfigure(self, 0, weight=1)
+
 
         def on_configure(self, event):
             if self.browser_frame:
