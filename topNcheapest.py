@@ -7,22 +7,27 @@ import data_helper
 
 # Read the dataset into a data table using Pandas.
 df = data_helper.get_dataframe()
+
+# declare dictionary to store the values
 in_dict = {}
 
 
 # Get all values in a column, this only get 1 column, call in GUI.
 def get_unique(column):
-    """Display the all values of a column in a dataframe
+    """Display all the values of a column in a dataframe
 
     Parameters:
-    column is the name of the variable in the dataframe
+    column: (str) the name of the variable in the dataframe
 
     Returns:
-    all the values in the column
+    (list) all the values in the column in ascending order
     """
-    column_value = df[column].unique()
-    column_value = sorted(list(map(str, column_value)))
-    return column_value
+    try:
+        column_value = df[column].unique()
+        column_value = sorted(list(map(str, column_value)))
+        return column_value
+    except ValueError:
+        print("Please enter a valid column name in the dataframe.")
 
 
 # Get column name/ name of combo box and selected input for the combobox, call in GUI.
@@ -32,17 +37,20 @@ def dict_input(filter_option, selected_input):
     It will be updated for any changes in the input selection.
 
     Parameters:
-    filter_option_: a column name
-    selected_input: the selected value
+    filter_option_: (str) a column name
+    selected_input: (str) the selected value
 
     Returns:
-    in_dict dictionary. key = column, value = column data value
+    in_dict dictionary. key = (str) column, value = column data value
     """
-    in_dict.update({filter_option: selected_input})
-    # if the filter option is in the in_dict dictionary, the new input will be updated
-    if filter_option in in_dict:
-        in_dict[filter_option] = selected_input
-    return in_dict
+    try:
+        in_dict.update({filter_option: selected_input})
+        # if the filter option is in the in_dict dictionary, the new input will be updated
+        if filter_option in in_dict:
+            in_dict[filter_option] = selected_input
+        return in_dict
+    except IndexError:
+        print("Input is mandatory. Please select an input.")
 
 
 # Call when clicked on button.
@@ -66,7 +74,7 @@ def get_filtered_data(in_dict):
                 # get the rows based on the condition in in_col
                 df = df[df[column].isin(in_dict.values())]
                 if df.empty:
-                    print("No result found.\nPlease check your filter selection for 'flat_type'.\n")
+                    print("No data found.\nPlease check your filter selection for 'flat_type'.\n")
                     return df
 
         return df
@@ -88,10 +96,3 @@ def get_cheapest_hdb(rows=10):
         .reset_index(drop=True)
 
     return cheap_data
-
-
-# Testing functions
-print(dict_input("flat_type", "1 ROOM"))
-# Call get_cheapest_hdb function to retrieve Top 10 Cheapest HDB
-#   based on the selected flat_type with other details, as a dataframe.
-print(get_cheapest_hdb())
