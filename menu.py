@@ -557,9 +557,9 @@ if __name__ == "__main__":
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
 app.geometry("1920x1080")
-# cef.Initialize()
+cef.Initialize()
 app.mainloop()
-# cef.Shutdown()
+cef.Shutdown()
 app.mainloop()
 # root = tk.Tk
 # root.attributes('-fullscreen', True)
