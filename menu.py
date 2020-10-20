@@ -90,11 +90,12 @@ if __name__ == "__main__":
     # Setting up the ViewCharts page
     class ViewCharts(tk.Frame):
 
-        def plot_bar_graph(self, town='', year=''):
+        def plot_bar_graph(self, town=''):
             try:
                 town = town.upper()
-                year = int(year) if year != '' else year
-                df = get_filtered_data(town, year)
+                df = get_filtered_data(town)
+                if len(df) == 0:
+                    raise IndexError("No data found!")
                 # Set town to Singapore when no town is selected
                 town = 'SINGAPORE' if town == '' else town
 
@@ -134,11 +135,12 @@ if __name__ == "__main__":
                 bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02), borderaxespad=0.)
                 # Save bar graph as png
                 bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
+
                 return fig
             except ValueError:
-                print('Year is not an integer!')
-            except IndexError:
-                print('No data found!')
+                print('Cannot convert data to an integer!')
+            except IndexError as e:
+                print(e)
 
         # Run this function when user selects from the dropdown list
         def selected(self, event):
