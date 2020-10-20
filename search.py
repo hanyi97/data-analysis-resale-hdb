@@ -9,6 +9,9 @@ df = data_helper.get_dataframe()
 # declare dictionary to store the values
 in_dict = {}
 
+# user filter selection input
+in_col = {"year": 2019}
+
 
 def get_unique(column):
     """Display all the values of a column in a dataframe
@@ -80,5 +83,4 @@ def get_filtered_data(in_dict):
                     print("No data found.")
                     return df
         return df
-
 

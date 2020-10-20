@@ -19,6 +19,10 @@ def get_dataframe():
     return pd.read_csv(CONS_FILE_NAME)
 
 
+def get_columnname():
+   return get_dataframe().columns
+
+
 def get_all_towns():
     """Retrieve all towns and sort them in ascending order
 
@@ -27,6 +31,21 @@ def get_all_towns():
     """
     return sorted(get_dataframe()['town'].unique())
 
+def get_all_regions():
+    """Retrieve all towns and sort them in ascending order
+
+    Returns:
+    list: list of all unique towns
+    """
+    return sorted(get_dataframe()['region'].unique())
+
+def get_all_flatTypes():
+    """Retrieve all towns and sort them in ascending order
+
+    Returns:
+    list: list of all unique towns
+    """
+    return sorted(get_dataframe()['flat_type'].unique())
 
 def get_filtered_towns(region):
     """Retrieve all towns based on region
