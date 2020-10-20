@@ -1,19 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
-# import bargraph
 from bargraph import get_filtered_data
 import data_helper
-# from matplotlib.figure import Figure
 import matplotlib
-
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
-from tkinter.tix import *
-# from tkinterhtml import HtmlFrame
-# import urllib.request
 from cefpython3 import cefpython as cef
-import sys
 from numpy import arange
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
@@ -162,7 +154,7 @@ if __name__ == "__main__":
             except AttributeError:
                 pass
 
-            # Add the graph from bargraph.py into the ViewCharts window
+            # Add the bargraph into the ViewCharts window
             self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
 
             # to display toolbar
@@ -171,38 +163,16 @@ if __name__ == "__main__":
 
             self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
-        # def onFrameConfigure(self, event):
-        #     '''Reset the scroll region to encompass the inner frame'''
-        #     self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-
         def __init__(self, parent, controller):
             tk.Frame.__init__(self, parent)
-
-            # for scrollbar - wrong
-            # self.canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")
-            # self.frame = tk.Frame(self.canvas, background="#ffffff")
-            # self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
-            # self.canvas.configure(yscrollcommand=self.vsb.set)
-            #
-            # self.vsb.pack(side="right", fill="y")
-            # self.canvas.pack(side="left", fill="both", expand=True)
-            # self.canvas.create_window((4, 4), window=self.frame, anchor="nw",
-            #                           tags="self.frame")
-            #
-            # self.frame.bind("<Configure>", self.onFrameConfigure)
 
             label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
             label.pack(padx=10, pady=10)
 
             # Add dropdown list with list of towns:
             town_list_options = data_helper.get_all_towns()
-            # town_list_options.insert(0, "SINGAPORE")
             clicked = tk.StringVar()
             clicked.set(town_list_options[0])
-
-            # Option Menu - not using
-            # town_menu = tk.OptionMenu(self, clicked, *town_list_options, command=selected)
-            # town_menu.pack(pady=20)
 
             # Add Combobox with the list of towns onto the GUI:
             self.town_combobox = ttk.Combobox(self, value=town_list_options)
@@ -219,6 +189,7 @@ if __name__ == "__main__":
             tk.Frame.__init__(self, parent)
             self.focus_set()
             self.bind("<Configure>", self.on_configure)
+
             # Browser
             self.browser_frame = Browser(self, controller)
             self.browser_frame.grid(row=1, column=0,
