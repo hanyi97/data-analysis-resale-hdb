@@ -1,7 +1,7 @@
 """This is a module to plot bar graph
 Based on average resale prices for different flat types.
-Can be filtered by town and year
-Can export graph as png image"""
+Can be filtered by town
+Auto export graph as png image"""
 
 
 from numpy import arange
@@ -12,28 +12,23 @@ from data_helper import get_dataframe
 CONST_FILE_PATH = "resources/bargraph.png"
 
 
-def get_filtered_data(town='', year=''):
+def get_filtered_data(town=''):
     """Group all resale prices based on flat type
     Optional to filter by town or year (or both)
 
     Parameters:
     town (str): filter data by town (optional)
-    year (str): filter data by year (optional)
 
     Returns:
     dataframe: dataframe of filtered results
     """
     df = get_dataframe()
-    if town != '' and year != '':
-        df = df[(df['town'] == town) & (df['year'] == year)]
-    elif town != '':
+    if town != '':
         df = df[df['town'] == town]
-    elif year != '':
-        df = df[df['year'] == year]
     return df.groupby('flat_type')['resale_price'].mean().round(2)
 
 
-def plot_bar_graph(town='', year=''):
+def plot_bar_graph(town=''):
     """Call this function to plot bar graph
     The updated graph will be auto saved whenever this function is called
 
@@ -44,8 +39,9 @@ def plot_bar_graph(town='', year=''):
     """
     try:
         town = town.upper()
-        year = int(year) if year != '' else year
-        df = get_filtered_data(town, year)
+        df = get_filtered_data(town)
+        if len(df) == 0:
+            raise IndexError("No data found!")
         # Set town to Singapore when no town is selected
         town = 'SINGAPORE' if town == '' else town
 
@@ -82,12 +78,12 @@ def plot_bar_graph(town='', year=''):
                             fontdict=label_style)
         bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
                            fontdict={'fontsize': 12, 'fontweight': 'heavy'})
-        bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02) , borderaxespad=0.)
+        bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02), borderaxespad=0.)
         # Save bar graph as png
         bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
 
         return fig
     except ValueError:
-        print('Year is not an integer!')
-    except IndexError:
-        print('No data found!')
+        print('Cannot convert data to an integer!')
+    except IndexError as e:
+        print(e)
