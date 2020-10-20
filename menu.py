@@ -84,19 +84,19 @@ if __name__ == "__main__":
             frame.tkraise()  # raises the frame to the front
 
         def createButtons(self, controller):
-            chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=NORM_FONT,
+            chartsBTN = tk.Button(self, text="View Charts", height=3, width=30, font=NORM_FONT,
                                   command=lambda: controller.show_frame(ViewCharts))
             chartsBTN.pack(padx=10, pady=10)
 
-            treemapBTN = tk.Button(self, text="View Tree Map", height=5, width=30, font=NORM_FONT,
+            treemapBTN = tk.Button(self, text="View Tree Map", height=3, width=30, font=NORM_FONT,
                                    command=lambda: controller.show_frame(MainBrowser))
             treemapBTN.pack(pady=10, padx=10)
 
-            summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=NORM_FONT,
+            summaryBTN = tk.Button(self, text="View Summary", height=3, width=30, font=NORM_FONT,
                                    command=lambda: controller.show_frame(ViewSummary))
             summaryBTN.pack(padx=10, pady=10)
 
-            ViewTop10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=5, width=30, font=NORM_FONT,
+            ViewTop10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=3, width=30, font=NORM_FONT,
                                   command=lambda: controller.show_frame(ViewTop10CheapestFlats))
             ViewTop10.pack(padx=10, pady=10)
 
