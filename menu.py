@@ -5,6 +5,7 @@ from bargraph import get_filtered_data
 import data_helper
 # from matplotlib.figure import Figure
 import matplotlib
+
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
@@ -16,6 +17,13 @@ import sys
 from numpy import arange
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
+import platform
+import ctypes
+
+# Platforms
+WINDOWS = (platform.system() == "Windows")
+LINUX = (platform.system() == "Linux")
+MAC = (platform.system() == "Darwin")
 
 LARGE_FONT = ("Open Sans", 30)
 NORM_FONT = ("Open Sans", 20)
@@ -28,8 +36,9 @@ if __name__ == "__main__":
         def __init__(self, *args, **kwargs):
             tk.Tk.__init__(self, *args, **kwargs)
             container = tk.Frame(self)
-            container.pack(side="top", fill="both", expand=True) #fill will fill in the space that the pack has been allotted to. expand will fill up the rest of the white space
-            container.grid_rowconfigure(0, weight=1) #0 is the minimum size, weight is priority
+            container.pack(side="top", fill="both",
+                           expand=True)  # fill will fill in the space that the pack has been allotted to. expand will fill up the rest of the white space
+            container.grid_rowconfigure(0, weight=1)  # 0 is the minimum size, weight is priority
             container.grid_columnconfigure(0, weight=1)
             self.frames = {}
 
@@ -42,50 +51,52 @@ if __name__ == "__main__":
                 # put all of the pages in the same location;
                 # the one on the top of the stacking order
                 # will be the one that is visible.
-                frame.grid(row=0, column=0, sticky="nsew") #sticky will stretch everything to the size of the window
+                frame.grid(row=0, column=0, sticky="nsew")  # sticky will stretch everything to the size of the window
             self.show_frame(SelectOptions)
 
         def show_frame(self, cont):
             # show a frame for the given page name
-            frame = self.frames[cont] #looks for the value in self.frames with this key
-            frame.tkraise() #raises the frame to the front
+            frame = self.frames[cont]  # looks for the value in self.frames with this key
+            frame.tkraise()  # raises the frame to the front
 
 
     class SelectOptions(tk.Frame):
         def __init__(self, parent, controller):
-            #self --> current object
-            #parent --> a widget to act as the parent of the current object. All widgets in tkinter except the root window require a parent (sometimes also called a master)
-            #controller -->some other object that is designed to act as a common point of interaction for several pages of widgets
+            # self --> current object
+            # parent --> a widget to act as the parent of the current object. All widgets in tkinter except the root window require a parent (sometimes also called a master)
+            # controller -->some other object that is designed to act as a common point of interaction for several pages of widgets
 
-            tk.Frame.__init__(self, parent) #parent --> parent class (WelcomeWindow)
+            tk.Frame.__init__(self, parent)  # parent --> parent class (WelcomeWindow)
             self.createLabels()
             self.createButtons(controller)
 
         def createLabels(self):
-            header = tk.Label(self,text="HDB Resale Flats Analyser", font=LARGE_FONT) #created the header object
+            header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)  # created the header object
             label = tk.Label(self,
-                text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
-                     "towns and flat-types.",
-                font=SMALL_FONT, wraplength=450)
-            header.pack(padx=0, pady=20) #pack is to place it on the page. padx or pady -> horizontal/vertical internal padding.
+                             text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
+                                  "towns and flat-types.",
+                             font=SMALL_FONT, wraplength=450)
+            header.pack(padx=0,
+                        pady=20)  # pack is to place it on the page. padx or pady -> horizontal/vertical internal padding.
             label.pack(padx=10, pady=10)
 
         def createButtons(self, controller):
-            #lambda creates a throwaway function that will only be here when it is called.
-            #it cannot be used to pass parameters through
+            # lambda creates a throwaway function that will only be here when it is called.
+            # it cannot be used to pass parameters through
             # shows the ViewCharts class page upon clicking the button
             chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=SMALL_FONT,
                                   command=lambda: controller.show_frame(ViewCharts))
             chartsBTN.pack(pady=10, padx=10)
 
             treemapBTN = tk.Button(self, text="View Tree Map", height=5, width=30, font=SMALL_FONT,
-                                  command=lambda: controller.show_frame(MainBrowser))
+                                   command=lambda: controller.show_frame(MainBrowser))
             treemapBTN.pack(pady=10, padx=10)
 
             # shows the ViewSummary class page upon clicking the button
             summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=SMALL_FONT,
                                    command=lambda: controller.show_frame(ViewSummary))
             summaryBTN.pack()
+
 
     # Setting up the ViewCharts page
     class ViewCharts(tk.Frame):
@@ -178,7 +189,6 @@ if __name__ == "__main__":
             #
             # self.frame.bind("<Configure>", self.onFrameConfigure)
 
-
             label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
             label.pack(padx=10, pady=10)
 
@@ -198,60 +208,15 @@ if __name__ == "__main__":
             self.town_combobox.bind("<<ComboboxSelected>>", self.selected)
             self.town_combobox.pack()
 
-            # v = tk.StringVar()
-            # v.set("https://chart-studio.plotly.com/~si00/1.embed")
-            # sys.excepthook = cef.ExceptHook  # To shutdown all CEF processes on error
-            # cef.Initialize()
-            # cef.CreateBrowserSync(url="https://chart-studio.plotly.com/~si00/1.embed",
-            #                       window_title="Tree Map")
-            # cef.MessageLoop()
-
-
-
-            # frame = HtmlFrame(self, horizontal_scrollbar="auto")
-
-        #     # frame.set_content("<iframe width=\"900\" height=\"800\" frameborder=\"0\" scrolling=\"no\" src=\"//plotly.com/~si00/1.embed\"></iframe>")
-        #     frame.set_content("< div > < a  href = \"https://plotly.com/~si00/1/?share_key=aUxlx4CGj6okQIZzfsG4p\" target = \"_blank\" title = \"treemap\"  style = \"display: block; text-align: center;\" > < img src = \"https://plotly.com/~si00/1.png?share_key=aUxlx4CGj6okQIZzfsG4pE\"
-        #     alt = "treemap"
-        #     style = "max-width: 100%;width: 600px;"
-        #     width = "600"
-        #     onerror = "this.onerror=null;this.src='https://plotly.com/404.png';" / > < / a >
-        #     < script
-        #     data - plotly = "si00:1"
-        #     sharekey - plotly = "aUxlx4CGj6okQIZzfsG4pE"
-        #     src = "https://plotly.com/embed.js" async > < / script >
-        #
-        # < / div >")
-
-        #     < div >
-        #     < a
-        #     href = "https://plotly.com/~si00/1/?share_key=aUxlx4CGj6okQIZzfsG4pE"
-        #     target = "_blank"
-        #     title = "treemap"
-        #     style = "display: block; text-align: center;" > < img
-        #     src = "https://plotly.com/~si00/1.png?share_key=aUxlx4CGj6okQIZzfsG4pE"
-        #     alt = "treemap"
-        #     style = "max-width: 100%;width: 600px;"
-        #     width = "600"
-        #     onerror = "this.onerror=null;this.src='https://plotly.com/404.png';" / > < / a >
-        #     < script
-        #     data - plotly = "si00:1"
-        #     sharekey - plotly = "aUxlx4CGj6okQIZzfsG4pE"
-        #     src = "https://plotly.com/embed.js" async > < / script >
-        #
-        # < / div >
-
-        # frame.set_content(urllib.request.urlopen("https://duckduckgo.com").read().decode())
-        #     frame.pack()
-
             backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
             backbutton.pack(padx=10, pady=10)
+
 
     class MainBrowser(tk.Frame):
         def __init__(self, parent, controller):
             tk.Frame.__init__(self, parent)
-            # self.master.title("Tree Map")
-
+            self.focus_set()
+            self.bind("<Configure>", self.on_configure)
             # Browser
             self.browser_frame = Browser(self, controller)
             self.browser_frame.grid(row=1, column=0,
@@ -259,7 +224,11 @@ if __name__ == "__main__":
             tk.Grid.rowconfigure(self, 1, weight=1)
             tk.Grid.columnconfigure(self, 0, weight=1)
 
-            # self.pack(fill=tk.BOTH, expand=tk.YES)
+        def on_configure(self, event):
+            if self.browser_frame:
+                width = event.width
+                height = event.height
+                self.browser_frame.on_mainframe_configure(width, height)
 
         def get_browser(self):
             if self.browser_frame:
@@ -271,44 +240,65 @@ if __name__ == "__main__":
                 return self.browser_frame
             return None
 
-        # def embed_browser(self):
-        #     window_info = cef.WindowInfo()
-        #     rect = [0, 0, self.winfo_width(), self.winfo_height()]
-        #     self.browser = cef.CreateBrowserSync(window_info, url="https://chart-studio.plotly.com/~si00/1.embed")
-        #     assert self.browser
-
-            # Pack MainBrowser
-            # self.pack(fill=tk.BOTH, expand=tk.YES)
-
 
     class Browser(tk.Frame):
         def __init__(self, parent, controller):
+            self.browser = None
             tk.Frame.__init__(self, parent)
-            # self.browser=None
+            self.bind("<FocusIn>", self.on_focus_in)
+            self.bind("<FocusOut>", self.on_focus_out)
+            self.bind("<Configure>", self.on_configure)
+            self.focus_set()
 
-        # def embed_browser(self):
+        def embed_browser(self):
             window_info = cef.WindowInfo()
-        #     rect = [0, 0, self.winfo_width(), self.winfo_height()]
-        #     self.browser = cef.CreateBrowserSync(window_info, url="https://chart-studio.plotly.com/~si00/1.embed")
-        #     assert self.browser
-
-            # self = tk.Tk()
-
-            #using testhtml2-v2.py
             rect = [0, 0, self.winfo_width(), self.winfo_height()]
             v = tk.StringVar()
             v.set("https://chart-studio.plotly.com/~si00/1.embed")
-            sys.excepthook = cef.ExceptHook  # To shutdown all CEF processes on error
-            cef.Initialize()
-            cef.CreateBrowserSync(window_info, url="https://chart-studio.plotly.com/~si00/1.embed",
-                                  window_title="Tree Map")
-            cef.MessageLoop()
+            window_info.SetAsChild(self.get_window_handle(), rect)
+            self.browser = cef.CreateBrowserSync(window_info, url="https://chart-studio.plotly.com/~si00/1.embed",
+                                                 window_title="Tree Map")
+            assert self.browser
+            self.browser.SetClientHandler(LoadHandler(self))
+            self.message_loop_work()
+
+        def get_window_handle(self):
+            if self.winfo_id() > 0:
+                return self.winfo_id()
+            else:
+                raise Exception("Couldn't obtain window handle")
+
+        def message_loop_work(self):
+            cef.MessageLoopWork()
+            self.after(10, self.message_loop_work)
+
+        def on_focus_in(self, _):
+            if self.browser:
+                self.browser.SetFocus(True)
+
+        def on_focus_out(self, _):
+            if self.browser:
+                self.browser.SetFocus(False)
+
+        def on_configure(self, _):
+            if not self.browser:
+                self.embed_browser()
+
+        def on_mainframe_configure(self, width, height):
+            if self.browser:
+                if WINDOWS:
+                    ctypes.windll.user32.SetWindowPos(
+                        self.browser.GetWindowHandle(), 0,
+                        0, 0, width, height, 0x0002)
+                elif LINUX:
+                    self.browser.SetBounds(0, 0, width, height)
+                self.browser.NotifyMoveOrResizeStarted()
 
 
+    class LoadHandler(object):
+        def __init__(self, browser_frame):
+            self.browser_frame = browser_frame
 
-        # def on_configure(self, _):
-        #     if not self.browser:
-        #         self.embed_browser()
 
     # Setting up the ViewSummary page
     class ViewSummary(tk.Frame):
@@ -322,7 +312,8 @@ if __name__ == "__main__":
 
 
     app = WelcomeWindow()
-    app.title("HDB Resale Flats Analyser") #sets title of window
-    app.geometry("1920x1080") #sets dimensions of tkinter window
-    app.mainloop() #infinite loop so that events get processed
+    app.title("HDB Resale Flats Analyser")  # sets title of window
+    app.geometry("1920x1080")  # sets dimensions of tkinter window
+    cef.Initialize()
+    app.mainloop()  # infinite loop so that events get processed
     cef.Shutdown()
