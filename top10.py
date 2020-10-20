@@ -46,28 +46,28 @@ def get_cheapest_hdb(rows=10):
     print(cheap_data)
     return cheap_data
 
-def retrieve_Top10():
-    resaleflatList = get_filtered_data()
-    print("Function : Tabulating Resale Flat Records..\n")
-    # Storing the region, town, flat ype and resale_price to another list
-    rpRecord = resaleflatList.copy()
-
-    # Sort resale flat record according to total resale price in ascending (Cheapest First)
-    descRPAmt = rpRecord.copy()
-    sorted_RPlist = sorted(descRPAmt, key=lambda x: x[7])  # x[7] : Index 7 is "resale_price" column
-
-    # Append top 10 Cheapest Resale Flats to list
-    for i in range(len(sorted_RPlist)):
-        if i < 10:
-            top10CheapestResaleFlat.append(sorted_RPlist[i])
-
-    # Returning values
-    print("Function : Showing Top 10 Completed..")
-    print("Top 10 Results:\n", top10CheapestResaleFlat)
-
-    return {"rpRecord": rpRecord,
-            "descRPAmt": descRPAmt,
-            "top10CheapestResaleFlat": top10CheapestResaleFlat}
+# def retrieve_Top10():
+#     resaleflatList = get_filtered_data()
+#     print("Function : Tabulating Resale Flat Records..\n")
+#     # Storing the region, town, flat ype and resale_price to another list
+#     rpRecord = resaleflatList.copy()
+#
+#     # Sort resale flat record according to total resale price in ascending (Cheapest First)
+#     descRPAmt = rpRecord.copy()
+#     sorted_RPlist = sorted(descRPAmt, key=lambda x: x[7])  # x[7] : Index 7 is "resale_price" column
+#
+#     # Append top 10 Cheapest Resale Flats to list
+#     for i in range(len(sorted_RPlist)):
+#         if i < 10:
+#             top10CheapestResaleFlat.append(sorted_RPlist[i])
+#
+#     # Returning values
+#     print("Function : Showing Top 10 Completed..")
+#     print("Top 10 Results:\n", top10CheapestResaleFlat)
+#
+#     return {"rpRecord": rpRecord,
+#             "descRPAmt": descRPAmt,
+#             "top10CheapestResaleFlat": top10CheapestResaleFlat}
 
 # retrieve_Top10()
 
