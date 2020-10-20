@@ -4,18 +4,17 @@ import topNcheapest
 import platform
 import ctypes
 import matplotlib
+import search
+import bargraph as bg
 from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
-from search import *
 from pandastable import Table, TableModel
-from bargraph import get_filtered_data
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
 
 matplotlib.use("TkAgg")
-
 # Platforms
 WINDOWS = (platform.system() == "Windows")
 LINUX = (platform.system() == "Linux")
@@ -233,10 +232,6 @@ if __name__ == "__main__":
                                    command=lambda: controller.show_frame(SelectOptions))
             backbutton.pack(padx=5, pady=5)
 
-            # refreshButton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-            #                        command=lambda: self.refresh())
-            # refreshButton.pack(padx=5, pady=5)
-
             self.is_table_deleted = False
 
             # Get regions, towns and flat types from datahelper
@@ -286,13 +281,13 @@ if __name__ == "__main__":
             self.table = Table(self.frame, dataframe=df, showstatusbar=True, width=1000)
             self.table.show()
 
-            self.exportButton = tk.Button(self, text="Export Results", font=SMALL_FONT,
+            self.exportButton = tk.Button(self, text="Export Results as CSV", font=SMALL_FONT,
                                           command=lambda: self.displayExport())
             self.exportButton.pack(padx=10, pady=10)
 
         # Setting values of town combobox according to region combobox
         def updateTownComboBox(self, control):
-            listofTowns = dict_input("region", self.comboBoxRegion.get())
+            listofTowns = search.dict_input("region", self.comboBoxRegion.get())
             self.comboBoxTown['values'] = listofTowns
             self.comboBoxTown.current(0)
 
@@ -301,7 +296,9 @@ if __name__ == "__main__":
                 child.destroy()
 
             # No options selected, return unfiltered table
-            if self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
+            if self.comboBoxRegion.get() == "Select Region" \
+                    or self.comboBoxTown.get() == "Select Town" \
+                    or self.comboxBoxFlatTypes == "Select Flat Type":
                 label = tk.Label(topframe, text="Please select an option for region, town and flat type",
                                  font=VALIDAITON_FONT, fg="red")
                 label.pack(padx=20, pady=20)
@@ -309,7 +306,9 @@ if __name__ == "__main__":
                 self.table.show()
 
             # Options selected, return filtered table
-            elif not self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
+            elif not self.comboBoxRegion.get() == "Select Region" \
+                    or self.comboBoxTown.get() == "Select Town" \
+                    or self.comboxBoxFlatTypes == "Select Flat Type":
                 resultsLabel = tk.Label(topframe, text="Your Results", font=NORM_FONT)
                 resultsLabel.pack()
                 # Return selected option for region
@@ -331,12 +330,11 @@ if __name__ == "__main__":
                         filters[item] = ""
 
                 # Update df according to updated filtered options
-                global valuesBasedOnFilters
-                valuesBasedOnFilters = get_filtered_data(filters)
+                filtered_data = search.get_filtered_data(filters)
 
                 # Return total number of records for search results
                 global totalRecords
-                totalRecords = str(len(valuesBasedOnFilters))
+                totalRecords = str(len(filtered_data))
 
                 totalrowsLabel = tk.Label(topframe, text="Total number of records found: " + totalRecords)
                 totalrowsLabel.pack(padx=10, pady=0)
@@ -348,13 +346,13 @@ if __name__ == "__main__":
                     self.table.show()
                     self.exportButton.pack()
                     self.is_table_deleted = False
-                else:
-                    self.table.updateModel(TableModel(valuesBasedOnFilters))
-                    self.table.redraw()
+
+                self.table.updateModel(TableModel(filtered_data))
+                self.table.redraw()
 
                 # Validation when total records is 0
                 if totalRecords == "0":
-                    del valuesBasedOnFilters
+                    del filtered_data
                     self.frame.pack_forget()
                     self.exportButton.pack_forget()
                     self.is_table_deleted = True
@@ -376,7 +374,7 @@ if __name__ == "__main__":
         def plot_bar_graph(self, town=''):
             try:
                 town = town.upper()
-                df = get_filtered_data(town)
+                df = bg.get_filtered_data(town)
                 if len(df) == 0:
                     raise IndexError("No data found!")
                 # Set town to Singapore when no town is selected
@@ -450,7 +448,7 @@ if __name__ == "__main__":
             label.pack(padx=10, pady=10)
 
             # Add dropdown list with list of towns:
-            town_list_options = data_helper.get_all_towns()
+            town_list_options = dh.get_all_towns()
             clicked = tk.StringVar()
             clicked.set(town_list_options[0])
 
@@ -559,9 +557,9 @@ if __name__ == "__main__":
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
 app.geometry("1920x1080")
-cef.Initialize()
+# cef.Initialize()
 app.mainloop()
-cef.Shutdown()
+# cef.Shutdown()
 app.mainloop()
 # root = tk.Tk
 # root.attributes('-fullscreen', True)
