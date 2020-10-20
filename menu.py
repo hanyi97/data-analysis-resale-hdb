@@ -1,20 +1,20 @@
 import tkinter as tk
+import data_helper as dh
+import topNcheapest
+import platform
+import ctypes
+import matplotlib
+from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
 from search import *
-import data_helper as dh
 from pandastable import Table, TableModel
-import topNcheapest
 from bargraph import get_filtered_data
-import matplotlib
-
-matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
-from matplotlib.ticker import FuncFormatter
-import platform
-import ctypes
+
+matplotlib.use("TkAgg")
 
 # Platforms
 WINDOWS = (platform.system() == "Windows")
@@ -65,7 +65,8 @@ if __name__ == "__main__":
         def createLabels(self):
             header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)
             label = tk.Label(self,
-                             text="This service enables you to check the resale flat prices within the last 3 years based "
+                             text="This service enables you to check the resale flat prices within the last 3 years "
+                                  "based "
                                   "on regions, "
                                   "towns and flat-types.",
                              font=NORM_FONT, wraplength=450)
@@ -117,18 +118,6 @@ if __name__ == "__main__":
             frame = self.frames[cont]
             frame.tkraise()
 
-    # Hanyi, Faiz Function
-    # class ViewCharts(tk.Frame):
-    #     def __init__(self, parent, controller):
-    #         tk.Frame.__init__(self, parent)
-    #         label = tk.Label(self, text="Analyse Resale Flats by Region", font=LARGE_FONT)
-    #         label.pack(padx=10, pady=10)
-    #
-    #         backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-    #                                command=lambda: controller.show_frame(SelectOptions))
-    #         backbutton.pack(padx=10, pady=10)
-
-    # Kah En Function
     class ViewTop10CheapestFlats(tk.Frame):
         def __init__(self, parent, controller):
             tk.Frame.__init__(self, parent)
@@ -382,44 +371,6 @@ if __name__ == "__main__":
             mainApp.geometry("800x800")
             mainApp.mainloop()
 
-        # class SelectOptions(tk.Frame):
-        #     def __init__(self, parent, controller):
-        #         # self --> current object
-        #         # parent --> a widget to act as the parent of the current object. All widgets in tkinter except the root window require a parent (sometimes also called a master)
-        #         # controller -->some other object that is designed to act as a common point of interaction for several pages of widgets
-        #
-        #         tk.Frame.__init__(self, parent)  # parent --> parent class (WelcomeWindow)
-        #         self.createLabels()
-        #         self.createButtons(controller)
-        #
-        #     def createLabels(self):
-        #         header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)  # created the header object
-        #         label = tk.Label(self,
-        #                          text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
-        #                               "towns and flat-types.",
-        #                          font=SMALL_FONT, wraplength=450)
-        #         header.pack(padx=0,
-        #                     pady=20)  # pack is to place it on the page. padx or pady -> horizontal/vertical internal padding.
-        #         label.pack(padx=10, pady=10)
-        #
-        #     def createButtons(self, controller):
-        #         # lambda creates a throwaway function that will only be here when it is called.
-        #         # it cannot be used to pass parameters through
-        #         # shows the ViewCharts class page upon clicking the button
-        #         chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=SMALL_FONT,
-        #                               command=lambda: controller.show_frame(ViewCharts))
-        #         chartsBTN.pack(pady=10, padx=10)
-        #
-        #         treemapBTN = tk.Button(self, text="View Tree Map", height=5, width=30, font=SMALL_FONT,
-        #                                command=lambda: controller.show_frame(MainBrowser))
-        #         treemapBTN.pack(pady=10, padx=10)
-        #
-        #         # shows the ViewSummary class page upon clicking the button
-        #         summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=SMALL_FONT,
-        #                                command=lambda: controller.show_frame(ViewSummary))
-        #         summaryBTN.pack()
-
-        # Setting up the ViewCharts page
 
     class ViewCharts(tk.Frame):
         def plot_bar_graph(self, town=''):
@@ -512,6 +463,7 @@ if __name__ == "__main__":
             backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
             backbutton.pack(padx=10, pady=10)
 
+
     class MainBrowser(tk.Frame):
         def __init__(self, parent, controller):
             tk.Frame.__init__(self, parent)
@@ -527,7 +479,6 @@ if __name__ == "__main__":
                                     sticky=(tk.N + tk.S + tk.E + tk.W))
             tk.Grid.rowconfigure(self, 1, weight=1)
             tk.Grid.columnconfigure(self, 0, weight=1)
-
 
         def on_configure(self, event):
             if self.browser_frame:
@@ -604,30 +555,13 @@ if __name__ == "__main__":
         def __init__(self, browser_frame):
             self.browser_frame = browser_frame
 
-    # Setting up the ViewSummary page
-    # class ViewSummary(tk.Frame):
-    #     def __init__(self, parent, controller):
-    #         tk.Frame.__init__(self, parent)
-    #         label = tk.Label(self, text="Resale Flats Summary", font=NORM_FONT)
-    #         label.pack(pady=10, padx=10)
-    #
-    #     # Refresh combobox
-    #     # def refresh(self):
-    #     #     self. __init__()
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
 app.geometry("1920x1080")
 cef.Initialize()
-app.mainloop()  # infinite loop so that events get processed
+app.mainloop()
 cef.Shutdown()
 app.mainloop()
 # root = tk.Tk
 # root.attributes('-fullscreen', True)
-
-# app = WelcomeWindow()
-# app.title("HDB Resale Flats Analyser")  # sets title of window
-# app.geometry("1920x1080")  # sets dimensions of tkinter window
-# cef.Initialize()
-# app.mainloop()  # infinite loop so that events get processed
-# cef.Shutdown()
