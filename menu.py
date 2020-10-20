@@ -111,7 +111,7 @@ class ViewTop10CheapestFlats(tk.Frame):
 
             self.is_table_deleted = False
 
-            # Get regions, towns and flat types from datahelper
+            # Get flat types from datahelper
             global df
             df = dh.get_dataframe()
             flatTypes = dh.get_all_flatTypes()
@@ -135,10 +135,10 @@ class ViewTop10CheapestFlats(tk.Frame):
             topframe = tk.Frame(self)
             topframe.pack(side=tk.TOP)
 
-            # Plot summary table
+            # Plot top10 cheapest table
             self.frame = tk.Frame(self)
             self.frame.pack()
-            self.table = Table(self.frame, dataframe=df)
+            self.table = Table(self.frame, dataframe=df, showstatusbar=True, width=1000)
             self.table.show()
 
         def updateTableAfterFiltering(self, topframe):
@@ -269,7 +269,7 @@ class ViewSummary(tk.Frame):
         # Plot summary table
         self.frame = tk.Frame(self)
         self.frame.pack()
-        self.table = Table(self.frame, dataframe=df)
+        self.table = Table(self.frame, dataframe=df, showstatusbar=True,width=1000)
         self.table.show()
 
         self.exportButton = tk.Button(self, text="Export Results", font=SMALL_FONT,
@@ -330,7 +330,7 @@ class ViewSummary(tk.Frame):
             # Repopulate table with filtered results
             if self.is_table_deleted:
                 self.frame.pack()
-                self.table = Table(self.frame, dataframe=valuesBasedOnFilters)
+                self.table = Table(self.frame)
                 self.table.show()
                 self.exportButton.pack()
                 self.is_table_deleted = False
@@ -358,10 +358,14 @@ class ViewSummary(tk.Frame):
         mainApp.geometry("800x800")
         mainApp.mainloop()
 
+
     # def refresh(self):
     #     self. __init__()
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
-app.geometry("900x800")
+# app.geometry("1000x800")
 app.mainloop()
+root = tk.Tk
+root.attributes('-fullscreen', True)
+
