@@ -2,9 +2,14 @@
 """
 
 import os.path as path
+
+from reportlab.pdfbase import ttfonts
+
 from search import get_filtered_data, in_dict as filter_input
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.pdfbase.pdfmetrics import registerFont
+# from reportlab.i pdfbase.ttfonts import TTFont
+# from reportlab.platypus import Table, TableStyle, Paragraph
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, PageBreak, Image
 from reportlab.lib import colors
