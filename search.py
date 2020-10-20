@@ -51,6 +51,10 @@ def dict_input(filter_option, selected_input):
         if filter_option == "region":
             region_input = selected_input
             return data_helper.get_filtered_towns(region_input)
+        # if the filter_option is "town", the available inputs for "region" will be updated
+        elif filter_option == "town":
+            town_input = selected_input
+            return data_helper.get_filtered_region(town_input)
         return in_dict
     except IndexError:
         print("Input is mandatory. Please select an input.")
@@ -80,11 +84,3 @@ def get_filtered_data(in_dict):
                     return df
         return df
 
-
-
-
-
-# to test the functions
-print(dict_input("region", "NORTH"))
-print(dict_input("town", "YISHUN"))
-# call to get_filtered_data function to display filtered dataset
