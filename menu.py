@@ -6,6 +6,7 @@ from pandastable import Table, TableModel
 import topNcheapest
 from bargraph import get_filtered_data
 import matplotlib
+
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
@@ -28,110 +29,107 @@ VALIDAITON_FONT = ("Open Sans", 12)
 
 CONST_FILE_PATH = "resources/bargraph.png"
 
-# Main Window
-class WelcomeWindow(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-        self.frames = {}
-        for F in (SelectOptions, ViewCharts, ViewSummary, ViewTop10CheapestFlats):
-            frame = F(container, self)
-            self.frames[F] = frame
-
-            frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(SelectOptions)
+if __name__ == "__main__":
+    # Main Window
     class WelcomeWindow(tk.Tk):
         def __init__(self, *args, **kwargs):
             tk.Tk.__init__(self, *args, **kwargs)
             container = tk.Frame(self)
-            container.pack(side="top", fill="both",
-                           expand=True)  # fill will fill in the space that the pack has been allotted to. expand will fill up the rest of the white space
-            container.grid_rowconfigure(0, weight=1)  # 0 is the minimum size, weight is priority
+            container.pack(side="top", fill="both", expand=True)
+            container.grid_rowconfigure(0, weight=1)
             container.grid_columnconfigure(0, weight=1)
             self.frames = {}
-
-            # all pages must be included in this dictionary in order to be raised to the top (accessed)
-            for F in (SelectOptions, ViewCharts, MainBrowser, ViewSummary):
+            for F in (SelectOptions, ViewCharts, ViewSummary, MainBrowser, ViewTop10CheapestFlats):
                 frame = F(container, self)
+                self.frames[F] = frame
 
-    def show_frame(self, cont):
-        frame = self.frames[cont]
-        frame.tkraise()
+                frame.grid(row=0, column=0, sticky="nsew")
+            self.show_frame(SelectOptions)
 
-# Select Options Window
-class SelectOptions(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.createLabels()
-        self.createButtons(controller)
+        def show_frame(self, cont):
+            frame = self.frames[cont]
+            frame.tkraise()
 
-    def createLabels(self):
-        header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)
-        label = tk.Label(self,
-                         text="This service enables you to check the resale flat prices within the last 3 years based "
-                              "on regions, "
-                              "towns and flat-types.",
-                         font=NORM_FONT, wraplength=450)
-        header.pack(padx=0, pady=20)
-        label.pack(padx=10, pady=10)
-          # put all of the pages in the same location;
-          # the one on the top of the stacking order
-          # will be the one that is visible.
-          frame.grid(row=0, column=0, sticky="nsew")  # sticky will stretch everything to the size of the window
-          self.show_frame(SelectOptions)
+    # Select Options Window
+    class SelectOptions(tk.Frame):
+        def __init__(self, parent, controller):
+            # self --> current object
+            # parent --> a widget to act as the parent of the current object. All widgets in
+            # tkinter except the root window require a parent (sometimes also called a master)
+            # controller -->some
+            # other object that is designed to act as a common point of interaction for several pages of widgets
+            tk.Frame.__init__(self, parent)
+            self.createLabels()
+            self.createButtons(controller)
 
-      def show_frame(self, cont):
-          # show a frame for the given page name
-          frame = self.frames[cont]  # looks for the value in self.frames with this key
-          frame.tkraise()  # raises the frame to the front
+        def createLabels(self):
+            header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)
+            label = tk.Label(self,
+                             text="This service enables you to check the resale flat prices within the last 3 years based "
+                                  "on regions, "
+                                  "towns and flat-types.",
+                             font=NORM_FONT, wraplength=450)
+            header.pack(padx=0, pady=20)
+            label.pack(padx=10, pady=10)
 
-    def createButtons(self, controller):
-        chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=NORM_FONT,
-                              command=lambda: controller.show_frame(ViewCharts))
-        chartsBTN.pack(padx=10, pady=10)
-        summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=NORM_FONT,
-                               command=lambda: controller.show_frame(ViewSummary))
-        summaryBTN.pack(padx=10, pady=10)
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            # self.frame.grid(row=0, column=0, sticky="nsew")  # sticky will stretch everything to the size of the window
+            # self.show_frame(SelectOptions)
 
-        ViewTop10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=5, width=30, font=NORM_FONT,
-                               command=lambda: controller.show_frame(ViewTop10CheapestFlats))
-        ViewTop10.pack(padx=10, pady=10)
+        def show_frame(self, cont):
+            # show a frame for the given page name
+            frame = self.frames[cont]  # looks for the value in self.frames with this key
+            frame.tkraise()  # raises the frame to the front
 
+        def createButtons(self, controller):
+            chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=NORM_FONT,
+                                  command=lambda: controller.show_frame(ViewCharts))
+            chartsBTN.pack(padx=10, pady=10)
 
-# Export Data Window
-class ExportResults(tk.Frame):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="Export your results", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
+            treemapBTN = tk.Button(self, text="View Tree Map", height=5, width=30, font=NORM_FONT,
+                                   command=lambda: controller.show_frame(MainBrowser))
+            treemapBTN.pack(pady=10, padx=10)
 
-        # container = tk.Frame(self)
-        # container.pack(side="top", fill="both", expand=True)
-        # container.grid_rowconfigure(0, weight=1)
-        # container.grid_columnconfigure(0, weight=1)
-        # self.frames = {}
+            summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=NORM_FONT,
+                                   command=lambda: controller.show_frame(ViewSummary))
+            summaryBTN.pack(padx=10, pady=10)
 
-    def show_frame(self, cont):
-        frame = self.frames[cont]
-        frame.tkraise()
+            ViewTop10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=5, width=30, font=NORM_FONT,
+                                  command=lambda: controller.show_frame(ViewTop10CheapestFlats))
+            ViewTop10.pack(padx=10, pady=10)
 
+    # Export Data Window
+    class ExportResults(tk.Frame):
+        def __init__(self, *args, **kwargs):
+            tk.Tk.__init__(self, *args, **kwargs)
+            label = tk.Label(self, text="Export your results", font=LARGE_FONT)
+            label.pack(pady=10, padx=10)
 
-# Hanyi, Faiz Function
-class ViewCharts(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Analyse Resale Flats by Region", font=LARGE_FONT)
-        label.pack(padx=10, pady=10)
+            # container = tk.Frame(self)
+            # container.pack(side="top", fill="both", expand=True)
+            # container.grid_rowconfigure(0, weight=1)
+            # container.grid_columnconfigure(0, weight=1)
+            # self.frames = {}
 
-        backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                               command=lambda: controller.show_frame(SelectOptions))
-        backbutton.pack(padx=10, pady=10)
+        def show_frame(self, cont):
+            frame = self.frames[cont]
+            frame.tkraise()
 
-# Kah En Function
-class ViewTop10CheapestFlats(tk.Frame):
+    # Hanyi, Faiz Function
+    # class ViewCharts(tk.Frame):
+    #     def __init__(self, parent, controller):
+    #         tk.Frame.__init__(self, parent)
+    #         label = tk.Label(self, text="Analyse Resale Flats by Region", font=LARGE_FONT)
+    #         label.pack(padx=10, pady=10)
+    #
+    #         backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+    #                                command=lambda: controller.show_frame(SelectOptions))
+    #         backbutton.pack(padx=10, pady=10)
+
+    # Kah En Function
+    class ViewTop10CheapestFlats(tk.Frame):
         def __init__(self, parent, controller):
             tk.Frame.__init__(self, parent)
             label = tk.Label(self, text="Top 10 Cheapest Flats", font=LARGE_FONT)
@@ -158,7 +156,6 @@ class ViewTop10CheapestFlats(tk.Frame):
             self.comboxBoxFlatTypes.pack(padx=5, pady=5)
             self.comboxBoxFlatTypes['values'] = ["Select Flat Type"] + listofFlatTypes
             self.comboxBoxFlatTypes.current(0)
-
 
             filterButton = tk.Button(self, text="Filter", font=SMALL_FONT,
                                      command=lambda: self.updateTableAfterFiltering(topframe))
@@ -198,7 +195,7 @@ class ViewTop10CheapestFlats(tk.Frame):
 
                 # Replace default values to " "
                 for item in filters:
-                    if  filters[item] == "Select Flat Type":
+                    if filters[item] == "Select Flat Type":
                         filters[item] = ""
 
                 # Update df according to updated filtered options
@@ -237,196 +234,194 @@ class ViewTop10CheapestFlats(tk.Frame):
                                                fg="red")
                     validationLabel.pack()
 
-# Joey Function
-class ViewSummary(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Overview of Resale Flats Prices", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-        backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                               command=lambda: controller.show_frame(SelectOptions))
-        backbutton.pack(padx=5, pady=5)
+    # Joey Function
+    class ViewSummary(tk.Frame):
+        def __init__(self, parent, controller):
+            tk.Frame.__init__(self, parent)
+            label = tk.Label(self, text="Overview of Resale Flats Prices", font=LARGE_FONT)
+            label.pack(pady=10, padx=10)
+            backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+                                   command=lambda: controller.show_frame(SelectOptions))
+            backbutton.pack(padx=5, pady=5)
 
-        # refreshButton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-        #                        command=lambda: self.refresh())
-        # refreshButton.pack(padx=5, pady=5)
+            # refreshButton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+            #                        command=lambda: self.refresh())
+            # refreshButton.pack(padx=5, pady=5)
 
-        self.is_table_deleted = False
+            self.is_table_deleted = False
 
-        # Get regions, towns and flat types from datahelper
-        global df
-        df = dh.get_dataframe()
-        towns = dh.get_all_towns()
-        regions = dh.get_all_regions()
-        flatTypes = dh.get_all_flatTypes()
+            # Get regions, towns and flat types from datahelper
+            global df
+            df = dh.get_dataframe()
+            towns = dh.get_all_towns()
+            regions = dh.get_all_regions()
+            flatTypes = dh.get_all_flatTypes()
 
-        label = tk.Label(self, text="All the fields below are required",
-                         font=NORM_FONT)
-        label.pack(padx=20, pady=20)
-
-        # Setting values for regions combo box
-        listofRegions = sorted(regions)
-        self.comboBoxRegion = ttk.Combobox(self, state="readonly")
-        self.comboBoxRegion.pack(padx=5, pady=5)
-        self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox("region"))
-        self.comboBoxRegion['values'] = ["Select Region"] + listofRegions
-        self.comboBoxRegion.current(0)
-
-        # Setting values for town combo box
-        listofTowns = sorted(towns)
-        self.comboBoxTown = ttk.Combobox(self, state="readonly")
-        self.comboBoxTown.pack(padx=5, pady=5)
-        self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox(""))
-        self.comboBoxTown['values'] = ["Select Town"] + listofTowns
-        self.comboBoxTown.current(0)
-
-        # Setting values for flat types combo box
-        listofFlatTypes = sorted(flatTypes)
-        self.comboxBoxFlatTypes = ttk.Combobox(self, state="readonly")
-        self.comboxBoxFlatTypes.pack(padx=5, pady=5)
-        self.comboxBoxFlatTypes['values'] = ["Select Flat Type"] + listofFlatTypes
-        self.comboxBoxFlatTypes.current(0)
-
-
-        filterButton = tk.Button(self, text="Filter", font=SMALL_FONT,
-                                 command=lambda: self.updateTableAfterFiltering(topframe))
-        filterButton.pack(padx=10, pady=10)
-        # Search results frame
-        topframe = tk.Frame(self)
-        topframe.pack(side=tk.TOP)
-
-
-        # Plot summary table
-        self.frame = tk.Frame(self)
-        self.frame.pack()
-        self.table = Table(self.frame, dataframe=df, showstatusbar=True,width=1000)
-        self.table.show()
-
-        self.exportButton = tk.Button(self, text="Export Results", font=SMALL_FONT,
-                                      command=lambda: self.displayExport())
-        self.exportButton.pack(padx=10, pady=10)
-
-    # Setting values of town combobox according to region combobox
-    def updateTownComboBox(self, control):
-        listofTowns = dict_input("region", self.comboBoxRegion.get())
-        self.comboBoxTown['values'] = listofTowns
-        self.comboBoxTown.current(0)
-
-    def updateTableAfterFiltering(self, topframe):
-        for child in topframe.winfo_children():
-            child.destroy()
-
-        # No options selected, return unfiltered table
-        if self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
-            label = tk.Label(topframe, text="Please select an option for region, town and flat type",
-                             font=VALIDAITON_FONT, fg="red")
+            label = tk.Label(self, text="All the fields below are required",
+                             font=NORM_FONT)
             label.pack(padx=20, pady=20)
-            self.table = Table(self.frame, dataframe=df)
+
+            # Setting values for regions combo box
+            listofRegions = sorted(regions)
+            self.comboBoxRegion = ttk.Combobox(self, state="readonly")
+            self.comboBoxRegion.pack(padx=5, pady=5)
+            self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox("region"))
+            self.comboBoxRegion['values'] = ["Select Region"] + listofRegions
+            self.comboBoxRegion.current(0)
+
+            # Setting values for town combo box
+            listofTowns = sorted(towns)
+            self.comboBoxTown = ttk.Combobox(self, state="readonly")
+            self.comboBoxTown.pack(padx=5, pady=5)
+            self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox(""))
+            self.comboBoxTown['values'] = ["Select Town"] + listofTowns
+            self.comboBoxTown.current(0)
+
+            # Setting values for flat types combo box
+            listofFlatTypes = sorted(flatTypes)
+            self.comboxBoxFlatTypes = ttk.Combobox(self, state="readonly")
+            self.comboxBoxFlatTypes.pack(padx=5, pady=5)
+            self.comboxBoxFlatTypes['values'] = ["Select Flat Type"] + listofFlatTypes
+            self.comboxBoxFlatTypes.current(0)
+
+            filterButton = tk.Button(self, text="Filter", font=SMALL_FONT,
+                                     command=lambda: self.updateTableAfterFiltering(topframe))
+            filterButton.pack(padx=10, pady=10)
+            # Search results frame
+            topframe = tk.Frame(self)
+            topframe.pack(side=tk.TOP)
+
+            # Plot summary table
+            self.frame = tk.Frame(self)
+            self.frame.pack()
+            self.table = Table(self.frame, dataframe=df, showstatusbar=True, width=1000)
             self.table.show()
 
-        # Options selected, return filtered table
-        elif not self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
-            resultsLabel = tk.Label(topframe, text="Your Results", font=NORM_FONT)
-            resultsLabel.pack()
-            # Return selected option for region
-            regionLabel = tk.Label(topframe, text="Region: " + self.comboBoxRegion.get())
-            regionLabel.pack()
-            # Return selected option for town
-            townLabel = tk.Label(topframe, text="Town: " + self.comboBoxTown.get())
-            townLabel.pack()
-            # Return selected option for flat type
-            flatLabel = tk.Label(topframe, text="Flat Type: " + self.comboxBoxFlatTypes.get())
-            flatLabel.pack()
+            self.exportButton = tk.Button(self, text="Export Results", font=SMALL_FONT,
+                                          command=lambda: self.displayExport())
+            self.exportButton.pack(padx=10, pady=10)
 
-            # Get the filter options from combobox
-            filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
+        # Setting values of town combobox according to region combobox
+        def updateTownComboBox(self, control):
+            listofTowns = dict_input("region", self.comboBoxRegion.get())
+            self.comboBoxTown['values'] = listofTowns
+            self.comboBoxTown.current(0)
 
-            # Replace default values to " "
-            for item in filters:
-                if filters[item] == "Select Town" or filters[item] == "Select Flat Type":
-                    filters[item] = ""
+        def updateTableAfterFiltering(self, topframe):
+            for child in topframe.winfo_children():
+                child.destroy()
 
-            # Update df according to updated filtered options
-            global valuesBasedOnFilters
-            valuesBasedOnFilters = get_filtered_data(filters)
-
-            # Return total number of records for search results
-            global totalRecords
-            totalRecords = str(len(valuesBasedOnFilters))
-
-            totalrowsLabel = tk.Label(topframe, text="Total number of records found: " + totalRecords)
-            totalrowsLabel.pack(padx=10, pady=0)
-
-            # Repopulate table with filtered results
-            if self.is_table_deleted:
-                self.frame.pack()
-                self.table = Table(self.frame)
+            # No options selected, return unfiltered table
+            if self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
+                label = tk.Label(topframe, text="Please select an option for region, town and flat type",
+                                 font=VALIDAITON_FONT, fg="red")
+                label.pack(padx=20, pady=20)
+                self.table = Table(self.frame, dataframe=df)
                 self.table.show()
-                self.exportButton.pack()
-                self.is_table_deleted = False
-            else:
-                self.table.updateModel(TableModel(valuesBasedOnFilters))
-                self.table.redraw()
 
-            # Validation when total records is 0
-            if totalRecords == "0":
-                del valuesBasedOnFilters
-                self.frame.pack_forget()
-                self.exportButton.pack_forget()
-                self.is_table_deleted = True
-                validationLabel = tk.Label(topframe, text="Sorry, no matching records found based on filters. Please "
-                                                          "try another search criterion.", font=VALIDAITON_FONT,
-                                           fg="red")
-                validationLabel.pack()
+            # Options selected, return filtered table
+            elif not self.comboBoxRegion.get() == "Select Region" or self.comboBoxTown.get() == "Select Town" or self.comboxBoxFlatTypes == "Select Flat Type":
+                resultsLabel = tk.Label(topframe, text="Your Results", font=NORM_FONT)
+                resultsLabel.pack()
+                # Return selected option for region
+                regionLabel = tk.Label(topframe, text="Region: " + self.comboBoxRegion.get())
+                regionLabel.pack()
+                # Return selected option for town
+                townLabel = tk.Label(topframe, text="Town: " + self.comboBoxTown.get())
+                townLabel.pack()
+                # Return selected option for flat type
+                flatLabel = tk.Label(topframe, text="Flat Type: " + self.comboxBoxFlatTypes.get())
+                flatLabel.pack()
 
-    # Export Window
-    def displayExport(self):
-        mainApp = ExportResults()
-        mainApp.title("Export Results")
-        mainApp.geometry("800x800")
-        mainApp.mainloop()
-        
-    class SelectOptions(tk.Frame):
-        def __init__(self, parent, controller):
-            # self --> current object
-            # parent --> a widget to act as the parent of the current object. All widgets in tkinter except the root window require a parent (sometimes also called a master)
-            # controller -->some other object that is designed to act as a common point of interaction for several pages of widgets
+                # Get the filter options from combobox
+                filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
 
-            tk.Frame.__init__(self, parent)  # parent --> parent class (WelcomeWindow)
-            self.createLabels()
-            self.createButtons(controller)
+                # Replace default values to " "
+                for item in filters:
+                    if filters[item] == "Select Town" or filters[item] == "Select Flat Type":
+                        filters[item] = ""
 
-        def createLabels(self):
-            header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)  # created the header object
-            label = tk.Label(self,
-                             text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
-                                  "towns and flat-types.",
-                             font=SMALL_FONT, wraplength=450)
-            header.pack(padx=0,
-                        pady=20)  # pack is to place it on the page. padx or pady -> horizontal/vertical internal padding.
-            label.pack(padx=10, pady=10)
+                # Update df according to updated filtered options
+                global valuesBasedOnFilters
+                valuesBasedOnFilters = get_filtered_data(filters)
 
-        def createButtons(self, controller):
-            # lambda creates a throwaway function that will only be here when it is called.
-            # it cannot be used to pass parameters through
-            # shows the ViewCharts class page upon clicking the button
-            chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=SMALL_FONT,
-                                  command=lambda: controller.show_frame(ViewCharts))
-            chartsBTN.pack(pady=10, padx=10)
+                # Return total number of records for search results
+                global totalRecords
+                totalRecords = str(len(valuesBasedOnFilters))
 
-            treemapBTN = tk.Button(self, text="View Tree Map", height=5, width=30, font=SMALL_FONT,
-                                   command=lambda: controller.show_frame(MainBrowser))
-            treemapBTN.pack(pady=10, padx=10)
+                totalrowsLabel = tk.Label(topframe, text="Total number of records found: " + totalRecords)
+                totalrowsLabel.pack(padx=10, pady=0)
 
-            # shows the ViewSummary class page upon clicking the button
-            summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=SMALL_FONT,
-                                   command=lambda: controller.show_frame(ViewSummary))
-            summaryBTN.pack()
+                # Repopulate table with filtered results
+                if self.is_table_deleted:
+                    self.frame.pack()
+                    self.table = Table(self.frame)
+                    self.table.show()
+                    self.exportButton.pack()
+                    self.is_table_deleted = False
+                else:
+                    self.table.updateModel(TableModel(valuesBasedOnFilters))
+                    self.table.redraw()
 
+                # Validation when total records is 0
+                if totalRecords == "0":
+                    del valuesBasedOnFilters
+                    self.frame.pack_forget()
+                    self.exportButton.pack_forget()
+                    self.is_table_deleted = True
+                    validationLabel = tk.Label(topframe,
+                                               text="Sorry, no matching records found based on filters. Please "
+                                                    "try another search criterion.", font=VALIDAITON_FONT,
+                                               fg="red")
+                    validationLabel.pack()
 
-    # Setting up the ViewCharts page
+        # Export Window
+        def displayExport(self):
+            mainApp = ExportResults()
+            mainApp.title("Export Results")
+            mainApp.geometry("800x800")
+            mainApp.mainloop()
+
+        # class SelectOptions(tk.Frame):
+        #     def __init__(self, parent, controller):
+        #         # self --> current object
+        #         # parent --> a widget to act as the parent of the current object. All widgets in tkinter except the root window require a parent (sometimes also called a master)
+        #         # controller -->some other object that is designed to act as a common point of interaction for several pages of widgets
+        #
+        #         tk.Frame.__init__(self, parent)  # parent --> parent class (WelcomeWindow)
+        #         self.createLabels()
+        #         self.createButtons(controller)
+        #
+        #     def createLabels(self):
+        #         header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)  # created the header object
+        #         label = tk.Label(self,
+        #                          text="This service enables you to check the resale flat prices within the last 3 years based on regions, "
+        #                               "towns and flat-types.",
+        #                          font=SMALL_FONT, wraplength=450)
+        #         header.pack(padx=0,
+        #                     pady=20)  # pack is to place it on the page. padx or pady -> horizontal/vertical internal padding.
+        #         label.pack(padx=10, pady=10)
+        #
+        #     def createButtons(self, controller):
+        #         # lambda creates a throwaway function that will only be here when it is called.
+        #         # it cannot be used to pass parameters through
+        #         # shows the ViewCharts class page upon clicking the button
+        #         chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=SMALL_FONT,
+        #                               command=lambda: controller.show_frame(ViewCharts))
+        #         chartsBTN.pack(pady=10, padx=10)
+        #
+        #         treemapBTN = tk.Button(self, text="View Tree Map", height=5, width=30, font=SMALL_FONT,
+        #                                command=lambda: controller.show_frame(MainBrowser))
+        #         treemapBTN.pack(pady=10, padx=10)
+        #
+        #         # shows the ViewSummary class page upon clicking the button
+        #         summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=SMALL_FONT,
+        #                                command=lambda: controller.show_frame(ViewSummary))
+        #         summaryBTN.pack()
+
+        # Setting up the ViewCharts page
+
     class ViewCharts(tk.Frame):
-
         def plot_bar_graph(self, town=''):
             try:
                 town = town.upper()
@@ -517,7 +512,6 @@ class ViewSummary(tk.Frame):
             backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
             backbutton.pack(padx=10, pady=10)
 
-
     class MainBrowser(tk.Frame):
         def __init__(self, parent, controller):
             tk.Frame.__init__(self, parent)
@@ -606,28 +600,30 @@ class ViewSummary(tk.Frame):
         def __init__(self, browser_frame):
             self.browser_frame = browser_frame
 
-
     # Setting up the ViewSummary page
-    class ViewSummary(tk.Frame):
-        def __init__(self, parent, controller):
-            tk.Frame.__init__(self, parent)
-            label = tk.Label(self, text="Resale Flats Summary", font=NORM_FONT)
-            label.pack(pady=10, padx=10)
-
-    # Refresh combobox
-    # def refresh(self):
-    #     self. __init__()
+    # class ViewSummary(tk.Frame):
+    #     def __init__(self, parent, controller):
+    #         tk.Frame.__init__(self, parent)
+    #         label = tk.Label(self, text="Resale Flats Summary", font=NORM_FONT)
+    #         label.pack(pady=10, padx=10)
+    #
+    #     # Refresh combobox
+    #     # def refresh(self):
+    #     #     self. __init__()
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
-# app.geometry("1000x800")
+app.geometry("1920x1080")
+cef.Initialize()
+app.mainloop()  # infinite loop so that events get processed
+cef.Shutdown()
 app.mainloop()
-root = tk.Tk
-root.attributes('-fullscreen', True)
+# root = tk.Tk
+# root.attributes('-fullscreen', True)
 
-    app = WelcomeWindow()
-    app.title("HDB Resale Flats Analyser")  # sets title of window
-    app.geometry("1920x1080")  # sets dimensions of tkinter window
-    cef.Initialize()
-    app.mainloop()  # infinite loop so that events get processed
-    cef.Shutdown()
+# app = WelcomeWindow()
+# app.title("HDB Resale Flats Analyser")  # sets title of window
+# app.geometry("1920x1080")  # sets dimensions of tkinter window
+# cef.Initialize()
+# app.mainloop()  # infinite loop so that events get processed
+# cef.Shutdown()
