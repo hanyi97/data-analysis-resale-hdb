@@ -404,7 +404,7 @@ class ViewSummary(tk.Frame):
 
     # Export Window
     def displayExport(self):
-        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')])
+        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')], initialfile='summary.csv')
         if file is not None:
             export.export_to_csv(file.name, self.filters)
 
@@ -610,6 +610,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
