@@ -188,7 +188,7 @@ if __name__ == "__main__":
 
                 # Update df according to updated filtered options
                 global valuesBasedOnFilters
-                valuesBasedOnFilters = topNcheapest.get_filtered_data(filters)
+                valuesBasedOnFilters = topNcheapest.get_cheapest_hdb(filters)
 
                 # Return total number of records for search results
                 global totalRecords
