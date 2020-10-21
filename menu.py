@@ -560,6 +560,3 @@ app.geometry("1920x1080")
 cef.Initialize()
 app.mainloop()
 cef.Shutdown()
-app.mainloop()
-# root = tk.Tk
-# root.attributes('-fullscreen', True)
