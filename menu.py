@@ -5,9 +5,11 @@ import platform
 import ctypes
 import matplotlib
 import search
+import export
 import bargraph as bg
 from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
+from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
@@ -360,15 +362,15 @@ class ViewSummary(tk.Frame):
             self.flatLabel.pack()
 
             # Get the filter options from combobox
-            filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
+            self.filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
 
             # Replace default values to " "
-            for item in filters:
-                if filters[item] == "Select Town" or filters[item] == "Select Flat Type":
-                    filters[item] = ""
+            for item in self.filters:
+                if self.filters[item] == "Select Town" or self.filters[item] == "Select Flat Type":
+                    self.filters[item] = ""
 
             # Update df according to updated filtered options
-            filtered_data = search.get_filtered_data(filters)
+            filtered_data = search.get_filtered_data(self.filters)
 
             # Return total number of records for search results
             global totalRecords
@@ -402,10 +404,9 @@ class ViewSummary(tk.Frame):
 
     # Export Window
     def displayExport(self):
-        mainApp = ExportResults()
-        mainApp.title("Export Results")
-        mainApp.geometry("800x800")
-        mainApp.mainloop()
+        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')])
+        if file is not None:
+            export.export_to_csv(file.name, self.filters)
 
 
 class ViewCharts(tk.Frame):
