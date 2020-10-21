@@ -111,7 +111,7 @@ class ViewTop10CheapestFlats(tk.Frame):
 
         # Get flat types from datahelper
         self.data = dh.get_dataframe()
-        flat_types = dh.get_all_flatTypes()
+        flat_types = dh.get_all_flat_types()
 
         label = tk.Label(self, text="All the fields below are required", font=NORM_FONT)
         label.pack(padx=20, pady=20)
@@ -133,7 +133,8 @@ class ViewTop10CheapestFlats(tk.Frame):
         # Plot top10 cheapest table
         self.frame = tk.Frame(self)
         self.frame.pack()
-        self.table = Table(self.frame, dataframe=self.data, showstatusbar=True, width=1000)
+        self.table = Table(self.frame, dataframe=self.data, showstatusbar=True,width=1300, height=250,
+                           rowselectedcolor='#83b2fc')
         self.table.show()
 
         # Export to PDF button
@@ -220,7 +221,7 @@ class ViewSummary(tk.Frame):
         self.df = dh.get_dataframe()
         self.towns = dh.get_all_towns()
         self.regions = dh.get_all_regions()
-        self.flat_types = dh.get_all_flatTypes()
+        self.flat_types = dh.get_all_flat_types()
 
         label = tk.Label(self, text="All the fields below are required",
                          font=NORM_FONT)
@@ -259,7 +260,8 @@ class ViewSummary(tk.Frame):
         # Plot summary table
         self.frame = tk.Frame(self)
         self.frame.pack()
-        self.table = Table(self.frame, dataframe=self.df, showstatusbar=True, width=1000)
+        self.table = Table(self.frame, dataframe=self.df, showstatusbar=True, width=1300, height=250,
+                           rowselectedcolor='#83b2fc')
         self.table.show()
 
         self.export_button = tk.Button(self, text="Export Results as CSV", font=SMALL_FONT,
