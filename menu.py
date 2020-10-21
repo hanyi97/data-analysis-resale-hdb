@@ -235,20 +235,22 @@ class ViewSummary(tk.Frame):
         # Setting values for regions combo box
         region_list = sorted(self.regions)
         self.combobox_region = ttk.Combobox(combobox_frame, state="readonly")
-        self.combobox_region.pack(side=tk.LEFT, padx=5, pady=5)
+        # self.combobox_region.pack(side=tk.LEFT, padx=5, pady=5)
+        self.combobox_region.grid(row=0, column=0, padx=5, pady=5)
         self.combobox_region.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox("region"))
         self.combobox_region['values'] = [self.CONST_SELECT_REGION] + region_list
         self.combobox_region.current(0)
 
         # Setting values for town combo box
         town_list = sorted(self.towns)
-        self.combobox_town = ttk.Combobox(self, state="readonly")
-        self.combobox_town.pack(padx=5, pady=5)
-        self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox("town"))
-        self.combobox_town['values'] = ["Select Town"] + town_list
+        # self.combobox_town = ttk.Combobox(self, state="readonly")
+        # self.combobox_town.pack(padx=5, pady=5)
+        # self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox("town"))
+        # self.combobox_town['values'] = ["Select Town"] + town_list
 
         self.combobox_town = ttk.Combobox(combobox_frame, state="readonly")
-        self.combobox_town.pack(side=tk.LEFT, padx=5, pady=5)
+        # self.combobox_town.pack(side=tk.LEFT, padx=5, pady=5)
+        self.combobox_town.grid(row=0, column=1, padx=5, pady=5)
         self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.town_selected(""))
         self.combobox_town['values'] = [self.CONST_SELECT_TOWN] + town_list
         self.combobox_town.current(0)
@@ -256,13 +258,15 @@ class ViewSummary(tk.Frame):
         # Setting values for flat types combo box
         flat_type_list = sorted(self.flat_types)
         self.combobox_flat_types = ttk.Combobox(combobox_frame, state="readonly")
-        self.combobox_flat_types.pack(side=tk.LEFT, padx=5, pady=5)
+        # self.combobox_flat_types.pack(side=tk.LEFT, padx=5, pady=5)
+        self.combobox_flat_types.grid(row=0, column=2, padx=5, pady=5)
         self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + flat_type_list
         self.combobox_flat_types.current(0)
 
         filter_button = tk.Button(combobox_frame, text="Filter", font=SMALL_FONT, width=20,
                                   command=lambda: self.update_table(self.results_frame))
-        filter_button.pack(side=tk.LEFT, padx=10, pady=10)
+        # filter_button.pack(side=tk.LEFT, padx=10, pady=10)
+        filter_button.grid(row=0, column=3, padx=10, pady=10)
         # Search results table_frame
         self.results_frame = tk.Frame(self)
         self.results_frame.grid(row=3)
@@ -477,8 +481,8 @@ class ViewCharts(tk.Frame):
     def selected(self, event):
         # Clear the previous chart & toolbar first if it is currently on the screen
         try:
-            self.canvas.get_tk_widget().pack_forget()
-            self.toolbar.pack_forget()
+            self.canvas.get_tk_widget().destroy()
+            self.toolbar.destroy()
         except AttributeError:
             pass
 
