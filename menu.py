@@ -312,9 +312,7 @@ class ViewSummary(tk.Frame):
                 self.combobox_town['values'] = town_list
                 self.combobox_town.current(0)
         # Options selected, return filtered table
-        elif not self.combobox_region.get() == "Select Region" \
-                or self.combobox_town.get() == "Select Town" \
-                or self.combox_box_flat_types == "Select Flat Type":
+        else:
             results_label = tk.Label(top_frame, text="Your Results", font=NORM_FONT)
             results_label.pack()
             # Return selected option for region
