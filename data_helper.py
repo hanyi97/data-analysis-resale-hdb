@@ -7,6 +7,7 @@ One function to retrieve data as dictionary
 
 import csv
 import pandas as pd
+
 CONS_FILE_NAME = 'resources/resale_flat_prices.csv'
 
 
@@ -20,7 +21,9 @@ def get_dataframe():
 
 
 def get_columnname():
-   return get_dataframe().columns
+    """Retrieves all columns from data frame
+    """
+    return get_dataframe().columns
 
 
 def get_all_towns():
@@ -31,6 +34,7 @@ def get_all_towns():
     """
     return sorted(get_dataframe()['town'].unique())
 
+
 def get_all_regions():
     """Retrieve all towns and sort them in ascending order
 
@@ -39,13 +43,15 @@ def get_all_regions():
     """
     return sorted(get_dataframe()['region'].unique())
 
-def get_all_flatTypes():
+
+def get_all_flat_types():
     """Retrieve all towns and sort them in ascending order
 
     Returns:
     list: list of all unique towns
     """
     return sorted(get_dataframe()['flat_type'].unique())
+
 
 def get_filtered_towns(region):
     """Retrieve all towns based on region
