@@ -133,7 +133,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         # Plot top10 cheapest table
         self.frame = tk.Frame(self)
         self.frame.pack()
-        self.table = Table(self.frame, dataframe=self.data, showstatusbar=True,width=1300, height=250,
+        self.table = Table(self.frame, dataframe=self.data, showstatusbar=True, width=1215, height=250,
                            rowselectedcolor='#83b2fc')
         self.table.show()
 
@@ -260,7 +260,7 @@ class ViewSummary(tk.Frame):
         # Plot summary table
         self.frame = tk.Frame(self)
         self.frame.pack()
-        self.table = Table(self.frame, dataframe=self.df, showstatusbar=True, width=1300, height=250,
+        self.table = Table(self.frame, dataframe=self.df, showstatusbar=True, width=1215, height=250,
                            rowselectedcolor='#83b2fc')
         self.table.show()
 
@@ -574,6 +574,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
