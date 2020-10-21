@@ -76,7 +76,6 @@ def get_filtered_data(in_dict):
     """
     # user did not select any inputs to filter the dataframe, return dataframe result
     df = data_helper.get_dataframe()
-    print(in_dict)
     if in_dict == {} or all(val == "" for val in in_dict.values()):
         return df
     # user did select at least 1 input to filter the dataframe, return dataframe result

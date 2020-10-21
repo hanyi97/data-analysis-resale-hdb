@@ -3,13 +3,9 @@
 
 import os.path as path
 
-from reportlab.pdfbase import ttfonts
-
 from search import get_filtered_data, in_dict as filter_input
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.pdfbase.pdfmetrics import registerFont
-# from reportlab.i pdfbase.ttfonts import TTFont
-# from reportlab.platypus import Table, TableStyle, Paragraph
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, PageBreak, Image
 from reportlab.lib import colors
@@ -122,13 +118,10 @@ def export_to_pdf(file_path=CONST_PDF_PATH):
         print(e)
 
 
-def export_to_csv(file_path=CONS_CSV_PATH):
+def export_to_csv(file_path=CONS_CSV_PATH, filters={}):
     """Function to export filtered data to CSV
     Call get_filtered_data function from search module to retrieve user filtered data
     """
-    df = get_filtered_data(filter_input)
+    df = get_filtered_data(filters)
     df.to_csv(file_path, index=False)
 
-
-export_to_pdf()
-# export_to_csv()
