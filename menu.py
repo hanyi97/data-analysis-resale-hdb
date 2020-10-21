@@ -215,10 +215,10 @@ class ViewSummary(tk.Frame):
         self.CONST_SELECT_FLAT_TYPE = "Select Flat Type"
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Overview of Resale Flats Prices", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
+        label.grid(row=0, pady=10, padx=10)
         back_button = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                                command=lambda: self.refresh(controller))  # controller.show_frame(SelectOptions)
-        back_button.pack(padx=5, pady=5)
+                                command=lambda: self.refresh(controller))
+        back_button.grid(row=1, padx=5, pady=5)
 
         # Get regions, towns and flat types from datahelper
         self.df = dh.get_dataframe()
@@ -231,7 +231,7 @@ class ViewSummary(tk.Frame):
         # label.pack(padx=20, pady=20)
 
         combobox_frame = tk.Frame(self)
-        combobox_frame.pack()
+        combobox_frame.grid(row=2)
         # Setting values for regions combo box
         region_list = sorted(self.regions)
         self.combobox_region = ttk.Combobox(combobox_frame, state="readonly")
@@ -260,18 +260,21 @@ class ViewSummary(tk.Frame):
         filter_button.pack(side=tk.LEFT, padx=10, pady=10)
         # Search results table_frame
         self.results_frame = tk.Frame(self)
-        self.results_frame.pack(side=tk.TOP)
+        self.results_frame.grid(row=3)
 
         # Plot summary table
         self.table_frame = tk.Frame(self)
-        self.table_frame.pack()
+        self.table_frame.grid(row=4)
         self.table = Table(self.table_frame, dataframe=self.df, showstatusbar=True, width=1215, height=300,
                            rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
         self.table.show()
 
         self.export_button = tk.Button(self, text="Export Results as CSV", font=SMALL_FONT,
                                        command=lambda: self.export_csv())
-        self.export_button.pack(padx=10, pady=10)
+        self.export_button.grid(row=5, padx=10, pady=10)
+        # Center widgets
+        tk.Grid.rowconfigure(self, 1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
 
     # Not done
     def refresh(self, controller):
@@ -284,19 +287,20 @@ class ViewSummary(tk.Frame):
     # Setting values of town combobox according to region combobox
     def update_town_combobox(self, control):
         town_list = search.dict_input("region", self.combobox_region.get())
-        self.combobox_town['values'] = [self.CONST_SELECT_TOWN] + town_list
+        if town_list[0] != self.CONST_SELECT_TOWN:
+            town_list = [self.CONST_SELECT_TOWN] + town_list
+        self.combobox_town['values'] = town_list
         self.combobox_town.current(0)
 
     def town_selected(self, control):
         town_list = search.dict_input("region", self.combobox_region.get())
-        self.combobox_town['values'] = town_list
+        self.combobox_town['values'] = [self.CONST_SELECT_TOWN] + town_list
 
     def update_table(self, frame):
-        hide_result_label = False
         for child in frame.winfo_children():
             child.destroy()
         if not frame.winfo_ismapped():
-            frame.pack()
+            frame.grid(row=3)
         # # No options selected, return unfiltered table
         # if self.combobox_town.get() == "Select Town" \
         #         or self.combobox_flat_types.get() == "Select Flat Type":
@@ -321,11 +325,10 @@ class ViewSummary(tk.Frame):
         selected_flat_type = self.combobox_flat_types.get()
         if selected_region == self.CONST_SELECT_REGION and selected_town == self.CONST_SELECT_TOWN \
                 and selected_flat_type == self.CONST_SELECT_FLAT_TYPE:
-            frame.pack_forget()
+            frame.grid_forget()
 
-        if not hide_result_label:
-            results_label = tk.Label(frame, text="Your Results", font=NORM_FONT)
-            results_label.pack()
+        results_label = tk.Label(frame, text="Your Results", font=NORM_FONT)
+        results_label.pack()
         if selected_region != self.CONST_SELECT_REGION:
             # Return selected option for region
             region_label = tk.Label(frame, text="Region: " + selected_region)
@@ -353,17 +356,16 @@ class ViewSummary(tk.Frame):
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
-        if not hide_result_label:
-            total_rows_label = tk.Label(frame, text="Total number of records found: " + total_records)
-            total_rows_label.pack(padx=10, pady=0)
+        total_rows_label = tk.Label(frame, text="Total number of records found: " + total_records)
+        total_rows_label.pack(padx=10, pady=0)
 
         # Repopulate table with filtered results
         if self.is_table_deleted:
-            self.table_frame.pack()
+            self.table_frame.grid(row=4)
             self.table = Table(self.table_frame, showstatusbar=True, width=1215, height=300,
                                rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
             self.table.show()
-            self.export_button.pack()
+            self.export_button.grid(row=5)
             self.is_table_deleted = False
         self.table.updateModel(TableModel(filtered_data))
         self.table.redraw()
@@ -371,8 +373,8 @@ class ViewSummary(tk.Frame):
         # Validation when total records is 0
         if total_records == "0":
             del filtered_data
-            self.table_frame.pack_forget()
-            self.export_button.pack_forget()
+            self.table_frame.grid_forget()
+            self.export_button.grid_forget()
             self.is_table_deleted = True
             validation_label = tk.Label(frame,
                                         text="Sorry, no matching records found based on filters. Please "
@@ -588,6 +590,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
