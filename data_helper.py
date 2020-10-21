@@ -21,7 +21,7 @@ def get_dataframe():
 
 
 def get_columnname():
-    """Retrieves all columns from data frame
+    """Retrieves all columns from data table_frame
     """
     return get_dataframe().columns
 
