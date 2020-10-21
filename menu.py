@@ -12,7 +12,7 @@ from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-# from cefpython3 import cefpython as cef
+
 from numpy import arange
 from matplotlib.figure import Figure
 
@@ -243,11 +243,6 @@ class ViewSummary(tk.Frame):
 
         # Setting values for town combo box
         town_list = sorted(self.towns)
-        # self.combobox_town = ttk.Combobox(self, state="readonly")
-        # self.combobox_town.pack(padx=5, pady=5)
-        # self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox("town"))
-        # self.combobox_town['values'] = ["Select Town"] + town_list
-
         self.combobox_town = ttk.Combobox(combobox_frame, state="readonly")
         # self.combobox_town.pack(side=tk.LEFT, padx=5, pady=5)
         self.combobox_town.grid(row=0, column=1, padx=5, pady=5)
@@ -296,18 +291,6 @@ class ViewSummary(tk.Frame):
     # Setting values of town combobox according to region combobox
     def update_town_combobox(self, control):
         town_list = search.dict_input("region", self.combobox_region.get())
-        region_list = search.dict_input("town", self.combobox_town.get())
-
-        print(region_list)
-        self.combobox_town['values'] = town_list
-        self.combobox_region['values'] = region_list
-        self.combobox_region.current(0)
-
-
-        # self.combobox_town.current(0)
-    def update_table(self, top_frame):
-        for child in top_frame.winfo_children():
-            child.destroy()
         if town_list[0] != self.CONST_SELECT_TOWN:
             town_list = [self.CONST_SELECT_TOWN] + town_list
         self.combobox_town['values'] = town_list
@@ -316,17 +299,6 @@ class ViewSummary(tk.Frame):
     def town_selected(self, control):
         town_list = search.dict_input("region", self.combobox_region.get())
         self.combobox_town['values'] = [self.CONST_SELECT_TOWN] + town_list
-
-        self.table = Table(self.frame, dataframe=self.df)
-        self.table.show()
-
-    # # Options selected, return filtered table
-    # elif not self.combobox_region.get() == "Select Region" \
-    #         or self.combobox_town.get() == "Select Town" \
-    #         or self.combox_box_flat_types == "Select Flat Type":
-    #
-    #     results_label = tk.Label(top_frame, text="Your Results", font=NORM_FONT)
-    #         results_label.pack()
 
     def update_table(self, frame):
         for child in frame.winfo_children():
