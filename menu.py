@@ -574,6 +574,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    # cef.Initialize()
+    cef.Initialize()
     app.mainloop()
-    # cef.Shutdown()
+    cef.Shutdown()
