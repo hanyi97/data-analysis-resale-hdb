@@ -12,7 +12,7 @@ from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-
+from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
 
@@ -594,6 +594,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    # cef.Initialize()
+    cef.Initialize()
     app.mainloop()
-    # cef.Shutdown()
+    cef.Shutdown()
