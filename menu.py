@@ -40,7 +40,6 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        self._frame = None
         for F in (SelectOptions, ViewCharts, ViewSummary, MainBrowser, ViewTop10CheapestFlats):
             frame = F(container, self)
             self.frames[F] = frame
@@ -52,13 +51,6 @@ class WelcomeWindow(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-    def switch_frame(self, frame_class):
-        new_frame = frame_class(self)
-        if self._frame is not None:
-            self._frame.destroy()
-        self._frame = new_frame
-        self._frame.pack()
-
 
 # Select Options Window
 class SelectOptions(tk.Frame):
@@ -69,10 +61,10 @@ class SelectOptions(tk.Frame):
         # controller -->some
         # other object that is designed to act as a common point of interaction for several pages of widgets
         tk.Frame.__init__(self, parent)
-        self.createLabels()
-        self.createButtons(controller)
+        self.create_labels()
+        self.create_buttons(controller)
 
-    def createLabels(self):
+    def create_labels(self):
         header = tk.Label(self, text="HDB Resale Flats Analyser", font=LARGE_FONT)
         label = tk.Label(self,
                          text="This service enables you to check the resale flat prices within the last 3 years "
@@ -83,116 +75,94 @@ class SelectOptions(tk.Frame):
         header.pack(padx=0, pady=20)
         label.pack(padx=10, pady=10)
 
-        # put all of the pages in the same location;
-        # the one on the top of the stacking order
-        # will be the one that is visible.
-        # self.frame.grid(row=0, column=0, sticky="nsew")  # sticky will stretch everything to the size of the window
-        # self.show_frame(SelectOptions)
-
     def show_frame(self, cont):
         # show a frame for the given page name
         frame = self.frames[cont]  # looks for the value in self.frames with this key
         frame.tkraise()  # raises the frame to the front
 
-    def createButtons(self, controller):
-        chartsBTN = tk.Button(self, text="View Bar Graph", height=3, width=30, font=NORM_FONT,
-                              command=lambda: controller.show_frame(ViewCharts))
-        chartsBTN.pack(padx=10, pady=10)
+    def create_buttons(self, controller):
+        charts_btn = tk.Button(self, text="View Bar Graph", height=3, width=30, font=NORM_FONT,
+                               command=lambda: controller.show_frame(ViewCharts))
+        charts_btn.pack(padx=10, pady=10)
 
-        treemapBTN = tk.Button(self, text="View Tree Map", height=3, width=30, font=NORM_FONT,
-                               command=lambda: controller.show_frame(MainBrowser))
-        treemapBTN.pack(pady=10, padx=10)
+        treemap_btn = tk.Button(self, text="View Tree Map", height=3, width=30, font=NORM_FONT,
+                                command=lambda: controller.show_frame(MainBrowser))
+        treemap_btn.pack(pady=10, padx=10)
 
-        summaryBTN = tk.Button(self, text="View Summary", height=3, width=30, font=NORM_FONT,
-                               command=lambda: controller.show_frame(ViewSummary))
-        summaryBTN.pack(padx=10, pady=10)
+        summary_btn = tk.Button(self, text="View Summary", height=3, width=30, font=NORM_FONT,
+                                command=lambda: controller.show_frame(ViewSummary))
+        summary_btn.pack(padx=10, pady=10)
 
-        ViewTop10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=3, width=30, font=NORM_FONT,
-                              command=lambda: controller.show_frame(ViewTop10CheapestFlats))
-        ViewTop10.pack(padx=10, pady=10)
-
-
-# Export Data Window
-class ExportResults(tk.Frame):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="Export your results", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-
-        # container = tk.Frame(self)
-        # container.pack(side="top", fill="both", expand=True)
-        # container.grid_rowconfigure(0, weight=1)
-        # container.grid_columnconfigure(0, weight=1)
-        # self.frames = {}
-
-    def show_frame(self, cont):
-        frame = self.frames[cont]
-        frame.tkraise()
+        view_top10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=3, width=30, font=NORM_FONT,
+                               command=lambda: controller.show_frame(ViewTop10CheapestFlats))
+        view_top10.pack(padx=10, pady=10)
 
 
 class ViewTop10CheapestFlats(tk.Frame):
     def __init__(self, parent, controller):
+        self.is_table_deleted = False
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Top 10 Cheapest Flats", font=LARGE_FONT)
         label.pack(padx=10, pady=10)
 
-        backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                               command=lambda: controller.show_frame(SelectOptions))
-        backbutton.pack(padx=10, pady=10)
-
-        self.is_table_deleted = False
+        back_button = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+                                command=lambda: controller.show_frame(SelectOptions))
+        back_button.pack(padx=10, pady=10)
 
         # Get flat types from datahelper
-        global df
-        df = dh.get_dataframe()
-        flatTypes = dh.get_all_flatTypes()
+        self.data = dh.get_dataframe()
+        flat_types = dh.get_all_flatTypes()
 
-        label = tk.Label(self, text="All the fields below are required",
-                         font=NORM_FONT)
+        label = tk.Label(self, text="All the fields below are required", font=NORM_FONT)
         label.pack(padx=20, pady=20)
 
         # Setting values for flat types combo box
-        listofFlatTypes = sorted(flatTypes)
-        self.comboxBoxFlatTypes = ttk.Combobox(self, state="readonly")
-        self.comboxBoxFlatTypes.pack(padx=5, pady=5)
-        self.comboxBoxFlatTypes['values'] = ["Select Flat Type"] + listofFlatTypes
-        self.comboxBoxFlatTypes.current(0)
+        list_of_flat_types = sorted(flat_types)
+        self.combobox_flat_types = ttk.Combobox(self, state="readonly")
+        self.combobox_flat_types.pack(padx=5, pady=5)
+        self.combobox_flat_types['values'] = ["Select Flat Type"] + list_of_flat_types
+        self.combobox_flat_types.current(0)
 
-        filterButton = tk.Button(self, text="Filter", font=SMALL_FONT,
-                                 command=lambda: self.updateTableAfterFiltering(topframe))
-        filterButton.pack(padx=10, pady=10)
+        filter_button = tk.Button(self, text="Filter", font=SMALL_FONT,
+                                  command=lambda: self.update_table(top_frame))
+        filter_button.pack(padx=10, pady=10)
         # Search results frame
-        topframe = tk.Frame(self)
-        topframe.pack(side=tk.TOP)
+        top_frame = tk.Frame(self)
+        top_frame.pack(side=tk.TOP)
 
         # Plot top10 cheapest table
         self.frame = tk.Frame(self)
         self.frame.pack()
-        self.table = Table(self.frame, dataframe=df, showstatusbar=True, width=1000)
+        self.table = Table(self.frame, dataframe=self.data, showstatusbar=True, width=1000)
         self.table.show()
 
-    def updateTableAfterFiltering(self, topframe):
-        for child in topframe.winfo_children():
+        # Export to PDF button
+        self.export_button = tk.Button(self, text="Export Overview as PDF", font=SMALL_FONT,
+                                       command=lambda: self.displayExport())
+        self.export_button.pack(padx=10, pady=10)
+
+    def update_table(self, top_frame):
+        for child in top_frame.winfo_children():
             child.destroy()
 
         # No options selected, return unfiltered table
-        if self.comboxBoxFlatTypes == "Select Flat Type":
-            label = tk.Label(topframe, text="Please select an option for flat type",
+        if self.combobox_flat_types == "Select Flat Type":
+            label = tk.Label(top_frame, text="Please select an option for flat type",
                              font=VALIDAITON_FONT, fg="red")
             label.pack(padx=20, pady=20)
-            self.table = Table(self.frame, dataframe=df)
+            self.table = Table(self.frame, dataframe=self.data)
             self.table.show()
 
         # Options selected, return filtered table
-        elif not self.comboxBoxFlatTypes == "Select Flat Type":
-            resultsLabel = tk.Label(topframe, text="Your Results", font=NORM_FONT)
-            resultsLabel.pack()
+        elif not self.combobox_flat_types == "Select Flat Type":
+            results_label = tk.Label(top_frame, text="Your Results", font=NORM_FONT)
+            results_label.pack()
             # Return selected option for flat type
-            flatLabel = tk.Label(topframe, text="Flat Type: " + self.comboxBoxFlatTypes.get())
-            flatLabel.pack()
+            flat_label = tk.Label(top_frame, text="Flat Type: " + self.combobox_flat_types.get())
+            flat_label.pack()
 
             # Get the filter options from combobox
-            filters = {"flat_type": self.comboxBoxFlatTypes.get()}
+            filters = {"flat_type": self.combobox_flat_types.get()}
 
             # Replace default values to " "
             for item in filters:
@@ -200,171 +170,163 @@ class ViewTop10CheapestFlats(tk.Frame):
                     filters[item] = ""
 
             # Update df according to updated filtered options
-            global valuesBasedOnFilters
-            valuesBasedOnFilters = topNcheapest.get_filtered_data(filters)
+            filtered_data = topNcheapest.get_filtered_data(filters)
 
             # Return total number of records for search results
-            global totalRecords
-            totalRecords = str(len(valuesBasedOnFilters))
+            total_records = str(len(filtered_data))
 
-            totalrowsLabel = tk.Label(topframe, text="Total number of records found: " + totalRecords)
-            totalrowsLabel.pack(padx=10, pady=0)
+            total_rows_label = tk.Label(top_frame, text="Total number of records found: " + total_records)
+            total_rows_label.pack(padx=10, pady=0)
 
             # Repopulate table with filtered results
             if self.is_table_deleted:
                 self.frame.pack()
-                self.table = Table(self.frame, dataframe=valuesBasedOnFilters)
+                self.table = Table(self.frame, dataframe=filtered_data)
                 self.table.show()
-                self.exportButton.pack()
+                self.export_button.pack()
                 self.is_table_deleted = False
             else:
-                self.table.updateModel(TableModel(valuesBasedOnFilters))
+                self.table.updateModel(TableModel(filtered_data))
                 self.table.redraw()
 
             # Validation when total records is 0
-            if totalRecords == "0":
-                del valuesBasedOnFilters
+            if total_records == "0":
+                del filtered_data
                 # self.table.clearFormatting()
                 # self.table.remove()
                 self.frame.pack_forget()
-                self.exportButton.pack_forget()
+                self.export_button.pack_forget()
                 self.is_table_deleted = True
-                validationLabel = tk.Label(topframe,
-                                           text="Sorry, no matching records found based on filters. Please "
-                                                "try another search criterion.", font=VALIDAITON_FONT,
-                                           fg="red")
-                validationLabel.pack()
+                validation_label = tk.Label(top_frame,
+                                            text="Sorry, no matching records found based on filters. Please "
+                                                 "try another search criterion.", font=VALIDAITON_FONT,
+                                            fg="red")
+                validation_label.pack()
 
 
 # Joey Function
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
+        self.is_table_deleted = False
+        self.filters = {}
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Overview of Resale Flats Prices", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
-        backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                               command=lambda: controller.show_frame(SelectOptions))  # self.refresh(controller)
-        backbutton.pack(padx=5, pady=5)
-
-        self.is_table_deleted = False
+        back_button = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+                                command=lambda: controller.show_frame(SelectOptions))  # self.refresh(controller)
+        back_button.pack(padx=5, pady=5)
 
         # Get regions, towns and flat types from datahelper
-        global df
-        global towns
-        df = dh.get_dataframe()
-        towns = dh.get_all_towns()
-        regions = dh.get_all_regions()
-        flatTypes = dh.get_all_flatTypes()
+        self.df = dh.get_dataframe()
+        self.towns = dh.get_all_towns()
+        self.regions = dh.get_all_regions()
+        self.flat_types = dh.get_all_flatTypes()
 
         label = tk.Label(self, text="All the fields below are required",
                          font=NORM_FONT)
         label.pack(padx=20, pady=20)
 
         # Setting values for regions combo box
-        listofRegions = sorted(regions)
-        self.comboBoxRegion = ttk.Combobox(self, state="readonly")
-        self.comboBoxRegion.pack(padx=5, pady=5)
-        self.comboBoxRegion.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox("region"))
-        self.comboBoxRegion['values'] = ["Select Region"] + listofRegions
-        self.comboBoxRegion.current(0)
+        region_list = sorted(self.regions)
+        self.combobox_region = ttk.Combobox(self, state="readonly")
+        self.combobox_region.pack(padx=5, pady=5)
+        self.combobox_region.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox("region"))
+        self.combobox_region['values'] = ["Select Region"] + region_list
+        self.combobox_region.current(0)
 
         # Setting values for town combo box
-        listofTowns = sorted(towns)
-        self.comboBoxTown = ttk.Combobox(self, state="readonly")
-        self.comboBoxTown.pack(padx=5, pady=5)
-        self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox(""))
-        self.comboBoxTown['values'] = ["Select Town"] + listofTowns
-        self.comboBoxTown.current(0)
+        town_list = sorted(self.towns)
+        self.combobox_town = ttk.Combobox(self, state="readonly")
+        self.combobox_town.pack(padx=5, pady=5)
+        self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox(""))
+        self.combobox_town['values'] = ["Select Town"] + town_list
+        self.combobox_town.current(0)
 
         # Setting values for flat types combo box
-        listofFlatTypes = sorted(flatTypes)
-        self.comboxBoxFlatTypes = ttk.Combobox(self, state="readonly")
-        self.comboxBoxFlatTypes.pack(padx=5, pady=5)
-        self.comboxBoxFlatTypes['values'] = ["Select Flat Type"] + listofFlatTypes
-        self.comboxBoxFlatTypes.current(0)
+        flat_type_list = sorted(self.flat_types)
+        self.combox_box_flat_types = ttk.Combobox(self, state="readonly")
+        self.combox_box_flat_types.pack(padx=5, pady=5)
+        self.combox_box_flat_types['values'] = ["Select Flat Type"] + flat_type_list
+        self.combox_box_flat_types.current(0)
 
-        filterButton = tk.Button(self, text="Filter", font=SMALL_FONT,
-                                 command=lambda: self.updateTableAfterFiltering(topframe))
-        filterButton.pack(padx=10, pady=10)
+        filter_button = tk.Button(self, text="Filter", font=SMALL_FONT,
+                                  command=lambda: self.update_table(top_frame))
+        filter_button.pack(padx=10, pady=10)
         # Search results frame
-        topframe = tk.Frame(self)
-        topframe.pack(side=tk.TOP)
+        top_frame = tk.Frame(self)
+        top_frame.pack(side=tk.TOP)
 
         # Plot summary table
         self.frame = tk.Frame(self)
         self.frame.pack()
-        self.table = Table(self.frame, dataframe=df, showstatusbar=True, width=1000)
+        self.table = Table(self.frame, dataframe=self.df, showstatusbar=True, width=1000)
         self.table.show()
 
-        self.exportButton = tk.Button(self, text="Export Results as CSV", font=SMALL_FONT,
-                                      command=lambda: self.displayExport())
-        self.exportButton.pack(padx=10, pady=10)
+        self.export_button = tk.Button(self, text="Export Results as CSV", font=SMALL_FONT,
+                                       command=lambda: self.export_csv())
+        self.export_button.pack(padx=10, pady=10)
 
+    # Not done
     def refresh(self, controller):
-        # self.comboBoxRegion.current(0)
-        # self.updateTownComboBox(self.comboBoxRegion.get())
-        # self.comboxBoxFlatTypes.current(0)
-        # if self.is_table_deleted:
-        #     self.frame.pack()
-        #     self.table = Table(self.frame)
-        #     self.table.show()
-        #     self.exportButton.pack()
-        #     self.is_table_deleted = False
-        # self.table.updateModel(TableModel(search.get_filtered_data({})))
-        # self.table.redraw()
-        self.destroy()
+        self.combobox_region.current(0)
+        self.update_town_combobox(self.combobox_region.get())
+        self.combobox_flat_types.current(0)
+        if self.is_table_deleted:
+            self.frame.pack()
+            self.table = Table(self.frame)
+            self.table.show()
+            self.export_button.pack()
+            self.is_table_deleted = False
+        self.table.updateModel(TableModel(search.get_filtered_data({})))
+        self.table.redraw()
 
     # Setting values of town combobox according to region combobox
-    def updateTownComboBox(self, control):
-        listofTowns = search.dict_input("region", self.comboBoxRegion.get())
-        self.comboBoxTown['values'] = listofTowns
-        self.comboBoxTown.current(0)
+    def update_town_combobox(self, control):
+        town_list = search.dict_input("region", self.combobox_region.get())
+        self.combobox_town['values'] = town_list
+        # self.combobox_town.current(0)
 
-    def updateTableAfterFiltering(self, topframe):
-        for child in topframe.winfo_children():
+    def update_table(self, top_frame):
+        for child in top_frame.winfo_children():
             child.destroy()
 
         # No options selected, return unfiltered table
-        if self.comboBoxRegion.get() == "Select Region" \
-                or self.comboBoxTown.get() == "Select Town" \
-                or self.comboxBoxFlatTypes == "Select Flat Type":
-            label = tk.Label(topframe, text="Please select an option for region, town and flat type",
+        if self.combobox_region.get() == "Select Region" \
+                or self.combobox_town.get() == "Select Town" \
+                or self.combox_box_flat_types == "Select Flat Type":
+            label = tk.Label(top_frame, text="Please select an option for region, town and flat type",
                              font=VALIDAITON_FONT, fg="red")
 
-            self.table = Table(self.frame, dataframe=df)
+            self.table = Table(self.frame, dataframe=self.df)
             self.table.show()
-            if self.comboBoxRegion.get == "Select Region":
-                print("test")
+            if self.combobox_region.get == "Select Region":
                 # Setting values for town combo box
-                listofTowns = sorted(towns)
-                self.comboBoxTown = ttk.Combobox(self, state="readonly")
-                self.comboBoxTown.pack(padx=5, pady=5)
-                # self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox(""))
-                self.comboBoxTown['values'] = listofTowns
-                self.comboBoxTown.current(0)
-
-
-
+                town_list = sorted(self.towns)
+                self.combobox_town = ttk.Combobox(self, state="readonly")
+                self.combobox_town.pack(padx=5, pady=5)
+                # self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox(""))
+                self.combobox_town['values'] = town_list
+                self.combobox_town.current(0)
         # Options selected, return filtered table
-        elif not self.comboBoxRegion.get() == "Select Region" \
-                or self.comboBoxTown.get() == "Select Town" \
-                or self.comboxBoxFlatTypes == "Select Flat Type":
-            self.resultsLabel = tk.Label(topframe, text="Your Results", font=NORM_FONT)
-            self.resultsLabel.pack()
+        elif not self.combobox_region.get() == "Select Region" \
+                or self.combobox_town.get() == "Select Town" \
+                or self.combox_box_flat_types == "Select Flat Type":
+            results_label = tk.Label(top_frame, text="Your Results", font=NORM_FONT)
+            results_label.pack()
             # Return selected option for region
-            self.regionLabel = tk.Label(topframe, text="Region: " + self.comboBoxRegion.get())
-            self.regionLabel.pack()
+            region_label = tk.Label(top_frame, text="Region: " + self.combobox_region.get())
+            region_label.pack()
             # Return selected option for town
-            self.townLabel = tk.Label(topframe, text="Town: " + self.comboBoxTown.get())
-            self.townLabel.pack()
+            town_label = tk.Label(top_frame, text="Town: " + self.combobox_town.get())
+            town_label.pack()
             # Return selected option for flat type
-            self.flatLabel = tk.Label(topframe, text="Flat Type: " + self.comboxBoxFlatTypes.get())
-            self.flatLabel.pack()
+            flat_label = tk.Label(top_frame, text="Flat Type: " + self.combox_box_flat_types.get())
+            flat_label.pack()
 
             # Get the filter options from combobox
-            self.filters = {"town": self.comboBoxTown.get(), "flat_type": self.comboxBoxFlatTypes.get()}
+            self.filters = {"town": self.combobox_town.get(), "flat_type": self.combox_box_flat_types.get()}
 
-            # Replace default values to " "
+            # Replace default values to ""
             for item in self.filters:
                 if self.filters[item] == "Select Town" or self.filters[item] == "Select Flat Type":
                     self.filters[item] = ""
@@ -373,38 +335,37 @@ class ViewSummary(tk.Frame):
             filtered_data = search.get_filtered_data(self.filters)
 
             # Return total number of records for search results
-            global totalRecords
-            totalRecords = str(len(filtered_data))
+            total_records = str(len(filtered_data))
 
-            self.totalrowsLabel = tk.Label(topframe, text="Total number of records found: " + totalRecords)
-            self.totalrowsLabel.pack(padx=10, pady=0)
+            total_rows_label = tk.Label(top_frame, text="Total number of records found: " + total_records)
+            total_rows_label.pack(padx=10, pady=0)
 
             # Repopulate table with filtered results
             if self.is_table_deleted:
                 self.frame.pack()
                 self.table = Table(self.frame)
                 self.table.show()
-                self.exportButton.pack()
+                self.export_button.pack()
                 self.is_table_deleted = False
-
             self.table.updateModel(TableModel(filtered_data))
             self.table.redraw()
 
             # Validation when total records is 0
-            if totalRecords == "0":
+            if total_records == "0":
                 del filtered_data
                 self.frame.pack_forget()
-                self.exportButton.pack_forget()
+                self.export_button.pack_forget()
                 self.is_table_deleted = True
-                self.validationLabel = tk.Label(topframe,
-                                                text="Sorry, no matching records found based on filters. Please "
-                                                     "try another search criterion.", font=VALIDAITON_FONT,
-                                                fg="red")
-                self.validationLabel.pack()
+                validation_label = tk.Label(top_frame,
+                                            text="Sorry, no matching records found based on filters. Please "
+                                                 "try another search criterion.", font=VALIDAITON_FONT,
+                                            fg="red")
+                validation_label.pack()
 
     # Export Window
-    def displayExport(self):
-        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')], initialfile='summary.csv')
+    def export_csv(self):
+        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
+                             initialfile='summary.csv')
         if file is not None:
             export.export_to_csv(file.name, self.filters)
 
@@ -473,7 +434,7 @@ class ViewCharts(tk.Frame):
         except AttributeError:
             pass
 
-        # Add the bargraph into the ViewCharts window
+        # Add the bar graph into the ViewCharts window
         self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
 
         # to display toolbar
@@ -489,13 +450,14 @@ class ViewCharts(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
+        self.canvas = None
+        self.toolbar = None
         label = tk.Label(self, text="Analyse Resale Flats by Town", font=NORM_FONT)
         label.pack(padx=10, pady=10)
 
-        backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                               command=lambda: self.refresh(controller))
-        backbutton.pack()
+        back_button = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+                                command=lambda: self.refresh(controller))
+        back_button.pack()
 
         # Add dropdown list with list of towns:
         town_list_options = dh.get_all_towns()
@@ -503,7 +465,7 @@ class ViewCharts(tk.Frame):
         clicked.set(town_list_options[0])
 
         # Add Combobox with the list of towns onto the GUI:
-        self.town_combobox = ttk.Combobox(self, value=["Select Town"]+town_list_options, state='readonly')
+        self.town_combobox = ttk.Combobox(self, value=["Select Town"] + town_list_options, state='readonly')
         self.town_combobox.current(0)
         self.town_combobox.bind("<<ComboboxSelected>>", self.selected)
         self.town_combobox.pack(pady=10)
@@ -518,9 +480,9 @@ class MainBrowser(tk.Frame):
         self.focus_set()
         self.bind("<Configure>", self.on_configure)
 
-        backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                               command=lambda: controller.show_frame(SelectOptions))
-        backbutton.grid(row=0, column=0, pady=10)
+        back_button = tk.Button(self, text="Back to Home", font=SMALL_FONT,
+                                command=lambda: controller.show_frame(SelectOptions))
+        back_button.grid(row=0, column=0, pady=10)
 
         # Browser
         self.browser_frame = Browser(self, controller)
@@ -531,9 +493,7 @@ class MainBrowser(tk.Frame):
 
     def on_configure(self, event):
         if self.browser_frame:
-            width = event.width
-            height = event.height
-            self.browser_frame.on_mainframe_configure(width, height)
+            self.browser_frame.on_mainframe_configure(event.width, event.height)
 
     def get_browser(self):
         if self.browser_frame:
