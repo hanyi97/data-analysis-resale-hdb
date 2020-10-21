@@ -238,7 +238,7 @@ class ViewSummary(tk.Frame):
         town_list = sorted(self.towns)
         self.combobox_town = ttk.Combobox(self, state="readonly")
         self.combobox_town.pack(padx=5, pady=5)
-        self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox(""))
+        self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.town_selected(""))
         self.combobox_town['values'] = ["Select Town"] + town_list
         self.combobox_town.current(0)
 
@@ -284,18 +284,22 @@ class ViewSummary(tk.Frame):
     def update_town_combobox(self, control):
         town_list = search.dict_input("region", self.combobox_region.get())
         self.combobox_town['values'] = town_list
-        # self.combobox_town.current(0)
+        self.combobox_town.current(0)
+
+    def town_selected(self, control):
+        town_list = search.dict_input("region", self.combobox_region.get())
+        self.combobox_town['values'] = town_list
 
     def update_table(self, top_frame):
         for child in top_frame.winfo_children():
             child.destroy()
 
         # No options selected, return unfiltered table
-        if self.combobox_region.get() == "Select Region" \
-                or self.combobox_town.get() == "Select Town" \
+        if self.combobox_town.get() == "Select Town" \
                 or self.combox_box_flat_types == "Select Flat Type":
-            label = tk.Label(top_frame, text="Please select an option for region, town and flat type",
+            label = tk.Label(top_frame, text="Please select an option for town and flat type",
                              font=VALIDAITON_FONT, fg="red")
+            label.pack()
 
             self.table = Table(self.frame, dataframe=self.df)
             self.table.show()
@@ -570,6 +574,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
