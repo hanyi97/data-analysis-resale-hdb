@@ -245,10 +245,10 @@ class ViewSummary(tk.Frame):
 
         # Setting values for flat types combo box
         flat_type_list = sorted(self.flat_types)
-        self.combox_box_flat_types = ttk.Combobox(self, state="readonly")
-        self.combox_box_flat_types.pack(padx=5, pady=5)
-        self.combox_box_flat_types['values'] = ["Select Flat Type"] + flat_type_list
-        self.combox_box_flat_types.current(0)
+        self.combobox_box_flat_types = ttk.Combobox(self, state="readonly")
+        self.combobox_box_flat_types.pack(padx=5, pady=5)
+        self.combobox_box_flat_types['values'] = ["Select Flat Type"] + flat_type_list
+        self.combobox_box_flat_types.current(0)
 
         filter_button = tk.Button(self, text="Filter", font=SMALL_FONT,
                                   command=lambda: self.update_table(top_frame))
@@ -298,7 +298,7 @@ class ViewSummary(tk.Frame):
 
         # No options selected, return unfiltered table
         if self.combobox_town.get() == "Select Town" \
-                or self.combox_box_flat_types == "Select Flat Type":
+                or self.combobox_box_flat_types == "Select Flat Type":
             label = tk.Label(top_frame, text="Please select an option for town and flat type",
                              font=VALIDAITON_FONT, fg="red")
             label.pack()
@@ -324,11 +324,11 @@ class ViewSummary(tk.Frame):
             town_label = tk.Label(top_frame, text="Town: " + self.combobox_town.get())
             town_label.pack()
             # Return selected option for flat type
-            flat_label = tk.Label(top_frame, text="Flat Type: " + self.combox_box_flat_types.get())
+            flat_label = tk.Label(top_frame, text="Flat Type: " + self.combobox_box_flat_types.get())
             flat_label.pack()
 
             # Get the filter options from combobox
-            self.filters = {"town": self.combobox_town.get(), "flat_type": self.combox_box_flat_types.get()}
+            self.filters = {"town": self.combobox_town.get(), "flat_type": self.combobox_box_flat_types.get()}
 
             # Replace default values to ""
             for item in self.filters:
