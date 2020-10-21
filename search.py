@@ -43,6 +43,8 @@ def dict_input(filter_option, selected_input):
     in_dict dictionary. key = (str) column, value = column data value
     """
     try:
+        if selected_input == "Select Region":
+            selected_input = ""
         in_dict.update({filter_option: selected_input})
         # if the filter option is in the in_dict dictionary, the new input will be updated
         if filter_option in in_dict:
@@ -50,7 +52,10 @@ def dict_input(filter_option, selected_input):
         # if the filter_option is "region", the available inputs for "town" will be updated
         if filter_option == "region":
             region_input = selected_input
-            return data_helper.get_filtered_towns(region_input)
+            if region_input == "":
+                return ["Select Town"] + data_helper.get_all_towns()
+            else:
+                return data_helper.get_filtered_towns(region_input)
         # if the filter_option is "town", the available inputs for "region" will be updated
         elif filter_option == "town":
             town_input = selected_input
@@ -71,7 +76,8 @@ def get_filtered_data(in_dict):
     """
     # user did not select any inputs to filter the dataframe, return dataframe result
     df = data_helper.get_dataframe()
-    if in_dict == {}:
+    print(in_dict)
+    if in_dict == {} or all(val == "" for val in in_dict.values()):
         return df
     # user did select at least 1 input to filter the dataframe, return dataframe result
     else:
