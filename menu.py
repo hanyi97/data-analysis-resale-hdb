@@ -38,6 +38,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
+        self._frame = None
         for F in (SelectOptions, ViewCharts, ViewSummary, MainBrowser, ViewTop10CheapestFlats):
             frame = F(container, self)
             self.frames[F] = frame
@@ -49,13 +50,12 @@ class WelcomeWindow(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-    def switch_frame(self, cont):
-        frame = self.frames[cont]
-        new_frame = frame
-        if frame is not None:
-            frame.destroy()
-        new_frame.pack()
-        new_frame.tkraise()
+    def switch_frame(self, frame_class):
+        new_frame = frame_class(self)
+        if self._frame is not None:
+            self._frame.destroy()
+        self._frame = new_frame
+        self._frame.pack()
 
 
 # Select Options Window
@@ -411,6 +411,8 @@ class ViewSummary(tk.Frame):
 class ViewCharts(tk.Frame):
     def plot_bar_graph(self, town=''):
         try:
+            if town == 'Select Town':
+                town = ''
             town = town.upper()
             df = bg.get_filtered_data(town)
             if len(df) == 0:
@@ -479,14 +481,19 @@ class ViewCharts(tk.Frame):
 
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
+    def refresh(self, controller):
+        self.town_combobox.current(0)
+        self.selected('')
+        controller.show_frame(SelectOptions)
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
+        label = tk.Label(self, text="Analyse Resale Flats by Town", font=NORM_FONT)
         label.pack(padx=10, pady=10)
 
         backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT,
-                               command=lambda: controller.show_frame(SelectOptions))
+                               command=lambda: self.refresh(controller))
         backbutton.pack()
 
         # Add dropdown list with list of towns:
@@ -495,10 +502,13 @@ class ViewCharts(tk.Frame):
         clicked.set(town_list_options[0])
 
         # Add Combobox with the list of towns onto the GUI:
-        self.town_combobox = ttk.Combobox(self, value=town_list_options, state='readonly')
+        self.town_combobox = ttk.Combobox(self, value=["Select Town"]+town_list_options, state='readonly')
         self.town_combobox.current(0)
         self.town_combobox.bind("<<ComboboxSelected>>", self.selected)
         self.town_combobox.pack(pady=10)
+
+        # Initialise default bar graph
+        self.selected('')
 
 
 class MainBrowser(tk.Frame):
@@ -599,6 +609,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
