@@ -84,19 +84,19 @@ if __name__ == "__main__":
             frame.tkraise()  # raises the frame to the front
 
         def createButtons(self, controller):
-            chartsBTN = tk.Button(self, text="View Charts", height=5, width=30, font=NORM_FONT,
+            chartsBTN = tk.Button(self, text="View Charts", height=3, width=30, font=NORM_FONT,
                                   command=lambda: controller.show_frame(ViewCharts))
             chartsBTN.pack(padx=10, pady=10)
 
-            treemapBTN = tk.Button(self, text="View Tree Map", height=5, width=30, font=NORM_FONT,
+            treemapBTN = tk.Button(self, text="View Tree Map", height=3, width=30, font=NORM_FONT,
                                    command=lambda: controller.show_frame(MainBrowser))
             treemapBTN.pack(pady=10, padx=10)
 
-            summaryBTN = tk.Button(self, text="View Summary", height=5, width=30, font=NORM_FONT,
+            summaryBTN = tk.Button(self, text="View Summary", height=3, width=30, font=NORM_FONT,
                                    command=lambda: controller.show_frame(ViewSummary))
             summaryBTN.pack(padx=10, pady=10)
 
-            ViewTop10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=5, width=30, font=NORM_FONT,
+            ViewTop10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=3, width=30, font=NORM_FONT,
                                   command=lambda: controller.show_frame(ViewTop10CheapestFlats))
             ViewTop10.pack(padx=10, pady=10)
 
@@ -236,6 +236,7 @@ if __name__ == "__main__":
 
             # Get regions, towns and flat types from datahelper
             global df
+            global towns
             df = dh.get_dataframe()
             towns = dh.get_all_towns()
             regions = dh.get_all_regions()
@@ -304,6 +305,17 @@ if __name__ == "__main__":
                 label.pack(padx=20, pady=20)
                 self.table = Table(self.frame, dataframe=df)
                 self.table.show()
+                if self.comboBoxRegion.get == "Select Region":
+                    print("test")
+                    # Setting values for town combo box
+                    listofTowns = sorted(towns)
+                    self.comboBoxTown = ttk.Combobox(self, state="readonly")
+                    self.comboBoxTown.pack(padx=5, pady=5)
+                    # self.comboBoxTown.bind('<<ComboboxSelected>>', lambda x: self.updateTownComboBox(""))
+                    self.comboBoxTown['values'] = listofTowns
+                    self.comboBoxTown.current(0)
+
+
 
             # Options selected, return filtered table
             elif not self.comboBoxRegion.get() == "Select Region" \
@@ -447,6 +459,9 @@ if __name__ == "__main__":
             label = tk.Label(self, text="Analyse Resale Flats by Region", font=NORM_FONT)
             label.pack(padx=10, pady=10)
 
+            backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT, command=lambda: controller.show_frame(SelectOptions))
+            backbutton.pack()
+
             # Add dropdown list with list of towns:
             town_list_options = dh.get_all_towns()
             clicked = tk.StringVar()
@@ -456,10 +471,7 @@ if __name__ == "__main__":
             self.town_combobox = ttk.Combobox(self, value=town_list_options)
             self.town_combobox.current(0)
             self.town_combobox.bind("<<ComboboxSelected>>", self.selected)
-            self.town_combobox.pack()
-
-            backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
-            backbutton.pack(padx=10, pady=10)
+            self.town_combobox.pack(pady=10)
 
 
     class MainBrowser(tk.Frame):
@@ -468,7 +480,7 @@ if __name__ == "__main__":
             self.focus_set()
             self.bind("<Configure>", self.on_configure)
 
-            backbutton = tk.Button(self, text="Back to Home", command=lambda: controller.show_frame(SelectOptions))
+            backbutton = tk.Button(self, text="Back to Home", font=SMALL_FONT, command=lambda: controller.show_frame(SelectOptions))
             backbutton.grid(row=0, column=0, pady=10)
 
             # Browser
@@ -556,7 +568,8 @@ if __name__ == "__main__":
 
 app = WelcomeWindow()
 app.title("HDB Resale Flats Analyser")
-app.geometry("1920x1080")
 cef.Initialize()
+width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
+app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
 app.mainloop()
 cef.Shutdown()
