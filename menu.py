@@ -328,7 +328,7 @@ class ViewSummary(tk.Frame):
                 or self.comboxBoxFlatTypes == "Select Flat Type":
             label = tk.Label(topframe, text="Please select an option for region, town and flat type",
                              font=VALIDAITON_FONT, fg="red")
-            label.pack(padx=20, pady=20)
+
             self.table = Table(self.frame, dataframe=df)
             self.table.show()
             if self.comboBoxRegion.get == "Select Region":
@@ -599,6 +599,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()

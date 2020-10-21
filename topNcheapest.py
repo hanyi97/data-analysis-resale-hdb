@@ -12,6 +12,7 @@ df = data_helper.get_dataframe()
 in_dict = {}
 
 
+
 # Get all values in a column, this only get 1 column, call in GUI.
 def get_unique(column):
     """Display all the values of a column in a dataframe
@@ -80,7 +81,7 @@ def get_filtered_data(in_dict):
         return df
 
 
-def get_cheapest_hdb(rows=10):
+def get_cheapest_hdb(in_dict, rows=10):
     """Get cheapest HDB based on user filtered result
     Top n cheapest HDB based on each flat type
 
