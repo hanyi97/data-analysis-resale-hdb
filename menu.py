@@ -93,7 +93,7 @@ class SelectOptions(tk.Frame):
         frame.tkraise()  # raises the frame to the front
 
     def createButtons(self, controller):
-        chartsBTN = tk.Button(self, text="View Charts", height=3, width=30, font=NORM_FONT,
+        chartsBTN = tk.Button(self, text="View Bar Graph", height=3, width=30, font=NORM_FONT,
                               command=lambda: controller.show_frame(ViewCharts))
         chartsBTN.pack(padx=10, pady=10)
 
@@ -599,6 +599,6 @@ if __name__ == "__main__":
     app.title("HDB Resale Flats Analyser")
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry("%dx%d" % (width, height))  # Set full screen with tool bar on top
-    # cef.Initialize()
+    cef.Initialize()
     app.mainloop()
-    # cef.Shutdown()
+    cef.Shutdown()
