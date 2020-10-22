@@ -51,7 +51,6 @@ class WelcomeWindow(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-
 # Select Options Window
 class SelectOptions(tk.Frame):
     def __init__(self, parent, controller):
@@ -95,6 +94,8 @@ class SelectOptions(tk.Frame):
                                     command=lambda: controller.show_frame(MainBrowser))
         avgbyregion_btn.pack(pady=10, padx=10)
 
+
+
     # summary_btn = tk.Button(self, text='View Summary', height=3, width=30, font=NORM_FONT,
         #                         command=lambda: controller.show_frame(ViewSummary))
         # summary_btn.pack(padx=10, pady=10)
@@ -103,6 +104,24 @@ class SelectOptions(tk.Frame):
         #                        command=lambda: controller.show_frame(ViewTop10CheapestFlats))
         # view_top10.pack(padx=10, pady=10)
 
+'''Separate popout window'''
+class ViewTop10CheapestFlatsWindow(tk.Tk):
+
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+        self.frames = {}
+        frame = ViewTop10CheapestFlats(container, self)
+        self.frames[ViewTop10CheapestFlats] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.show_frame(ViewTop10CheapestFlats)
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
 
 class ViewTop10CheapestFlats(tk.Frame):
     def __init__(self, parent, controller):
@@ -281,6 +300,11 @@ class ViewSummary(tk.Frame):
         self.export_button = tk.Button(self, text='Export Results as CSV', font=SMALL_FONT,
                                        command=lambda: self.export_csv())
         self.export_button.grid(row=5, padx=10, pady=10)
+
+        self.top10_button = tk.Button(self, text='Top 10 Cheapest Flats', font=SMALL_FONT,
+                                       command=lambda: self.showTop10())
+        self.top10_button.grid(row=6, padx=10, pady=10)
+
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
         tk.Grid.columnconfigure(self, 0, weight=1)
@@ -380,6 +404,13 @@ class ViewSummary(tk.Frame):
                              initialfile='summary.csv')
         if file is not None:
             export.export_to_csv(file.name, self.filters)
+
+    # Top 10 Window
+    def showTop10(self):
+        mainApp = ViewTop10CheapestFlatsWindow()
+        mainApp.title("Top 10 Cheapest Flats")
+        mainApp.geometry("400x400")
+        mainApp.mainloop()
 
 
 class ViewCharts(tk.Frame):
