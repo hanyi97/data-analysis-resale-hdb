@@ -298,32 +298,15 @@ class ViewSummary(tk.Frame):
 
     def town_selected(self, control):
         town_list = search.dict_input("region", self.combobox_region.get())
-        self.combobox_town['values'] = [self.CONST_SELECT_TOWN] + town_list
+        if town_list[0] != self.CONST_SELECT_TOWN:
+            town_list = [self.CONST_SELECT_TOWN] + town_list
+        self.combobox_town['values'] = town_list
 
     def update_table(self, frame):
         for child in frame.winfo_children():
             child.destroy()
         if not frame.winfo_ismapped():
             frame.grid(row=3)
-        # # No options selected, return unfiltered table
-        # if self.combobox_town.get() == "Select Town" \
-        #         or self.combobox_flat_types.get() == "Select Flat Type":
-        #     label = tk.Label(results_frame, text="Please select an option for town and flat type",
-        #                      font=VALIDAITON_FONT, fg="red")
-        #     label.pack()
-        #
-        #     self.table.updateModel(TableModel(self.df))
-        #     self.table.redraw()
-        #     if self.combobox_region.get == "Select Region":
-        #         # Setting values for town combo box
-        #         town_list = sorted(self.towns)
-        #         self.combobox_town = ttk.Combobox(self, state="readonly")
-        #         self.combobox_town.pack(padx=5, pady=5)
-        #         # self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox(""))
-        #         self.combobox_town['values'] = town_list
-        #         self.combobox_town.current(0)
-        # # Options selected, return filtered table
-        # else:
         selected_region = self.combobox_region.get()
         selected_town = self.combobox_town.get()
         selected_flat_type = self.combobox_flat_types.get()
