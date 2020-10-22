@@ -144,11 +144,7 @@ class ViewTop10CheapestFlats(tk.Frame):
                            rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
         self.table.show()
         # Export to PDF button
-<<<<<<< HEAD:MainGUI.py
-        self.export_button = tk.Button(self, text='Export Overview as CSV', font=SMALL_FONT,
-=======
         self.export_button = tk.Button(self, text='Export Cheapest Flats as CSV', font=SMALL_FONT,
->>>>>>> 1e5e119d205eca2b68d30eabe92fb19a8f072063:menu.py
                                        command=lambda: self.export_csv())
         self.export_button.grid(row=5, padx=10, pady=10)
         # Center widgets
@@ -167,10 +163,7 @@ class ViewTop10CheapestFlats(tk.Frame):
             # Return selected option for flat type
             flat_label = tk.Label(frame, text='Flat Type: ' + self.combobox_flat_types.get())
             flat_label.pack()
-        else:
-            frame.grid_forget()
 
-<<<<<<< HEAD:MainGUI.py
         elif self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
             # frame.grid_forget()
             validation_label = tk.Label(frame, text='Please select an option for flat type',
@@ -189,13 +182,11 @@ class ViewTop10CheapestFlats(tk.Frame):
         # Replace default values to ' '
         if self.filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
             self.filters = {}
-=======
         global filters
         filters['flat_type'] = self.combobox_flat_types.get()
         for item in list(filters):
             if filters[item] == self.CONST_SELECT_FLAT_TYPE:
                 del filters[item]
->>>>>>> 1e5e119d205eca2b68d30eabe92fb19a8f072063:menu.py
 
         # Update df according to updated filtered options
         filtered_data = filter.get_cheapest_hdb(filters)
@@ -231,21 +222,18 @@ class ViewTop10CheapestFlats(tk.Frame):
                                         fg='red')
             validation_label.pack()
 
-<<<<<<< HEAD:MainGUI.py
     # Export Window
     def export_csv(self):
         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
                              initialfile='summary.csv')
         if file is not None:
-            ExportPDF.export_to_csv(file.name, self.filters)
-=======
+            export.export_to_csv(file.name, self.filters)
     def export_csv(self):
         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
                              initialfile='top10cheapest.csv')
         if file is not None:
             export.export_to_csv(file.name, filters, 2)
 
->>>>>>> 1e5e119d205eca2b68d30eabe92fb19a8f072063:menu.py
 
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
@@ -431,23 +419,24 @@ class ViewCharts(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.canvas = None
         self.toolbar = None
-        label = tk.Label(self, text='Analyse Resale Flats by Town', font=NORM_FONT)
-        label.pack(padx=10, pady=10)
-
+        label = tk.Label(self, text='Analyse Resale Flats by Town', font=LARGE_FONT)
+        label.grid(row=0, pady=10, padx=10)
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: self.refresh(controller))
-        back_button.pack()
+        back_button.grid(row=1, padx=5, pady=5)
 
         # Add dropdown list with list of towns:
         town_list_options = dh.get_all_towns()
         clicked = tk.StringVar()
         clicked.set(town_list_options[0])
 
+        combobox_frame = tk.Frame(self)
+        combobox_frame.grid(row=2)
         # Add Combobox with the list of towns onto the GUI:
-        self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly')
+        self.town_combobox = ttk.Combobox(combobox_frame, value=['Select Town'] + town_list_options, state='readonly')
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)
-        self.town_combobox.pack(pady=10)
+        self.town_combobox.grid(row=0, column=1, padx=5, pady=5)
 
         # Initialise default bar graph
         self.selected('')
@@ -625,6 +614,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
