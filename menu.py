@@ -44,7 +44,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (SelectOptions, ViewSummary, ViewCharts, MainBrowser, chartsWindow):
+        for F in (SelectOptions, ViewSummary, ViewCharts, MainBrowser):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky='nsew')
@@ -90,21 +90,20 @@ class SelectOptions(tk.Frame):
 
         avgbyflattype_btn = tk.Button(self, text='View average resale value by flat type', height=3, width=30,
                                       font=NORM_FONT,
-                                      command=lambda: controller.show_frame(self.showCharts))
+                                      command=lambda: controller.show_frame(ViewCharts))
         avgbyflattype_btn.pack(padx=10, pady=10)
 
         avgbyregion_btn = tk.Button(self, text='View average resale value by region', height=3, width=30,
                                     font=NORM_FONT,
-                                    command=lambda: controller.show_frame(self.showCharts))
+                                    command=lambda: controller.show_frame(MainBrowser))
         avgbyregion_btn.pack(pady=10, padx=10)
 
-        # Top 10 Window
 
-    def showCharts(self):
-        mainApp = chartsWindow()
-        mainApp.title('Charts')
-        mainApp.geometry('1300x600')
-        mainApp.mainloop()
+    # def showCharts(self):
+    #     mainApp = chartsWindow()
+    #     mainApp.title('Charts')
+    #     mainApp.geometry('1300x600')
+    #     mainApp.mainloop()
 
 
 class ViewTop10CheapestFlatsWindow(tk.Tk):
@@ -435,12 +434,18 @@ class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.canvas = None
-        self.toolbar = None
-        label = tk.Label(self, text='Analyse Resale Flats by Town', font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
+        # self.toolbar = None
+        # label = tk.Label(self, text='Analyse Resale Flats by Town', font=LARGE_FONT)
+        # label.grid(pady=10, padx=10)
+        # back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
+        #                         command=lambda: self.refresh(controller))
+        # back_button.pack(padx=5, pady=5)
+
+        label = tk.Label(self, text= "Analyse Resale Flats by Town", font=LARGE_FONT)
+        label.grid(row=0, pady=10, padx=10)
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: self.refresh(controller))
-        back_button.pack(padx=5, pady=5)
+        back_button.grid(row=1, padx=5, pady=5)
 
         # Add dropdown list with list of towns:
         town_list_options = dh.get_all_towns()
@@ -453,10 +458,35 @@ class ViewCharts(tk.Frame):
         self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly')
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)
-        self.town_combobox.pack(padx=5, pady=5)
+        self.town_combobox.grid(padx=5, pady=5)
 
         # Initialise default bar graph
         self.selected('')
+
+        self.focus_set()
+        self.bind('<Configure>', self.on_configure)
+
+
+        # Browser
+        self.browser_frame = Browser(self, controller)
+        # self.browser_frame.grid(row=1, column=0,
+        #                         sticky=(tk.N + tk.S + tk.E + tk.W))
+        tk.Grid.rowconfigure(self, 1, weight=1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
+
+    def on_configure(self, event):
+        if self.browser_frame:
+            self.browser_frame.on_mainframe_configure(event.width, event.height)
+
+    def get_browser(self):
+        if self.browser_frame:
+            return self.browser_frame.browser
+        return None
+
+    def get_browser_frame(self):
+        if self.browser_frame:
+            return self.browser_frame
+        return None
 
     @staticmethod
     def plot_bar_graph(town=''):
@@ -525,9 +555,14 @@ class ViewCharts(tk.Frame):
         # Add the bar graph into the ViewCharts window
         self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
         # to display toolbar
-        self.toolbar = NavigationToolbar2Tk(self.canvas, self)
-        self.toolbar.update()
-        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        # self.toolbar = NavigationToolbar2Tk(self.canvas, self)
+        # self.toolbar.update()
+        # self.canvas.get_tk_widget().grid(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        self.canvas.get_tk_widget().grid()
+        tk.Grid.rowconfigure(self, 1, weight=1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
+
+
 
     def refresh(self, controller):
         self.town_combobox.current(0)
@@ -625,57 +660,6 @@ class LoadHandler(object):
     def __init__(self, browser_frame):
         self.browser_frame = browser_frame
 
-
-
-# class Charts(tk.Tk):
-#     def __init__(self, *args, **kwargs):
-#         tk.Tk.__init__(self, *args, **kwargs)
-#         tk.Tk.wm_title(self, "View Average Resale Prices")
-#
-#
-#         container = tk.Frame(self)
-#         container.pack(side="top", fill="both", expand=True)
-#         container.grid_rowconfigure(100, weight=1)
-#         container.grid_columnconfigure(100, weight=1)
-#
-#         # Create Frame Library and use For Loop to switch between frames
-#
-#         self.frames = {}
-#         self.show_frame(ViewCharts)
-#         self.show_frame(MainBrowser)
-#
-#
-#         # for i in (MainBrowser, ViewCharts):
-#         #     frame = i(container, self)
-#         #     self.frames[i] = frame
-#         #     frame.grid(row=100, column=100, sticky="nsew")
-#         #
-#         # self.show_frame(ViewCharts)
-#
-#     def show_frame(self, cont):
-#         frame = self.framesi [cont]
-#         frame.tkraise()
-
-
-class chartsWindow(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-        self.frames = {}
-
-        frame = ViewCharts(container, self)
-        self.frames[ViewCharts] = frame
-        frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(ViewCharts)
-        self.show_frame(MainBrowser)
-
-
-    def show_frame(self, cont):
-        frame = self.frames[cont]
-        frame.tkraise()
 
 
 
