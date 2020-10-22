@@ -96,10 +96,18 @@ def export_to_pdf(file_path=CONST_PDF_PATH):
         print(e)
 
 
-def export_to_csv(file_path=CONS_CSV_PATH, filters={}):
+def export_to_csv(file_path=CONS_CSV_PATH, filters={}, option=1):
     """Function to export filtered data to CSV
     Call get_filtered_data function from search module to retrieve user filtered data
+
+    Parameters:
+    file_path (str): path of file to be saved
+    filters (dict): dictionary of filters that user selected
+    option (int): 1 for overview data, 2 for top 10 cheapest hdb
     """
-    df = get_filtered_data(filters)
+    if option == 1:
+        df = get_filtered_data(filters)
+    else:
+        df = get_cheapest_hdb(filters)
     df.to_csv(file_path, index=False)
 
