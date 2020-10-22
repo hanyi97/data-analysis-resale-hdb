@@ -5,16 +5,11 @@ import os.path as path
 
 from search import get_filtered_data, in_dict as filter_input
 from reportlab.lib.pagesizes import landscape, A4
-from reportlab.pdfbase.pdfmetrics import registerFont
-from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, PageBreak, Image
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
 
-# Register fonts
-registerFont(TTFont('Arial', 'ARIAL.ttf'))
-registerFont(TTFont('Arial-Bold', 'ARIAL BOLD.ttf'))
 # Declare constant variables
 CONST_PDF_PATH = 'resources/summary.pdf'
 CONS_CSV_PATH = 'resources/summary.csv'
@@ -53,14 +48,14 @@ def setup_data_summary_page():
 
     # Format data
     data = [df.columns.values.tolist()] + df.values.tolist()
-    data[0] = list(map(lambda col_name: col_name.upper().replace('_', ' '), data[0]))
+    data[0] = list(map(lambda col_name: '<b>'+col_name.upper().replace('_', ' ') + '</b>', data[0]))
 
     # Create a list and add heading to list
     elements = [Paragraph("<u>Cheapest Flats</u>", heading_style)]
 
     # Format each text to allow word wrapping
-    pcol_style = ParagraphStyle(name='BodyText', fontName='Arial-Bold', fontSize=8, wordWrap='CJK')
-    pstyle = ParagraphStyle(name='BodyText', fontName='Arial', fontSize=8, wordWrap='CJK')
+    pcol_style = ParagraphStyle(name='BodyText', fontSize=8, wordWrap='CJK')
+    pstyle = ParagraphStyle(name='BodyText', fontSize=8, wordWrap='CJK')
     data2 = [[Paragraph(str(row), pcol_style) for row in data[0]]] + \
             [[Paragraph(str(cell), pstyle) for cell in row] for row in data[1:]]
 
@@ -124,4 +119,3 @@ def export_to_csv(file_path=CONS_CSV_PATH, filters={}):
     """
     df = get_filtered_data(filters)
     df.to_csv(file_path, index=False)
-
