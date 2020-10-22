@@ -122,8 +122,6 @@ class ViewTop10CheapestFlatsWindow(tk.Tk):
 
 class ViewTop10CheapestFlats(tk.Frame):
     def __init__(self, parent, controller):
-        print(filters)
-        self.filters = {}
         self.is_table_deleted = False
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
         tk.Frame.__init__(self, parent)
@@ -135,24 +133,22 @@ class ViewTop10CheapestFlats(tk.Frame):
         # back_button.grid(row=1, padx=10, pady=10)
 
         # Get flat types from datahelper
-        # self.data = dh.get_dataframe()
-        print("Filters: ", filters)
-        self.data = Filter.get_filtered_data(filters)
+        self.data = Filter.get_cheapest_hdb(filters)
         flat_types = dh.get_all_flat_types()
 
-        combobox_frame = tk.Frame(self)
-        combobox_frame.grid(row=2)
-        # Setting values for flat types combo box
-        list_of_flat_types = sorted(flat_types)
-        self.combobox_flat_types = ttk.Combobox(combobox_frame, state='readonly')
-        self.combobox_flat_types.grid(row=0, column=0, padx=5, pady=5)
-        self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + list_of_flat_types
-        self.combobox_flat_types.current(0)
+        if 'flat_type' not in filters:
+            combobox_frame = tk.Frame(self)
+            combobox_frame.grid(row=2)
+            # Setting values for flat types combo box
+            list_of_flat_types = sorted(flat_types)
+            self.combobox_flat_types = ttk.Combobox(combobox_frame, state='readonly')
+            self.combobox_flat_types.grid(row=0, column=0, padx=5, pady=5)
+            self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + list_of_flat_types
+            self.combobox_flat_types.current(0)
 
-        filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
-                                  command=lambda: self.update_table(top_frame))
-        filter_button.grid(row=0, column=1, padx=10, pady=10)
-        print(list_of_flat_types)
+            filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
+                                      command=lambda: self.update_table(top_frame))
+            filter_button.grid(row=0, column=1, padx=10, pady=10)
         # Search results table_frame
         top_frame = tk.Frame(self)
         top_frame.grid(row=3)
@@ -175,14 +171,6 @@ class ViewTop10CheapestFlats(tk.Frame):
         for child in frame.winfo_children():
             child.destroy()
 
-        # No options selected, return unfiltered table
-        # if self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
-        #     label = tk.Label(top_frame, text='Please select an option for flat type',
-        #                      font=VALIDAITON_FONT, fg='red')
-        #     label.pack(padx=20, pady=20)
-        #     self.table = Table(self.table_frame, dataframe=self.data)
-        #     self.table.show()
-
         # Options selected, return filtered table
         if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
             results_label = tk.Label(frame, text='Your Results', font=NORM_FONT)
@@ -199,19 +187,19 @@ class ViewTop10CheapestFlats(tk.Frame):
             self.table = Table(self.table_frame, dataframe=self.data)
             self.table.show()
 
-        # else:
-        #
-        #     frame.grid_forget()
-
         # Get the filter options from combobox
-        self.filters = {'flat_type': self.combobox_flat_types.get()}
+        global filters
+        if 'flat_type' not in filters:
+            filters = {'flat_type': self.combobox_flat_types.get()}
+        else:
+            filters['flat_type'] = self.combobox_flat_types.get()
 
         # Replace default values to ' '
-        if self.filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
-            self.filters = {}
+        if filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
+            filters = {}
 
         # Update df according to updated filtered options
-        filtered_data = Filter.get_cheapest_hdb(self.filters)
+        filtered_data = Filter.get_cheapest_hdb(filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
@@ -251,7 +239,6 @@ class ViewTop10CheapestFlats(tk.Frame):
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
         self.is_table_deleted = False
-        # self.filters = {}
         self.CONST_SELECT_REGION = 'Select Region'
         self.CONST_SELECT_TOWN = 'Select Town'
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
