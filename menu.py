@@ -11,7 +11,7 @@ from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-# from cefpython3 import cefpython as cef
+from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
 
@@ -539,10 +539,10 @@ class MainBrowser(tk.Frame):
 
         # Browser
         self.browser_frame = Browser(self, controller)
-        # self.browser_frame.grid(row=1, column=0,
-        #                         sticky=(tk.N + tk.S + tk.E + tk.W))
-        tk.Grid.rowconfigure(self, 1, weight=1)
-        tk.Grid.columnconfigure(self, 0, weight=1)
+        self.browser_frame.pack()
+        # tk.pack()
+        # tk.Grid.rowconfigure(self, 1, weight=1)
+        # tk.Grid.columnconfigure(self, 0, weight=1)
 
     def on_configure(self, event):
         if self.browser_frame:
@@ -623,6 +623,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    # cef.Initialize()
+    cef.Initialize()
     app.mainloop()
-    # cef.Shutdown()
+    cef.Shutdown()
