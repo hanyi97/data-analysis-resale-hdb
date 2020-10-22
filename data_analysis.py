@@ -8,13 +8,25 @@ from tabulate import tabulate
 df = data_helper.get_dataframe()
 
 # Display index, columns in df, number of entries, number of non-null values, column data type and memory information
-print("\033[32;1m{}\033[0m".format("The following are the information of the dataframe"))
+print('\033[32;1m{}\033[0m'.format('The following are the information of the dataframe'))
 df.info()
 
-print("\n\033[32;1m{}\033[0m".format("The following are the data analysis for resale price"))
+print('\n\033[32;1m{}\033[0m'.format('The following are the data analysis for resale price'))
 
 
 def resale_price_year(year):
+    """Get the table of description of the resale price for the specified year
+
+    Parameters:
+    year: 2017,2018,2019,"2017-2019"
+
+    Returns:
+    table: description of resale price - minimum resale price, maximum resale price,
+    lower limit of the resale price, upper limit of the resale price, the first, second
+    and third quartile of the resale price, interquartile range of resale price,
+    mean of resale price, standard deviation of resale price,
+    coefficient variation of resale price, skewness of resale price and numbers of outliers.
+    """
     df = data_helper.get_dataframe()
     if year == 2017:
         df = df.loc[lambda df: df['year'] == 2017]
@@ -33,20 +45,20 @@ def resale_price_year(year):
     low_limit = q1 - (1.5 * iqr)
     up_limit = q3 + (1.5 * iqr)
     # the outliers
-    rp_int_list = list(map(int, df["resale_price"].unique()))
+    rp_int_list = list(map(int, df['resale_price'].unique()))
     outlier_count = 0
     for x in rp_int_list:
         if not x <= up_limit:
             outlier_count += 1
 
     # description of resale price in table format
-    resale_table = [["Min resale price:", df['resale_price'].min()],
+    resale_table = [['Min resale price:', df['resale_price'].min()],
                     ['lower limit:', low_limit],
                     ['Q1 resale price:', q1],
                     ['Q2 resale price:', q2],
                     ['Q3 resale price: ', q3],
                     ['upper limit:', up_limit],
-                    ["Max resale price:", df['resale_price'].max()],
+                    ['Max resale price:', df['resale_price'].max()],
                     ['IQR resale price:', iqr],
                     ['MEAN resale price:', (df['resale_price'].mean())],
                     ['STD resale price:', (df['resale_price'].std())],
@@ -54,25 +66,25 @@ def resale_price_year(year):
                     ['Skewness resale price:', (df['resale_price'].skew())],
                     ['Number of outliers:', outlier_count]]
 
-    print(year, "\n", tabulate(resale_table, tablefmt="simple", numalign="right", floatfmt=".2f"), "\n")
+    print(year, '\n', tabulate(resale_table, tablefmt='simple', numalign='right', floatfmt='.2f'), '\n')
 
 
-resale_price_year("2017 - 2019")
+resale_price_year('2017 - 2019')
 
 # the histogram of resale price
 sns.histplot(df['resale_price'], bins=50)
-plt.title("Distribution of Resale price in 2017-2019")
+plt.title('Distribution of Resale price in 2017-2019')
 plt.show()
 
 # the box and whiskers plot of resale price
 df.boxplot(column='resale_price')
-plt.title("Distribution of Resale price in 2017-2019")
+plt.title('Distribution of Resale price in 2017-2019')
 plt.show()
 
-print("\033[32;1m{}\033[0m".format("The following are the data analysis for year and resale price"))
+print('\033[32;1m{}\033[0m'.format('The following are the data analysis for year and resale price'))
 # the distribution of 'town' - the mean, min, max for each town
 year_result = df.groupby('year').agg({'resale_price': ['mean', 'min', 'max']}).apply(lambda x: round(x, 2))
-print(year_result, "\n")
+print(year_result, '\n')
 
 resale_price_year(2017), resale_price_year(2018), resale_price_year(2019)
 
@@ -82,22 +94,22 @@ sns.boxplot(
     y='resale_price',
     data=df
 )
-plt.title("Distribution of Resale price in 2017, 2018, 2019")
+plt.title('Distribution of Resale price in 2017, 2018, 2019')
 plt.show()
 
-print("\033[32;1m{}\033[0m".format("The following are the data analysis for town"))
+print('\033[32;1m{}\033[0m'.format('The following are the data analysis for town'))
 # the distribution of 'town' - the count for each town
-print(df.groupby('town').size().astype(int).reset_index(name='count'), "\n")
+print(df.groupby('town').size().astype(int).reset_index(name='count'), '\n')
 
 # the bargraph of the count for each town from 2017-2019
 df['town'].value_counts().plot.bar()
-plt.title("Number of Resale Housing in Each Town in 2017-2019")
+plt.title('Number of Resale Housing in Each Town in 2017-2019')
 plt.show()
 
-print("\033[32;1m{}\033[0m".format("The following are the data analysis for town and resale price"))
+print('\033[32;1m{}\033[0m'.format('The following are the data analysis for town and resale price'))
 # the distribution of 'town' - the mean, min, max for each town
 town_result = df.groupby('town').agg({'resale_price': ['mean', 'min', 'max']}).apply(lambda x: round(x, 2))
-print(town_result, "\n")
+print(town_result, '\n')
 
 # the box and whiskers plot of resale price for each town from 2017-2019
 ax = sns.boxplot(
@@ -105,6 +117,6 @@ ax = sns.boxplot(
     y='resale_price',
     data=df
 )
-ax.set_xticklabels(ax.get_xticklabels(), rotation=40, ha="right")
-plt.title("Distribution of Resale Price for each town in 2017-2019")
+ax.set_xticklabels(ax.get_xticklabels(), rotation=40, ha='right')
+plt.title('Distribution of Resale Price for each town in 2017-2019')
 plt.show()
