@@ -158,8 +158,8 @@ class ViewTop10CheapestFlats(tk.Frame):
         self.table.show()
 
         # Export to PDF button
-        self.export_button = tk.Button(self, text='Export Overview as PDF', font=SMALL_FONT,
-                                       command=lambda: self.displayExport())
+        self.export_button = tk.Button(self, text='Export Overview as CSV', font=SMALL_FONT,
+                                       command=lambda: self.export_csv())
         self.export_button.grid(row=5, padx=10, pady=10)
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
@@ -193,9 +193,9 @@ class ViewTop10CheapestFlats(tk.Frame):
             self.table = Table(self.table_frame, dataframe=self.data)
             self.table.show()
 
-        # else:
-        #
-        #     frame.grid_forget()
+        else:
+
+            frame.grid_forget()
 
         # Get the filter options from combobox
         filters = {'flat_type': self.combobox_flat_types.get()}
@@ -238,7 +238,12 @@ class ViewTop10CheapestFlats(tk.Frame):
                                         fg='red')
             validation_label.pack()
 
-
+    # Export Window
+    def export_csv(self):
+        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
+                             initialfile='summary.csv')
+        if file is not None:
+            ExportPDF.export_to_csv(file.name, self.filters)
 
 
 # Joey Function
@@ -407,9 +412,9 @@ class ViewSummary(tk.Frame):
 
     # Export Window
     def export_csv(self):
-        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
-                             initialfile='summary.csv')
-        if file is not None:
+         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
+                                initialfile='summary.csv')
+         if file is not None:
             ExportPDF.export_to_csv(file.name, self.filters)
 
     # Top 10 Window
