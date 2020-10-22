@@ -130,9 +130,9 @@ class ViewTop10CheapestFlats(tk.Frame):
         label = tk.Label(self, text='Top 10 Cheapest Flats', font=LARGE_FONT)
         label.grid(row=0, padx=10, pady=10)
 
-        back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
-                                command=lambda: controller.show_frame(SelectOptions))
-        back_button.grid(row=1, padx=10, pady=10)
+        # back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
+        #                         command=lambda: controller.show_frame(SelectOptions))
+        # back_button.grid(row=1, padx=10, pady=10)
 
         # Get flat types from datahelper
         # self.data = dh.get_dataframe()
@@ -152,7 +152,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
                                   command=lambda: self.update_table(top_frame))
         filter_button.grid(row=0, column=1, padx=10, pady=10)
-
+        print(list_of_flat_types)
         # Search results table_frame
         top_frame = tk.Frame(self)
         top_frame.grid(row=3)
@@ -171,8 +171,8 @@ class ViewTop10CheapestFlats(tk.Frame):
         tk.Grid.rowconfigure(self, 1)
         tk.Grid.columnconfigure(self, 0, weight=1)
 
-    def update_table(self, top_frame):
-        for child in top_frame.winfo_children():
+    def update_table(self, frame):
+        for child in frame.winfo_children():
             child.destroy()
 
         # No options selected, return unfiltered table
@@ -185,13 +185,23 @@ class ViewTop10CheapestFlats(tk.Frame):
 
         # Options selected, return filtered table
         if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
-            results_label = tk.Label(top_frame, text='Your Results', font=NORM_FONT)
+            results_label = tk.Label(frame, text='Your Results', font=NORM_FONT)
             results_label.pack()
             # Return selected option for flat type
-            flat_label = tk.Label(top_frame, text='Flat Type: ' + self.combobox_flat_types.get())
+            flat_label = tk.Label(frame, text='Flat Type: ' + self.combobox_flat_types.get())
             flat_label.pack()
-        else:
-            top_frame.grid_forget()
+
+        elif self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
+            # frame.grid_forget()
+            validation_label = tk.Label(frame, text='Please select an option for flat type',
+                             font=VALIDAITON_FONT, fg='red')
+            validation_label.pack(padx=20, pady=20)
+            self.table = Table(self.table_frame, dataframe=self.data)
+            self.table.show()
+
+        # else:
+        #
+        #     frame.grid_forget()
 
         # Get the filter options from combobox
         self.filters = {'flat_type': self.combobox_flat_types.get()}
@@ -207,7 +217,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         total_records = str(len(filtered_data))
 
         if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
-            total_rows_label = tk.Label(top_frame, text='Total number of records found: ' + total_records)
+            total_rows_label = tk.Label(frame, text='Total number of records found: ' + total_records)
             total_rows_label.pack(padx=10, pady=0)
 
         # Repopulate table with filtered results
@@ -228,11 +238,13 @@ class ViewTop10CheapestFlats(tk.Frame):
             self.table_frame.grid_forget()
             self.export_button.grid_forget()
             self.is_table_deleted = True
-            validation_label = tk.Label(top_frame,
+            validation_label = tk.Label(frame,
                                         text='Sorry, no matching records found based on filters. Please '
                                              'try another search criterion.', font=VALIDAITON_FONT,
                                         fg='red')
             validation_label.pack()
+
+
 
 
 # Joey Function
