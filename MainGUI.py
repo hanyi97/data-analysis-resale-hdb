@@ -165,8 +165,8 @@ class ViewTop10CheapestFlats(tk.Frame):
         tk.Grid.rowconfigure(self, 1)
         tk.Grid.columnconfigure(self, 0, weight=1)
 
-    def update_table(self, top_frame):
-        for child in top_frame.winfo_children():
+    def update_table(self, frame):
+        for child in frame.winfo_children():
             child.destroy()
 
         # No options selected, return unfiltered table
@@ -179,13 +179,23 @@ class ViewTop10CheapestFlats(tk.Frame):
 
         # Options selected, return filtered table
         if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
-            results_label = tk.Label(top_frame, text='Your Results', font=NORM_FONT)
+            results_label = tk.Label(frame, text='Your Results', font=NORM_FONT)
             results_label.pack()
             # Return selected option for flat type
-            flat_label = tk.Label(top_frame, text='Flat Type: ' + self.combobox_flat_types.get())
+            flat_label = tk.Label(frame, text='Flat Type: ' + self.combobox_flat_types.get())
             flat_label.pack()
-        else:
-            top_frame.grid_forget()
+
+        elif self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
+            # frame.grid_forget()
+            validation_label = tk.Label(frame, text='Please select an option for flat type',
+                             font=VALIDAITON_FONT, fg='red')
+            validation_label.pack(padx=20, pady=20)
+            self.table = Table(self.table_frame, dataframe=self.data)
+            self.table.show()
+
+        # else:
+        #
+        #     frame.grid_forget()
 
         # Get the filter options from combobox
         filters = {'flat_type': self.combobox_flat_types.get()}
@@ -201,7 +211,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         total_records = str(len(filtered_data))
 
         if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
-            total_rows_label = tk.Label(top_frame, text='Total number of records found: ' + total_records)
+            total_rows_label = tk.Label(frame, text='Total number of records found: ' + total_records)
             total_rows_label.pack(padx=10, pady=0)
 
         # Repopulate table with filtered results
@@ -222,11 +232,13 @@ class ViewTop10CheapestFlats(tk.Frame):
             self.table_frame.grid_forget()
             self.export_button.grid_forget()
             self.is_table_deleted = True
-            validation_label = tk.Label(top_frame,
+            validation_label = tk.Label(frame,
                                         text='Sorry, no matching records found based on filters. Please '
                                              'try another search criterion.', font=VALIDAITON_FONT,
                                         fg='red')
             validation_label.pack()
+
+
 
 
 # Joey Function
