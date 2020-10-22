@@ -429,23 +429,23 @@ class ViewCharts(tk.Frame):
         self.canvas = None
         self.toolbar = None
         label = tk.Label(self, text='Analyse Resale Flats by Town', font=LARGE_FONT)
-        label.grid(row=0, pady=10, padx=10)
+        label.pack(pady=10, padx=10)
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: self.refresh(controller))
-        back_button.grid(row=1, padx=5, pady=5)
+        back_button.pack(padx=5, pady=5)
 
         # Add dropdown list with list of towns:
         town_list_options = dh.get_all_towns()
         clicked = tk.StringVar()
         clicked.set(town_list_options[0])
 
-        combobox_frame = tk.Frame(self)
-        combobox_frame.grid(row=2)
+        # combobox_frame = tk.Frame(self)
+        # combobox_frame.grid(row=2)
         # Add Combobox with the list of towns onto the GUI:
-        self.town_combobox = ttk.Combobox(combobox_frame, value=['Select Town'] + town_list_options, state='readonly')
+        self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly')
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)
-        self.town_combobox.grid(row=0, column=1, padx=5, pady=5)
+        self.town_combobox.pack(padx=5, pady=5)
 
         # Initialise default bar graph
         self.selected('')
@@ -535,12 +535,12 @@ class MainBrowser(tk.Frame):
 
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: controller.show_frame(SelectOptions))
-        back_button.grid(row=0, column=0, pady=10)
+        back_button.pack(pady=10)
 
         # Browser
         self.browser_frame = Browser(self, controller)
-        self.browser_frame.grid(row=1, column=0,
-                                sticky=(tk.N + tk.S + tk.E + tk.W))
+        # self.browser_frame.grid(row=1, column=0,
+        #                         sticky=(tk.N + tk.S + tk.E + tk.W))
         tk.Grid.rowconfigure(self, 1, weight=1)
         tk.Grid.columnconfigure(self, 0, weight=1)
 
