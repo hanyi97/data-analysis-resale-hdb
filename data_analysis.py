@@ -25,6 +25,7 @@ def resale_price_year(year):
     lower limit of the resale price, upper limit of the resale price, the first, second
     and third quartile of the resale price, interquartile range of resale price,
     mean of resale price, standard deviation of resale price,
+    coefficient variation of resale price, skewness of resale price and numbers of outliers.
     """
     df = data_helper.get_dataframe()
     if year == 2017:
