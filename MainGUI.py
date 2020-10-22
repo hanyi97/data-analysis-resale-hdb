@@ -1,6 +1,5 @@
 import tkinter as tk
 import data_helper as dh
-import ViewCheapestResaleValueByFlatType
 import platform
 import ctypes
 import matplotlib
@@ -200,7 +199,7 @@ class ViewTop10CheapestFlats(tk.Frame):
             filters = {}
 
         # Update df according to updated filtered options
-        filtered_data = ViewCheapestResaleValueByFlatType.get_cheapest_hdb(filters)
+        filtered_data = FilterByVariables.get_cheapest_hdb(filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))

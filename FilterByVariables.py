@@ -89,3 +89,20 @@ def get_filtered_data(in_dict):
                     return df
         return df
 
+
+def get_cheapest_hdb(in_dict, rows=10):
+    """Get cheapest HDB based on user filtered result
+    Top n cheapest HDB based on each flat type
+
+    Parameters:
+    rows (int): number of rows for each flat type
+
+    Returns:
+    dataframe: dataframe of cheapest HDB based on flat type
+    """
+    cheap_data = get_filtered_data(in_dict) \
+        .sort_values(['flat_type', 'resale_price']) \
+        .groupby('flat_type').head(rows) \
+        .reset_index(drop=True)
+
+    return cheap_data
