@@ -11,7 +11,7 @@ from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from cefpython3 import cefpython as cef
+# from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
 
@@ -125,9 +125,9 @@ class ViewTop10CheapestFlats(tk.Frame):
         label = tk.Label(self, text='Top 10 Cheapest Flats', font=LARGE_FONT)
         label.grid(row=0, padx=10, pady=10)
 
-        back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
-                                command=lambda: controller.show_frame(SelectOptions))
-        back_button.grid(row=1, padx=10, pady=10)
+        # back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
+        #                         command=lambda: controller.show_frame(SelectOptions))
+        # back_button.grid(row=1, padx=10, pady=10)
 
         # Get flat types from datahelper
         # self.data = dh.get_dataframe()
@@ -146,7 +146,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
                                   command=lambda: self.update_table(top_frame))
         filter_button.grid(row=0, column=1, padx=10, pady=10)
-
+        print(list_of_flat_types)
         # Search results table_frame
         top_frame = tk.Frame(self)
         top_frame.grid(row=3)
@@ -404,7 +404,7 @@ class ViewSummary(tk.Frame):
     def showTop10(self):
         mainApp = ViewTop10CheapestFlatsWindow()
         mainApp.title("Top 10 Cheapest Flats")
-        mainApp.geometry("400x400")
+        mainApp.geometry("900x600")
         mainApp.mainloop()
 
 
