@@ -128,10 +128,6 @@ class ViewTop10CheapestFlats(tk.Frame):
         label = tk.Label(self, text='Top 10 Cheapest Flats', font=LARGE_FONT)
         label.grid(row=0, padx=10, pady=10)
 
-        # back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
-        #                         command=lambda: controller.show_frame(SelectOptions))
-        # back_button.grid(row=1, padx=10, pady=10)
-
         # Get flat types from datahelper
         self.data = filter.get_cheapest_hdb(filters)
         flat_types = dh.get_all_flat_types()
@@ -302,7 +298,7 @@ class ViewSummary(tk.Frame):
         self.export_button.grid(row=5, padx=10, pady=10)
 
         self.top10_button = tk.Button(self, text='Top 10 Cheapest Flats', font=SMALL_FONT,
-                                      command=lambda: self.showTop10())
+                                      command=lambda: self.show_top10())
         self.top10_button.grid(row=6, padx=10, pady=10)
 
         # Center widgets
@@ -407,7 +403,7 @@ class ViewSummary(tk.Frame):
             export.export_to_csv(file.name, filters)
 
     # Top 10 Window
-    def showTop10(self):
+    def show_top10(self):
         mainApp = ViewTop10CheapestFlatsWindow()
         mainApp.title("Top 10 Cheapest Flats")
         mainApp.geometry("1200x600")
@@ -614,6 +610,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    # cef.Initialize()
+    cef.Initialize()
     app.mainloop()
-    # cef.Shutdown()
+    cef.Shutdown()
