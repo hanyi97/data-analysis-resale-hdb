@@ -123,7 +123,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + list_of_flat_types
         self.combobox_flat_types.current(0)
 
-        filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT,
+        filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
                                   command=lambda: self.update_table(top_frame))
         filter_button.grid(row=0, column=1, padx=10, pady=10)
 
@@ -150,60 +150,63 @@ class ViewTop10CheapestFlats(tk.Frame):
             child.destroy()
 
         # No options selected, return unfiltered table
-        if self.combobox_flat_types == self.CONST_SELECT_FLAT_TYPE:
-            label = tk.Label(top_frame, text='Please select an option for flat type',
-                             font=VALIDAITON_FONT, fg='red')
-            label.pack(padx=20, pady=20)
-            self.table = Table(self.table_frame, dataframe=self.data)
-            self.table.show()
+        # if self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
+        #     label = tk.Label(top_frame, text='Please select an option for flat type',
+        #                      font=VALIDAITON_FONT, fg='red')
+        #     label.pack(padx=20, pady=20)
+        #     self.table = Table(self.table_frame, dataframe=self.data)
+        #     self.table.show()
 
         # Options selected, return filtered table
-        elif not self.combobox_flat_types == self.CONST_SELECT_FLAT_TYPE:
+        if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
             results_label = tk.Label(top_frame, text='Your Results', font=NORM_FONT)
             results_label.pack()
             # Return selected option for flat type
             flat_label = tk.Label(top_frame, text='Flat Type: ' + self.combobox_flat_types.get())
             flat_label.pack()
+        else:
+            top_frame.grid_forget()
 
-            # Get the filter options from combobox
-            filters = {'flat_type': self.combobox_flat_types.get()}
+        # Get the filter options from combobox
+        filters = {'flat_type': self.combobox_flat_types.get()}
 
-            # Replace default values to ' '
-            if filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
-                filters = {}
+        # Replace default values to ' '
+        if filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
+            filters = {}
 
-            # Update df according to updated filtered options
-            filtered_data = topNcheapest.get_cheapest_hdb(filters)
+        # Update df according to updated filtered options
+        filtered_data = topNcheapest.get_cheapest_hdb(filters)
 
-            # Return total number of records for search results
-            total_records = str(len(filtered_data))
+        # Return total number of records for search results
+        total_records = str(len(filtered_data))
 
+        if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
             total_rows_label = tk.Label(top_frame, text='Total number of records found: ' + total_records)
             total_rows_label.pack(padx=10, pady=0)
 
-            # Repopulate table with filtered results
-            if self.is_table_deleted:
-                self.table_frame.grid(row=4)
-                self.table = Table(self.table_frame, dataframe=filtered_data)
-                self.table.show()
-                self.export_button.grid(row=5)
-                self.is_table_deleted = False
-            self.table.updateModel(TableModel(filtered_data))
-            self.table.redraw()
+        # Repopulate table with filtered results
+        if self.is_table_deleted:
+            self.table_frame.grid(row=4)
+            self.table = Table(self.table_frame, dataframe=filtered_data)
+            self.table.show()
+            self.export_button.grid(row=5)
+            self.is_table_deleted = False
+        self.table.updateModel(TableModel(filtered_data))
+        self.table.redraw()
 
-            # Validation when total records is 0
-            if total_records == '0':
-                del filtered_data
-                # self.table.clearFormatting()
-                # self.table.remove()
-                self.table_frame.grid_forget()
-                self.export_button.grid_forget()
-                self.is_table_deleted = True
-                validation_label = tk.Label(top_frame,
-                                            text='Sorry, no matching records found based on filters. Please '
-                                                 'try another search criterion.', font=VALIDAITON_FONT,
-                                            fg='red')
-                validation_label.pack()
+        # Validation when total records is 0
+        if total_records == '0':
+            del filtered_data
+            # self.table.clearFormatting()
+            # self.table.remove()
+            self.table_frame.grid_forget()
+            self.export_button.grid_forget()
+            self.is_table_deleted = True
+            validation_label = tk.Label(top_frame,
+                                        text='Sorry, no matching records found based on filters. Please '
+                                             'try another search criterion.', font=VALIDAITON_FONT,
+                                        fg='red')
+            validation_label.pack()
 
 
 # Joey Function
@@ -573,6 +576,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    # cef.Initialize()
+    cef.Initialize()
     app.mainloop()
-    # cef.Shutdown()
+    cef.Shutdown()
