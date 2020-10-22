@@ -28,6 +28,7 @@ SMALL_FONT = ('Open Sans', 15)
 VALIDAITON_FONT = ('Open Sans', 12)
 
 CONST_FILE_PATH = 'resources/bargraph.png'
+filters = {}
 
 
 # Main Window
@@ -49,6 +50,7 @@ class WelcomeWindow(tk.Tk):
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
+
 
 # Select Options Window
 class SelectOptions(tk.Frame):
@@ -93,17 +95,18 @@ class SelectOptions(tk.Frame):
                                     command=lambda: controller.show_frame(MainBrowser))
         avgbyregion_btn.pack(pady=10, padx=10)
 
-
-
     # summary_btn = tk.Button(self, text='View Summary', height=3, width=30, font=NORM_FONT,
-        #                         command=lambda: controller.show_frame(ViewSummary))
-        # summary_btn.pack(padx=10, pady=10)
-        #
-        # view_top10 = tk.Button(self, text='View Top 10 Cheapest Flats', height=3, width=30, font=NORM_FONT,
-        #                        command=lambda: controller.show_frame(ViewTop10CheapestFlats))
-        # view_top10.pack(padx=10, pady=10)
+    #                         command=lambda: controller.show_frame(ViewSummary))
+    # summary_btn.pack(padx=10, pady=10)
+    #
+    # view_top10 = tk.Button(self, text='View Top 10 Cheapest Flats', height=3, width=30, font=NORM_FONT,
+    #                        command=lambda: controller.show_frame(ViewTop10CheapestFlats))
+    # view_top10.pack(padx=10, pady=10)
+
 
 '''Separate popout window'''
+
+
 class ViewTop10CheapestFlatsWindow(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -119,6 +122,8 @@ class ViewTop10CheapestFlatsWindow(tk.Tk):
 
 class ViewTop10CheapestFlats(tk.Frame):
     def __init__(self, parent, controller):
+        print(filters)
+        self.filters = {}
         self.is_table_deleted = False
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
         tk.Frame.__init__(self, parent)
@@ -131,7 +136,8 @@ class ViewTop10CheapestFlats(tk.Frame):
 
         # Get flat types from datahelper
         # self.data = dh.get_dataframe()
-        self.data = Filter.get_filtered_data(Filter.in_dict)
+        print("Filters: ", filters)
+        self.data = Filter.get_filtered_data(filters)
         flat_types = dh.get_all_flat_types()
 
         combobox_frame = tk.Frame(self)
@@ -188,14 +194,14 @@ class ViewTop10CheapestFlats(tk.Frame):
             top_frame.grid_forget()
 
         # Get the filter options from combobox
-        filters = {'flat_type': self.combobox_flat_types.get()}
+        self.filters = {'flat_type': self.combobox_flat_types.get()}
 
         # Replace default values to ' '
-        if filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
-            filters = {}
+        if self.filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
+            self.filters = {}
 
         # Update df according to updated filtered options
-        filtered_data = Filter.get_cheapest_hdb(filters)
+        filtered_data = Filter.get_cheapest_hdb(self.filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
@@ -233,7 +239,7 @@ class ViewTop10CheapestFlats(tk.Frame):
 class ViewSummary(tk.Frame):
     def __init__(self, parent, controller):
         self.is_table_deleted = False
-        self.filters = {}
+        # self.filters = {}
         self.CONST_SELECT_REGION = 'Select Region'
         self.CONST_SELECT_TOWN = 'Select Town'
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
@@ -297,7 +303,7 @@ class ViewSummary(tk.Frame):
         self.export_button.grid(row=5, padx=10, pady=10)
 
         self.top10_button = tk.Button(self, text='Top 10 Cheapest Flats', font=SMALL_FONT,
-                                       command=lambda: self.showTop10())
+                                      command=lambda: self.showTop10())
         self.top10_button.grid(row=6, padx=10, pady=10)
 
         # Center widgets
@@ -353,17 +359,18 @@ class ViewSummary(tk.Frame):
             flat_label = tk.Label(frame, text='Flat Type: ' + selected_flat_type)
             flat_label.pack()
 
+        global filters
         # Get the filter options from combobox
-        self.filters = {'region': selected_region, 'town': selected_town, 'flat_type': selected_flat_type}
+        filters = {'region': selected_region, 'town': selected_town, 'flat_type': selected_flat_type}
 
         # Remove item from dict if default selection
-        for item in list(self.filters):
-            if self.filters[item] == self.CONST_SELECT_REGION or self.filters[item] == self.CONST_SELECT_TOWN \
-                    or self.filters[item] == self.CONST_SELECT_FLAT_TYPE:
-                del self.filters[item]
+        for item in list(filters):
+            if filters[item] == self.CONST_SELECT_REGION or filters[item] == self.CONST_SELECT_TOWN \
+                    or filters[item] == self.CONST_SELECT_FLAT_TYPE:
+                del filters[item]
 
         # Update df according to updated filtered options
-        filtered_data = Filter.get_filtered_data(self.filters)
+        filtered_data = Filter.get_filtered_data(filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
@@ -398,13 +405,13 @@ class ViewSummary(tk.Frame):
         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
                              initialfile='summary.csv')
         if file is not None:
-            ExportPDF.export_to_csv(file.name, self.filters)
+            ExportPDF.export_to_csv(file.name, filters)
 
     # Top 10 Window
     def showTop10(self):
         mainApp = ViewTop10CheapestFlatsWindow()
         mainApp.title("Top 10 Cheapest Flats")
-        mainApp.geometry("400x400")
+        mainApp.geometry("1200x600")
         mainApp.mainloop()
 
 
@@ -442,7 +449,7 @@ class ViewCharts(tk.Frame):
             # Set average resale value to bar labels
             for i in bargraph.patches:
                 price = i.get_width()
-                bargraph.text(price + .3, i.get_y() + .15, str( '${:,}'.format(int(price))),
+                bargraph.text(price + .3, i.get_y() + .15, str('${:,}'.format(int(price))),
                               fontsize=10,
                               color='dimgrey')
             # Style labels and title
