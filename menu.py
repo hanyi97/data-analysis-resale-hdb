@@ -178,7 +178,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         elif self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
             # frame.grid_forget()
             validation_label = tk.Label(frame, text='Please select an option for flat type',
-                             font=VALIDAITON_FONT, fg='red')
+                                        font=VALIDAITON_FONT, fg='red')
             validation_label.pack(padx=20, pady=20)
             self.table = Table(self.table_frame, dataframe=self.data)
             self.table.show()
@@ -227,8 +227,6 @@ class ViewTop10CheapestFlats(tk.Frame):
                                              'try another search criterion.', font=VALIDAITON_FONT,
                                         fg='red')
             validation_label.pack()
-
-
 
 
 # Joey Function
@@ -610,6 +608,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
