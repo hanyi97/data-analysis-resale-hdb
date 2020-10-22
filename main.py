@@ -3,9 +3,9 @@ import data_helper as dh
 import platform
 import ctypes
 import matplotlib
-import Filter
-import Export
-import ViewAvgResaleValueByFlatType as bg
+import filter
+import export
+import bargraph as bg
 from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
@@ -133,7 +133,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         # back_button.grid(row=1, padx=10, pady=10)
 
         # Get flat types from datahelper
-        self.data = Filter.get_cheapest_hdb(filters)
+        self.data = filter.get_cheapest_hdb(filters)
         flat_types = dh.get_all_flat_types()
 
         if 'flat_type' not in filters:
@@ -199,7 +199,7 @@ class ViewTop10CheapestFlats(tk.Frame):
             filters = {}
 
         # Update df according to updated filtered options
-        filtered_data = Filter.get_cheapest_hdb(filters)
+        filtered_data = filter.get_cheapest_hdb(filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
@@ -319,14 +319,14 @@ class ViewSummary(tk.Frame):
 
     # Setting values of town combobox according to region combobox
     def update_town_combobox(self, control):
-        town_list = Filter.dict_input('region', self.combobox_region.get())
+        town_list = filter.dict_input('region', self.combobox_region.get())
         if town_list[0] != self.CONST_SELECT_TOWN:
             town_list = [self.CONST_SELECT_TOWN] + town_list
         self.combobox_town['values'] = town_list
         self.combobox_town.current(0)
 
     def town_selected(self, control):
-        town_list = Filter.dict_input('region', self.combobox_region.get())
+        town_list = filter.dict_input('region', self.combobox_region.get())
         if town_list[0] != self.CONST_SELECT_TOWN:
             town_list = [self.CONST_SELECT_TOWN] + town_list
         self.combobox_town['values'] = town_list
@@ -369,7 +369,7 @@ class ViewSummary(tk.Frame):
                 del filters[item]
 
         # Update df according to updated filtered options
-        filtered_data = Filter.get_filtered_data(filters)
+        filtered_data = filter.get_filtered_data(filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
@@ -404,7 +404,7 @@ class ViewSummary(tk.Frame):
         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
                              initialfile='summary.csv')
         if file is not None:
-            Export.export_to_csv(file.name, filters)
+            export.export_to_csv(file.name, filters)
 
     # Top 10 Window
     def showTop10(self):

@@ -2,7 +2,7 @@
 """
 
 import os.path as path
-from Filter import get_filtered_data, get_cheapest_hdb
+from filter import get_filtered_data, get_cheapest_hdb
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, PageBreak, Image
 from reportlab.lib import colors
