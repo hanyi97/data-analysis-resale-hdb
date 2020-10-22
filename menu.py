@@ -95,19 +95,9 @@ class SelectOptions(tk.Frame):
                                     command=lambda: controller.show_frame(MainBrowser))
         avgbyregion_btn.pack(pady=10, padx=10)
 
-    # summary_btn = tk.Button(self, text='View Summary', height=3, width=30, font=NORM_FONT,
-    #                         command=lambda: controller.show_frame(ViewSummary))
-    # summary_btn.pack(padx=10, pady=10)
-    #
-    # view_top10 = tk.Button(self, text='View Top 10 Cheapest Flats', height=3, width=30, font=NORM_FONT,
-    #                        command=lambda: controller.show_frame(ViewTop10CheapestFlats))
-    # view_top10.pack(padx=10, pady=10)
-
-
-'''Separate popout window'''
-
 
 class ViewTop10CheapestFlatsWindow(tk.Tk):
+    """Separate popout window"""
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -143,21 +133,21 @@ class ViewTop10CheapestFlats(tk.Frame):
             self.combobox_flat_types.current(0)
 
             filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
-                                      command=lambda: self.update_table(top_frame))
+                                      command=lambda: self.update_table(results_frame))
             filter_button.grid(row=0, column=1, padx=10, pady=10)
         # Search results table_frame
-        top_frame = tk.Frame(self)
-        top_frame.grid(row=3)
+        results_frame = tk.Frame(self)
+        results_frame.grid(row=3)
         # Plot top10 cheapest table
         self.table_frame = tk.Frame(self)
         self.table_frame.grid(row=4)
-        self.table = Table(self.table_frame, dataframe=self.data, width=1215, height=250,
+        self.table = Table(self.table_frame, dataframe=self.data, width=1150, height=250,
                            rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
         self.table.show()
 
         # Export to PDF button
-        self.export_button = tk.Button(self, text='Export Overview as PDF', font=SMALL_FONT,
-                                       command=lambda: self.displayExport())
+        self.export_button = tk.Button(self, text='Export Cheapest Flats as CSV', font=SMALL_FONT,
+                                       command=lambda: self.export_csv())
         self.export_button.grid(row=5, padx=10, pady=10)
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
@@ -166,7 +156,8 @@ class ViewTop10CheapestFlats(tk.Frame):
     def update_table(self, frame):
         for child in frame.winfo_children():
             child.destroy()
-
+        if not frame.winfo_ismapped():
+            frame.grid(row=3)
         # Options selected, return filtered table
         if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
             results_label = tk.Label(frame, text='Your Results', font=NORM_FONT)
@@ -174,25 +165,14 @@ class ViewTop10CheapestFlats(tk.Frame):
             # Return selected option for flat type
             flat_label = tk.Label(frame, text='Flat Type: ' + self.combobox_flat_types.get())
             flat_label.pack()
-
-        elif self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
-            # frame.grid_forget()
-            validation_label = tk.Label(frame, text='Please select an option for flat type',
-                                        font=VALIDAITON_FONT, fg='red')
-            validation_label.pack(padx=20, pady=20)
-            self.table = Table(self.table_frame, dataframe=self.data)
-            self.table.show()
-
-        # Get the filter options from combobox
-        global filters
-        if 'flat_type' not in filters:
-            filters = {'flat_type': self.combobox_flat_types.get()}
         else:
-            filters['flat_type'] = self.combobox_flat_types.get()
+            frame.grid_forget()
 
-        # Replace default values to ' '
-        if filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
-            filters = {}
+        global filters
+        filters['flat_type'] = self.combobox_flat_types.get()
+        for item in list(filters):
+            if filters[item] == self.CONST_SELECT_FLAT_TYPE:
+                del filters[item]
 
         # Update df according to updated filtered options
         filtered_data = filter.get_cheapest_hdb(filters)
@@ -207,7 +187,8 @@ class ViewTop10CheapestFlats(tk.Frame):
         # Repopulate table with filtered results
         if self.is_table_deleted:
             self.table_frame.grid(row=4)
-            self.table = Table(self.table_frame, dataframe=filtered_data)
+            self.table = Table(self.table_frame, dataframe=filtered_data, width=1150, height=250,
+                               rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
             self.table.show()
             self.export_button.grid(row=5)
             self.is_table_deleted = False
@@ -217,8 +198,6 @@ class ViewTop10CheapestFlats(tk.Frame):
         # Validation when total records is 0
         if total_records == '0':
             del filtered_data
-            # self.table.clearFormatting()
-            # self.table.remove()
             self.table_frame.grid_forget()
             self.export_button.grid_forget()
             self.is_table_deleted = True
@@ -227,6 +206,12 @@ class ViewTop10CheapestFlats(tk.Frame):
                                              'try another search criterion.', font=VALIDAITON_FONT,
                                         fg='red')
             validation_label.pack()
+
+    def export_csv(self):
+        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
+                             initialfile='top10cheapest.csv')
+        if file is not None:
+            export.export_to_csv(file.name, filters, 2)
 
 
 # Joey Function
@@ -398,7 +383,7 @@ class ViewSummary(tk.Frame):
         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
                              initialfile='summary.csv')
         if file is not None:
-            export.export_to_csv(file.name, filters)
+            export.export_to_csv(file.name, filters, 1)
 
     # Top 10 Window
     def show_top10(self):
