@@ -1,12 +1,11 @@
 import tkinter as tk
 import data_helper as dh
-import topNcheapest
 import platform
 import ctypes
 import matplotlib
-import search
-import export
-import bargraph as bg
+import Filter
+import ExportPDF
+import ViewAvgResaleValueByFlatType as bg
 from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
@@ -51,7 +50,6 @@ class WelcomeWindow(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-
 # Select Options Window
 class SelectOptions(tk.Frame):
     def __init__(self, parent, controller):
@@ -81,21 +79,42 @@ class SelectOptions(tk.Frame):
         frame.tkraise()  # raises the table_frame to the front
 
     def create_buttons(self, controller):
-        charts_btn = tk.Button(self, text='View Bar Graph', height=3, width=30, font=NORM_FONT,
-                               command=lambda: controller.show_frame(ViewCharts))
-        charts_btn.pack(padx=10, pady=10)
+        overview_btn = tk.Button(self, text="Overview of resale flat prices", height=3, width=30, font=NORM_FONT,
+                                 command=lambda: controller.show_frame(ViewSummary))
+        overview_btn.pack(padx=10, pady=10)
 
-        treemap_btn = tk.Button(self, text='View Tree Map', height=3, width=30, font=NORM_FONT,
-                                command=lambda: controller.show_frame(MainBrowser))
-        treemap_btn.pack(pady=10, padx=10)
+        avgbyflattype_btn = tk.Button(self, text="View average resale value by flat type", height=3, width=30,
+                                      font=NORM_FONT,
+                                      command=lambda: controller.show_frame(ViewCharts))
+        avgbyflattype_btn.pack(padx=10, pady=10)
 
-        summary_btn = tk.Button(self, text='View Summary', height=3, width=30, font=NORM_FONT,
-                                command=lambda: controller.show_frame(ViewSummary))
-        summary_btn.pack(padx=10, pady=10)
+        avgbyregion_btn = tk.Button(self, text="View average resale value by region", height=3, width=30,
+                                    font=NORM_FONT,
+                                    command=lambda: controller.show_frame(MainBrowser))
+        avgbyregion_btn.pack(pady=10, padx=10)
 
-        view_top10 = tk.Button(self, text='View Top 10 Cheapest Flats', height=3, width=30, font=NORM_FONT,
-                               command=lambda: controller.show_frame(ViewTop10CheapestFlats))
-        view_top10.pack(padx=10, pady=10)
+
+
+    # summary_btn = tk.Button(self, text='View Summary', height=3, width=30, font=NORM_FONT,
+        #                         command=lambda: controller.show_frame(ViewSummary))
+        # summary_btn.pack(padx=10, pady=10)
+        #
+        # view_top10 = tk.Button(self, text='View Top 10 Cheapest Flats', height=3, width=30, font=NORM_FONT,
+        #                        command=lambda: controller.show_frame(ViewTop10CheapestFlats))
+        # view_top10.pack(padx=10, pady=10)
+
+'''Separate popout window'''
+class ViewTop10CheapestFlatsWindow(tk.Tk):
+
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+        self.frame = ViewTop10CheapestFlats(container, self)
+        self.frame.grid(row=0, column=0, sticky="nsew")
+        self.tkraise()
 
 
 class ViewTop10CheapestFlats(tk.Frame):
@@ -104,105 +123,110 @@ class ViewTop10CheapestFlats(tk.Frame):
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text='Top 10 Cheapest Flats', font=LARGE_FONT)
-        label.pack(padx=10, pady=10)
+        label.grid(row=0, padx=10, pady=10)
 
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: controller.show_frame(SelectOptions))
-        back_button.pack(padx=10, pady=10)
+        back_button.grid(row=1, padx=10, pady=10)
 
         # Get flat types from datahelper
-        self.data = dh.get_dataframe()
+        # self.data = dh.get_dataframe()
+        self.data = Filter.get_filtered_data(Filter.in_dict)
         flat_types = dh.get_all_flat_types()
 
-        label = tk.Label(self, text='All the fields below are required', font=NORM_FONT)
-        label.pack(padx=20, pady=20)
-
+        combobox_frame = tk.Frame(self)
+        combobox_frame.grid(row=2)
         # Setting values for flat types combo box
         list_of_flat_types = sorted(flat_types)
-        self.combobox_flat_types = ttk.Combobox(self, state='readonly')
-        self.combobox_flat_types.pack(padx=5, pady=5)
+        self.combobox_flat_types = ttk.Combobox(combobox_frame, state='readonly')
+        self.combobox_flat_types.grid(row=0, column=0, padx=5, pady=5)
         self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + list_of_flat_types
         self.combobox_flat_types.current(0)
 
-        filter_button = tk.Button(self, text='Filter', font=SMALL_FONT,
+        filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
                                   command=lambda: self.update_table(top_frame))
-        filter_button.pack(padx=10, pady=10)
+        filter_button.grid(row=0, column=1, padx=10, pady=10)
+
         # Search results table_frame
         top_frame = tk.Frame(self)
-        top_frame.pack(side=tk.TOP)
-
+        top_frame.grid(row=3)
         # Plot top10 cheapest table
-        self.frame = tk.Frame(self)
-        self.frame.pack()
-        self.table = Table(self.frame, dataframe=self.data, showstatusbar=True, width=1215, height=250,
+        self.table_frame = tk.Frame(self)
+        self.table_frame.grid(row=4)
+        self.table = Table(self.table_frame, dataframe=self.data, width=1215, height=250,
                            rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
         self.table.show()
 
         # Export to PDF button
         self.export_button = tk.Button(self, text='Export Overview as PDF', font=SMALL_FONT,
                                        command=lambda: self.displayExport())
-        self.export_button.pack(padx=10, pady=10)
+        self.export_button.grid(row=5, padx=10, pady=10)
+        # Center widgets
+        tk.Grid.rowconfigure(self, 1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
 
     def update_table(self, top_frame):
         for child in top_frame.winfo_children():
             child.destroy()
 
         # No options selected, return unfiltered table
-        if self.combobox_flat_types == self.CONST_SELECT_FLAT_TYPE:
-            label = tk.Label(top_frame, text='Please select an option for flat type',
-                             font=VALIDAITON_FONT, fg='red')
-            label.pack(padx=20, pady=20)
-            self.table = Table(self.frame, dataframe=self.data)
-            self.table.show()
+        # if self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
+        #     label = tk.Label(top_frame, text='Please select an option for flat type',
+        #                      font=VALIDAITON_FONT, fg='red')
+        #     label.pack(padx=20, pady=20)
+        #     self.table = Table(self.table_frame, dataframe=self.data)
+        #     self.table.show()
 
         # Options selected, return filtered table
-        elif not self.combobox_flat_types == self.CONST_SELECT_FLAT_TYPE:
+        if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
             results_label = tk.Label(top_frame, text='Your Results', font=NORM_FONT)
             results_label.pack()
             # Return selected option for flat type
             flat_label = tk.Label(top_frame, text='Flat Type: ' + self.combobox_flat_types.get())
             flat_label.pack()
+        else:
+            top_frame.grid_forget()
 
-            # Get the filter options from combobox
-            filters = {'flat_type': self.combobox_flat_types.get()}
+        # Get the filter options from combobox
+        filters = {'flat_type': self.combobox_flat_types.get()}
 
-            # Replace default values to ' '
-            if filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
-                filters = {}
+        # Replace default values to ' '
+        if filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
+            filters = {}
 
-            # Update df according to updated filtered options
-            filtered_data = topNcheapest.get_cheapest_hdb(filters)
+        # Update df according to updated filtered options
+        filtered_data = Filter.get_cheapest_hdb(filters)
 
-            # Return total number of records for search results
-            total_records = str(len(filtered_data))
+        # Return total number of records for search results
+        total_records = str(len(filtered_data))
 
+        if self.combobox_flat_types.get() != self.CONST_SELECT_FLAT_TYPE:
             total_rows_label = tk.Label(top_frame, text='Total number of records found: ' + total_records)
             total_rows_label.pack(padx=10, pady=0)
 
-            # Repopulate table with filtered results
-            if self.is_table_deleted:
-                self.frame.pack()
-                self.table = Table(self.frame, dataframe=filtered_data)
-                self.table.show()
-                self.export_button.pack()
-                self.is_table_deleted = False
-            else:
-                self.table.updateModel(TableModel(filtered_data))
-                self.table.redraw()
+        # Repopulate table with filtered results
+        if self.is_table_deleted:
+            self.table_frame.grid(row=4)
+            self.table = Table(self.table_frame, dataframe=filtered_data)
+            self.table.show()
+            self.export_button.grid(row=5)
+            self.is_table_deleted = False
+        self.table.updateModel(TableModel(filtered_data))
+        self.table.redraw()
 
-            # Validation when total records is 0
-            if total_records == '0':
-                del filtered_data
-                # self.table.clearFormatting()
-                # self.table.remove()
-                self.frame.pack_forget()
-                self.export_button.pack_forget()
-                self.is_table_deleted = True
-                validation_label = tk.Label(top_frame,
-                                            text='Sorry, no matching records found based on filters. Please '
-                                                 'try another search criterion.', font=VALIDAITON_FONT,
-                                            fg='red')
-                validation_label.pack()
+        # Validation when total records is 0
+        if total_records == '0':
+            del filtered_data
+            # self.table.clearFormatting()
+            # self.table.remove()
+            self.table_frame.grid_forget()
+            self.export_button.grid_forget()
+            self.is_table_deleted = True
+            validation_label = tk.Label(top_frame,
+                                        text='Sorry, no matching records found based on filters. Please '
+                                             'try another search criterion.', font=VALIDAITON_FONT,
+                                        fg='red')
+            validation_label.pack()
 
 
 # Joey Function
@@ -271,6 +295,11 @@ class ViewSummary(tk.Frame):
         self.export_button = tk.Button(self, text='Export Results as CSV', font=SMALL_FONT,
                                        command=lambda: self.export_csv())
         self.export_button.grid(row=5, padx=10, pady=10)
+
+        self.top10_button = tk.Button(self, text='Top 10 Cheapest Flats', font=SMALL_FONT,
+                                       command=lambda: self.showTop10())
+        self.top10_button.grid(row=6, padx=10, pady=10)
+
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
         tk.Grid.columnconfigure(self, 0, weight=1)
@@ -285,14 +314,14 @@ class ViewSummary(tk.Frame):
 
     # Setting values of town combobox according to region combobox
     def update_town_combobox(self, control):
-        town_list = search.dict_input('region', self.combobox_region.get())
+        town_list = Filter.dict_input('region', self.combobox_region.get())
         if town_list[0] != self.CONST_SELECT_TOWN:
             town_list = [self.CONST_SELECT_TOWN] + town_list
         self.combobox_town['values'] = town_list
         self.combobox_town.current(0)
 
     def town_selected(self, control):
-        town_list = search.dict_input('region', self.combobox_region.get())
+        town_list = Filter.dict_input('region', self.combobox_region.get())
         if town_list[0] != self.CONST_SELECT_TOWN:
             town_list = [self.CONST_SELECT_TOWN] + town_list
         self.combobox_town['values'] = town_list
@@ -334,7 +363,7 @@ class ViewSummary(tk.Frame):
                 del self.filters[item]
 
         # Update df according to updated filtered options
-        filtered_data = search.get_filtered_data(self.filters)
+        filtered_data = Filter.get_filtered_data(self.filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
@@ -369,7 +398,14 @@ class ViewSummary(tk.Frame):
         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
                              initialfile='summary.csv')
         if file is not None:
-            export.export_to_csv(file.name, self.filters)
+            ExportPDF.export_to_csv(file.name, self.filters)
+
+    # Top 10 Window
+    def showTop10(self):
+        mainApp = ViewTop10CheapestFlatsWindow()
+        mainApp.title("Top 10 Cheapest Flats")
+        mainApp.geometry("400x400")
+        mainApp.mainloop()
 
 
 class ViewCharts(tk.Frame):
@@ -572,6 +608,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
