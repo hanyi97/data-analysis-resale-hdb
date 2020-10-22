@@ -104,44 +104,46 @@ class ViewTop10CheapestFlats(tk.Frame):
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text='Top 10 Cheapest Flats', font=LARGE_FONT)
-        label.pack(padx=10, pady=10)
+        label.grid(row=0, padx=10, pady=10)
 
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: controller.show_frame(SelectOptions))
-        back_button.pack(padx=10, pady=10)
+        back_button.grid(row=1, padx=10, pady=10)
 
         # Get flat types from datahelper
         self.data = dh.get_dataframe()
         flat_types = dh.get_all_flat_types()
 
-        label = tk.Label(self, text='All the fields below are required', font=NORM_FONT)
-        label.pack(padx=20, pady=20)
-
+        combobox_frame = tk.Frame(self)
+        combobox_frame.grid(row=2)
         # Setting values for flat types combo box
         list_of_flat_types = sorted(flat_types)
-        self.combobox_flat_types = ttk.Combobox(self, state='readonly')
-        self.combobox_flat_types.pack(padx=5, pady=5)
+        self.combobox_flat_types = ttk.Combobox(combobox_frame, state='readonly')
+        self.combobox_flat_types.grid(row=0, column=0, padx=5, pady=5)
         self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + list_of_flat_types
         self.combobox_flat_types.current(0)
 
-        filter_button = tk.Button(self, text='Filter', font=SMALL_FONT,
+        filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT,
                                   command=lambda: self.update_table(top_frame))
-        filter_button.pack(padx=10, pady=10)
+        filter_button.grid(row=0, column=1, padx=10, pady=10)
+
         # Search results table_frame
         top_frame = tk.Frame(self)
-        top_frame.pack(side=tk.TOP)
-
+        top_frame.grid(row=3)
         # Plot top10 cheapest table
-        self.frame = tk.Frame(self)
-        self.frame.pack()
-        self.table = Table(self.frame, dataframe=self.data, showstatusbar=True, width=1215, height=250,
+        self.table_frame = tk.Frame(self)
+        self.table_frame.grid(row=4)
+        self.table = Table(self.table_frame, dataframe=self.data, showstatusbar=True, width=1215, height=250,
                            rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
         self.table.show()
 
         # Export to PDF button
         self.export_button = tk.Button(self, text='Export Overview as PDF', font=SMALL_FONT,
                                        command=lambda: self.displayExport())
-        self.export_button.pack(padx=10, pady=10)
+        self.export_button.grid(row=5, padx=10, pady=10)
+        # Center widgets
+        tk.Grid.rowconfigure(self, 1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
 
     def update_table(self, top_frame):
         for child in top_frame.winfo_children():
@@ -152,7 +154,7 @@ class ViewTop10CheapestFlats(tk.Frame):
             label = tk.Label(top_frame, text='Please select an option for flat type',
                              font=VALIDAITON_FONT, fg='red')
             label.pack(padx=20, pady=20)
-            self.table = Table(self.frame, dataframe=self.data)
+            self.table = Table(self.table_frame, dataframe=self.data)
             self.table.show()
 
         # Options selected, return filtered table
@@ -181,22 +183,21 @@ class ViewTop10CheapestFlats(tk.Frame):
 
             # Repopulate table with filtered results
             if self.is_table_deleted:
-                self.frame.pack()
-                self.table = Table(self.frame, dataframe=filtered_data)
+                self.table_frame.grid(row=4)
+                self.table = Table(self.table_frame, dataframe=filtered_data)
                 self.table.show()
-                self.export_button.pack()
+                self.export_button.grid(row=5)
                 self.is_table_deleted = False
-            else:
-                self.table.updateModel(TableModel(filtered_data))
-                self.table.redraw()
+            self.table.updateModel(TableModel(filtered_data))
+            self.table.redraw()
 
             # Validation when total records is 0
             if total_records == '0':
                 del filtered_data
                 # self.table.clearFormatting()
                 # self.table.remove()
-                self.frame.pack_forget()
-                self.export_button.pack_forget()
+                self.table_frame.grid_forget()
+                self.export_button.grid_forget()
                 self.is_table_deleted = True
                 validation_label = tk.Label(top_frame,
                                             text='Sorry, no matching records found based on filters. Please '
@@ -572,6 +573,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
