@@ -2,8 +2,7 @@
 """
 
 import os.path as path
-
-from Filter import get_filtered_data, in_dict as filter_input
+from Filter import get_filtered_data, get_cheapest_hdb
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, PageBreak, Image
 from reportlab.lib import colors
@@ -21,28 +20,12 @@ heading_style.alignment = 1
 heading_style.leading = 30
 
 
-def get_cheapest_hdb(rows=10):
-    """Get cheapest HDB based on user filtered result
-    Top n cheapest HDB based on each flat type
-
-    Parameters:
-    rows (int): number of rows for each flat type
-
-    Returns:
-    dataframe: dataframe of cheapest HDB based on flat type
-    """
-    return get_filtered_data(filter_input) \
-        .sort_values(['flat_type', 'resale_price']) \
-        .groupby('flat_type').head(rows) \
-        .reset_index(drop=True)
-
-
 def setup_data_summary_page():
     """Function to set up data summary page
     Load filtered data and display it in a page in the pdf
     """
     # Retrieve data
-    df = get_cheapest_hdb(10)
+    df = get_cheapest_hdb()
     if len(df) == 0:
         return []
 
@@ -119,3 +102,4 @@ def export_to_csv(file_path=CONS_CSV_PATH, filters={}):
     """
     df = get_filtered_data(filters)
     df.to_csv(file_path, index=False)
+
