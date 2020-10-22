@@ -11,7 +11,7 @@ from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-# from cefpython3 import cefpython as cef
+from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
 
@@ -112,15 +112,10 @@ class ViewTop10CheapestFlatsWindow(tk.Tk):
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
-        self.frames = {}
-        frame = ViewTop10CheapestFlats(container, self)
-        self.frames[ViewTop10CheapestFlats] = frame
-        frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(ViewTop10CheapestFlats)
+        self.frame = ViewTop10CheapestFlats(container, self)
+        self.frame.grid(row=0, column=0, sticky="nsew")
+        self.tkraise()
 
-    def show_frame(self, cont):
-        frame = self.frames[cont]
-        frame.tkraise()
 
 class ViewTop10CheapestFlats(tk.Frame):
     def __init__(self, parent, controller):
@@ -135,7 +130,8 @@ class ViewTop10CheapestFlats(tk.Frame):
         back_button.grid(row=1, padx=10, pady=10)
 
         # Get flat types from datahelper
-        self.data = dh.get_dataframe()
+        # self.data = dh.get_dataframe()
+        self.data = Filter.get_filtered_data(Filter.in_dict)
         flat_types = dh.get_all_flat_types()
 
         combobox_frame = tk.Frame(self)
@@ -157,7 +153,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         # Plot top10 cheapest table
         self.table_frame = tk.Frame(self)
         self.table_frame.grid(row=4)
-        self.table = Table(self.table_frame, dataframe=self.data, showstatusbar=True, width=1215, height=250,
+        self.table = Table(self.table_frame, dataframe=self.data, width=1215, height=250,
                            rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
         self.table.show()
 
