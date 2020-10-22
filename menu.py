@@ -81,21 +81,25 @@ class SelectOptions(tk.Frame):
         frame.tkraise()  # raises the table_frame to the front
 
     def create_buttons(self, controller):
-        charts_btn = tk.Button(self, text="View Bar Graph", height=3, width=30, font=NORM_FONT,
-                               command=lambda: controller.show_frame(ViewCharts))
-        charts_btn.pack(padx=10, pady=10)
-
-        treemap_btn = tk.Button(self, text="View Tree Map", height=3, width=30, font=NORM_FONT,
-                                command=lambda: controller.show_frame(MainBrowser))
-        treemap_btn.pack(pady=10, padx=10)
-
-        summary_btn = tk.Button(self, text="View Summary", height=3, width=30, font=NORM_FONT,
+        overview_btn = tk.Button(self, text="Overview of resale flat prices", height=3, width=30, font=NORM_FONT,
                                 command=lambda: controller.show_frame(ViewSummary))
-        summary_btn.pack(padx=10, pady=10)
+        overview_btn.pack(padx=10, pady=10)
 
-        view_top10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=3, width=30, font=NORM_FONT,
-                               command=lambda: controller.show_frame(ViewTop10CheapestFlats))
-        view_top10.pack(padx=10, pady=10)
+        avgbyflattype_btn = tk.Button(self, text="View average resale value by flat type", height=3, width=30, font=NORM_FONT,
+                               command=lambda: controller.show_frame(ViewCharts))
+        avgbyflattype_btn.pack(padx=10, pady=10)
+
+        avgbyregion_btn = tk.Button(self, text="View average resale value by region", height=3, width=30, font=NORM_FONT,
+                                command=lambda: controller.show_frame(MainBrowser))
+        avgbyregion_btn.pack(pady=10, padx=10)
+
+        # summary_btn = tk.Button(self, text="View Summary", height=3, width=30, font=NORM_FONT,
+        #                         command=lambda: controller.show_frame(ViewSummary))
+        # summary_btn.pack(padx=10, pady=10)
+
+        # view_top10 = tk.Button(self, text="View Top 10 Cheapest Flats", height=3, width=30, font=NORM_FONT,
+        #                        command=lambda: controller.show_frame(ViewTop10CheapestFlats))
+        # view_top10.pack(padx=10, pady=10)
 
 
 class ViewTop10CheapestFlats(tk.Frame):
