@@ -4,7 +4,7 @@ import platform
 import ctypes
 import matplotlib
 import Filter
-import ExportPDF
+import Export
 import ViewAvgResaleValueByFlatType as bg
 from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
@@ -417,7 +417,7 @@ class ViewSummary(tk.Frame):
         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
                              initialfile='summary.csv')
         if file is not None:
-            ExportPDF.export_to_csv(file.name, filters)
+            Export.export_to_csv(file.name, filters)
 
     # Top 10 Window
     def showTop10(self):
