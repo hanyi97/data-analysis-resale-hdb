@@ -3,7 +3,7 @@
 
 import os.path as path
 
-from search import get_filtered_data, in_dict as filter_input
+from FilterByVariables import get_filtered_data, in_dict as filter_input
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, PageBreak, Image
 from reportlab.lib import colors

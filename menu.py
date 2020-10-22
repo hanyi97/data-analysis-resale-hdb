@@ -1,12 +1,12 @@
 import tkinter as tk
 import data_helper as dh
-import topNcheapest
+import ViewCheapestResaleValueByFlatType
 import platform
 import ctypes
 import matplotlib
-import search
+import FilterByVariables
 import export
-import bargraph as bg
+import ViewAvgResaleValueByFlatType as bg
 from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
@@ -200,7 +200,7 @@ class ViewTop10CheapestFlats(tk.Frame):
             filters = {}
 
         # Update df according to updated filtered options
-        filtered_data = topNcheapest.get_cheapest_hdb(filters)
+        filtered_data = ViewCheapestResaleValueByFlatType.get_cheapest_hdb(filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
@@ -319,14 +319,14 @@ class ViewSummary(tk.Frame):
 
     # Setting values of town combobox according to region combobox
     def update_town_combobox(self, control):
-        town_list = search.dict_input('region', self.combobox_region.get())
+        town_list = FilterByVariables.dict_input('region', self.combobox_region.get())
         if town_list[0] != self.CONST_SELECT_TOWN:
             town_list = [self.CONST_SELECT_TOWN] + town_list
         self.combobox_town['values'] = town_list
         self.combobox_town.current(0)
 
     def town_selected(self, control):
-        town_list = search.dict_input('region', self.combobox_region.get())
+        town_list = FilterByVariables.dict_input('region', self.combobox_region.get())
         if town_list[0] != self.CONST_SELECT_TOWN:
             town_list = [self.CONST_SELECT_TOWN] + town_list
         self.combobox_town['values'] = town_list
@@ -368,7 +368,7 @@ class ViewSummary(tk.Frame):
                 del self.filters[item]
 
         # Update df according to updated filtered options
-        filtered_data = search.get_filtered_data(self.filters)
+        filtered_data = FilterByVariables.get_filtered_data(self.filters)
 
         # Return total number of records for search results
         total_records = str(len(filtered_data))
