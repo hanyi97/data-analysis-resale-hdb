@@ -80,16 +80,16 @@ class SelectOptions(tk.Frame):
         frame.tkraise()  # raises the table_frame to the front
 
     def create_buttons(self, controller):
-        overview_btn = tk.Button(self, text="Overview of resale flat prices", height=3, width=30, font=NORM_FONT,
+        overview_btn = tk.Button(self, text='Overview of resale flat prices', height=3, width=30, font=NORM_FONT,
                                  command=lambda: controller.show_frame(ViewSummary))
         overview_btn.pack(padx=10, pady=10)
 
-        avgbyflattype_btn = tk.Button(self, text="View average resale value by flat type", height=3, width=30,
+        avgbyflattype_btn = tk.Button(self, text='View average resale value by flat type', height=3, width=30,
                                       font=NORM_FONT,
                                       command=lambda: controller.show_frame(ViewCharts))
         avgbyflattype_btn.pack(padx=10, pady=10)
 
-        avgbyregion_btn = tk.Button(self, text="View average resale value by region", height=3, width=30,
+        avgbyregion_btn = tk.Button(self, text='View average resale value by region', height=3, width=30,
                                     font=NORM_FONT,
                                     command=lambda: controller.show_frame(MainBrowser))
         avgbyregion_btn.pack(pady=10, padx=10)
@@ -100,11 +100,11 @@ class ViewTop10CheapestFlatsWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
+        container.pack(side='top', fill='both', expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frame = ViewTop10CheapestFlats(container, self)
-        self.frame.grid(row=0, column=0, sticky="nsew")
+        self.frame.grid(row=0, column=0, sticky='nsew')
         self.tkraise()
 
 
@@ -387,8 +387,8 @@ class ViewSummary(tk.Frame):
     @staticmethod
     def show_top10():
         mainApp = ViewTop10CheapestFlatsWindow()
-        mainApp.title("Top 10 Cheapest Flats")
-        mainApp.geometry("1200x600")
+        mainApp.title('Top 10 Cheapest Flats')
+        mainApp.geometry('1200x600')
         mainApp.mainloop()
 
 
