@@ -44,7 +44,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (SelectOptions, ViewCharts, ViewSummary, MainBrowser):
+        for F in (SelectOptions, ViewSummary, ViewCharts, MainBrowser):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky='nsew')
@@ -97,6 +97,13 @@ class SelectOptions(tk.Frame):
                                     font=NORM_FONT,
                                     command=lambda: controller.show_frame(MainBrowser))
         avgbyregion_btn.pack(pady=10, padx=10)
+
+
+    # def showCharts(self):
+    #     mainApp = chartsWindow()
+    #     mainApp.title('Charts')
+    #     mainApp.geometry('1300x600')
+    #     mainApp.mainloop()
 
 
 class ViewTop10CheapestFlatsWindow(tk.Tk):
@@ -427,12 +434,18 @@ class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.canvas = None
-        self.toolbar = None
-        label = tk.Label(self, text='Analyse Resale Flats by Town', font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
+        # self.toolbar = None
+        # label = tk.Label(self, text='Analyse Resale Flats by Town', font=LARGE_FONT)
+        # label.grid(pady=10, padx=10)
+        # back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
+        #                         command=lambda: self.refresh(controller))
+        # back_button.pack(padx=5, pady=5)
+
+        label = tk.Label(self, text= "Analyse Resale Flats by Town", font=LARGE_FONT)
+        label.grid(row=0, pady=10, padx=10)
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: self.refresh(controller))
-        back_button.pack(padx=5, pady=5)
+        back_button.grid(row=1, padx=5, pady=5)
 
         # Add dropdown list with list of towns:
         town_list_options = dh.get_all_towns()
@@ -445,10 +458,35 @@ class ViewCharts(tk.Frame):
         self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly')
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)
-        self.town_combobox.pack(padx=5, pady=5)
+        self.town_combobox.grid(padx=5, pady=5)
 
         # Initialise default bar graph
         self.selected('')
+
+        self.focus_set()
+        self.bind('<Configure>', self.on_configure)
+
+
+        # Browser
+        self.browser_frame = Browser(self, controller)
+        # self.browser_frame.grid(row=1, column=0,
+        #                         sticky=(tk.N + tk.S + tk.E + tk.W))
+        tk.Grid.rowconfigure(self, 1, weight=1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
+
+    def on_configure(self, event):
+        if self.browser_frame:
+            self.browser_frame.on_mainframe_configure(event.width, event.height)
+
+    def get_browser(self):
+        if self.browser_frame:
+            return self.browser_frame.browser
+        return None
+
+    def get_browser_frame(self):
+        if self.browser_frame:
+            return self.browser_frame
+        return None
 
     @staticmethod
     def plot_bar_graph(town=''):
@@ -517,9 +555,14 @@ class ViewCharts(tk.Frame):
         # Add the bar graph into the ViewCharts window
         self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
         # to display toolbar
-        self.toolbar = NavigationToolbar2Tk(self.canvas, self)
-        self.toolbar.update()
-        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        # self.toolbar = NavigationToolbar2Tk(self.canvas, self)
+        # self.toolbar.update()
+        # self.canvas.get_tk_widget().grid(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        self.canvas.get_tk_widget().grid()
+        tk.Grid.rowconfigure(self, 1, weight=1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
+
+
 
     def refresh(self, controller):
         self.town_combobox.current(0)
@@ -616,6 +659,8 @@ class Browser(tk.Frame):
 class LoadHandler(object):
     def __init__(self, browser_frame):
         self.browser_frame = browser_frame
+
+
 
 
 if __name__ == '__main__':
