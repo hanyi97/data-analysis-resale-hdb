@@ -44,7 +44,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (SelectOptions, ViewSummary, ViewCharts, MainBrowser):
+        for F in (SelectOptions, ViewSummary, ViewCharts, MainBrowser, chartsWindow):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky='nsew')
@@ -90,13 +90,21 @@ class SelectOptions(tk.Frame):
 
         avgbyflattype_btn = tk.Button(self, text='View average resale value by flat type', height=3, width=30,
                                       font=NORM_FONT,
-                                      command=lambda: controller.show_frame(Charts))
+                                      command=lambda: controller.show_frame(self.showCharts))
         avgbyflattype_btn.pack(padx=10, pady=10)
 
         avgbyregion_btn = tk.Button(self, text='View average resale value by region', height=3, width=30,
                                     font=NORM_FONT,
-                                    command=lambda: controller.show_frame(Charts))
+                                    command=lambda: controller.show_frame(self.showCharts))
         avgbyregion_btn.pack(pady=10, padx=10)
+
+        # Top 10 Window
+
+    def showCharts(self):
+        mainApp = chartsWindow()
+        mainApp.title('Charts')
+        mainApp.geometry('1300x600')
+        mainApp.mainloop()
 
 
 class ViewTop10CheapestFlatsWindow(tk.Tk):
@@ -619,35 +627,55 @@ class LoadHandler(object):
 
 
 
-class Charts(tk.Tk):
+# class Charts(tk.Tk):
+#     def __init__(self, *args, **kwargs):
+#         tk.Tk.__init__(self, *args, **kwargs)
+#         tk.Tk.wm_title(self, "View Average Resale Prices")
+#
+#
+#         container = tk.Frame(self)
+#         container.pack(side="top", fill="both", expand=True)
+#         container.grid_rowconfigure(100, weight=1)
+#         container.grid_columnconfigure(100, weight=1)
+#
+#         # Create Frame Library and use For Loop to switch between frames
+#
+#         self.frames = {}
+#         self.show_frame(ViewCharts)
+#         self.show_frame(MainBrowser)
+#
+#
+#         # for i in (MainBrowser, ViewCharts):
+#         #     frame = i(container, self)
+#         #     self.frames[i] = frame
+#         #     frame.grid(row=100, column=100, sticky="nsew")
+#         #
+#         # self.show_frame(ViewCharts)
+#
+#     def show_frame(self, cont):
+#         frame = self.framesi [cont]
+#         frame.tkraise()
+
+
+class chartsWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-
-        tk.Tk.wm_title(self, "View Average Resale Prices")
-
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(100, weight=1)
-        container.grid_columnconfigure(100, weight=1)
-
-        # Create Frame Library and use For Loop to switch between frames
-
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
         self.frames = {}
+
+        frame = ViewCharts(container, self)
+        self.frames[ViewCharts] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
         self.show_frame(ViewCharts)
         self.show_frame(MainBrowser)
 
 
-        # for i in (MainBrowser, ViewCharts):
-        #     frame = i(container, self)
-        #     self.frames[i] = frame
-        #     frame.grid(row=100, column=100, sticky="nsew")
-        #
-        # self.show_frame(ViewCharts)
-
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
-
 
 
 
