@@ -11,7 +11,7 @@ from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from cefpython3 import cefpython as cef
+# from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
 
@@ -427,6 +427,11 @@ class ViewCharts(tk.Frame):
         # Initialise default bar graph
         self.selected('')
 
+        self.export_button = tk.Button(self, text='Export as PDF', font=SMALL_FONT,
+                                       command=lambda: self.export_csv())
+        self.export_button.pack(padx=10, pady=10)
+
+
     @staticmethod
     def plot_bar_graph(town=''):
         try:
@@ -521,6 +526,10 @@ class MainBrowser(tk.Frame):
         tk.Grid.rowconfigure(self, 1, weight=1)
         tk.Grid.columnconfigure(self, 0, weight=1)
 
+        self.export_button = tk.Button(self, text='Export as PDF', font=SMALL_FONT,
+                                       command=lambda: self.export_csv())
+        self.export_button.pack(padx=10, pady=10)
+
     def on_configure(self, event):
         if self.browser_frame:
             self.browser_frame.on_mainframe_configure(event.width, event.height)
@@ -600,6 +609,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
