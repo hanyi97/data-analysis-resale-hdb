@@ -31,10 +31,6 @@ CONST_FILE_PATH = 'resources/bargraph.png'
 filters = {}
 
 
-def rename_columns(df):
-    df.columns = list(map(lambda col_name: col_name.upper().replace('_', ' '), df.columns))
-
-
 # Main Window
 class WelcomeWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -123,7 +119,6 @@ class ViewTop10CheapestFlats(tk.Frame):
 
         # Get flat types from datahelper
         self.data = filter.get_cheapest_hdb(filters)
-        rename_columns(self.data)
         flat_types = dh.get_all_flat_types()
 
         # If user did not filter flat type, show combobox
@@ -179,7 +174,7 @@ class ViewTop10CheapestFlats(tk.Frame):
 
         # Update df according to updated filtered options
         filtered_data = filter.get_cheapest_hdb(filters)
-        rename_columns(filtered_data)
+
         # Return total number of records for search results
         total_records = str(len(filtered_data))
 
@@ -233,7 +228,6 @@ class ViewSummary(tk.Frame):
 
         # Get regions, towns and flat types from datahelper
         self.df = dh.get_dataframe()
-        rename_columns(self.df)
         self.towns = dh.get_all_towns()
         self.regions = dh.get_all_regions()
         self.flat_types = dh.get_all_flat_types()
@@ -352,7 +346,7 @@ class ViewSummary(tk.Frame):
 
         # Update df according to updated filtered options
         filtered_data = filter.get_filtered_data(filters)
-        rename_columns(filtered_data)
+
         # Return total number of records for search results
         total_records = str(len(filtered_data))
         total_rows_label = tk.Label(frame, text='Total number of records found: ' + total_records)
@@ -390,14 +384,11 @@ class ViewSummary(tk.Frame):
             export.export_to_csv(file.name, filters, 1)
 
     # Top 10 Window
-    def show_top10(self):
-        for item in list(filters):
-            if filters[item] == self.CONST_SELECT_REGION or filters[item] == self.CONST_SELECT_TOWN \
-                    or filters[item] == self.CONST_SELECT_FLAT_TYPE:
-                del filters[item]
+    @staticmethod
+    def show_top10():
         mainApp = ViewTop10CheapestFlatsWindow()
         mainApp.title('Top 10 Cheapest Flats')
-        mainApp.geometry('1300x600')
+        mainApp.geometry('1200x600')
         mainApp.mainloop()
 
 
