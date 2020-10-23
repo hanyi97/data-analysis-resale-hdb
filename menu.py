@@ -149,8 +149,8 @@ class ViewTop10CheapestFlats(tk.Frame):
                            rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
         self.table.show()
         # Export to PDF button
-        self.export_button = tk.Button(self, text='Export Cheapest Flats as CSV', font=SMALL_FONT,
-                                       command=lambda: self.export_csv())
+        self.export_button = tk.Button(self, text='Export Cheapest Flats as PDF', font=SMALL_FONT,
+                                       command=lambda: self.export_pdf())
         self.export_button.grid(row=5, padx=10, pady=10)
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
@@ -211,11 +211,14 @@ class ViewTop10CheapestFlats(tk.Frame):
                                         fg='red')
             validation_label.pack()
 
-    def export_csv(self):
-        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
-                             initialfile='top10cheapest.csv')
+    #Export Window
+    @staticmethod
+    def export_pdf():
+        file = asksaveasfile(filetypes=[('pdf file', '*.pdf')], defaultextension=[('pdf file', '*.pdf')],
+                             initialfile='Top10CheapestResaleFlats.pdf')
         if file is not None:
-            export.export_to_csv(file.name, filters, 2)
+            export.export_to_pdf(file.name)
+
 
 
 class ViewSummary(tk.Frame):
@@ -427,12 +430,6 @@ class ViewCharts(tk.Frame):
         # Initialise default bar graph
         self.selected('')
 
-        self.export_button = tk.Button(self, text='Export as PDF', font=SMALL_FONT,
-                                       command=lambda: self.export_PDF())
-        self.export_button.pack(padx=10, pady=10)
-
-
-
     @staticmethod
     def plot_bar_graph(town=''):
         try:
@@ -509,12 +506,6 @@ class ViewCharts(tk.Frame):
         self.selected('')
         controller.show_frame(SelectOptions)
 
-    def export_PDF(self):
-        file = asksaveasfile(filetypes=[('pdf file', '*.pdf')], defaultextension=[('pdf file', '*.pdf')],
-                             initialfile='AverageResaleFlatByFlatTypes.pdf')
-        if file is not None:
-            export.export_PDF(file.name, filters, 2)
-
 
 class MainBrowser(tk.Frame):
     def __init__(self, parent, controller):
@@ -533,9 +524,6 @@ class MainBrowser(tk.Frame):
         tk.Grid.rowconfigure(self, 1, weight=1)
         tk.Grid.columnconfigure(self, 0, weight=1)
 
-        self.export_button = tk.Button(self, text='Export as PDF', font=SMALL_FONT,
-                                       command=lambda: self.export_PDF())
-        self.export_button.pack(padx=10, pady=10)
 
     def on_configure(self, event):
         if self.browser_frame:
@@ -550,12 +538,6 @@ class MainBrowser(tk.Frame):
         if self.browser_frame:
             return self.browser_frame
         return None
-
-    def export_PDF(self):
-        file = asksaveasfile(filetypes=[('pdf file', '*.pdf')], defaultextension=[('pdf file', '*.pdf')],
-                             initialfile='AverageResaleFlatByRegion.pdf')
-        if file is not None:
-            export.export_PDF(file.name, filters, 2)
 
 
 class Browser(tk.Frame):
