@@ -11,7 +11,7 @@ from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-# from cefpython3 import cefpython as cef
+from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
 
@@ -101,6 +101,7 @@ class SelectOptions(tk.Frame):
 
 class ViewTop10CheapestFlatsWindow(tk.Tk):
     """Separate popout window"""
+
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
@@ -211,14 +212,13 @@ class ViewTop10CheapestFlats(tk.Frame):
                                         fg='red')
             validation_label.pack()
 
-    #Export Window
+    # Export Window
     @staticmethod
     def export_pdf():
         file = asksaveasfile(filetypes=[('pdf file', '*.pdf')], defaultextension=[('pdf file', '*.pdf')],
                              initialfile='Top10CheapestResaleFlats.pdf')
         if file is not None:
-            export.export_to_pdf(file.name)
-
+            export.export_to_pdf(file.name, filters)
 
 
 class ViewSummary(tk.Frame):
@@ -384,14 +384,6 @@ class ViewSummary(tk.Frame):
                                         fg='red')
             validation_label.pack()
 
-    # Export Window
-    @staticmethod
-    def export_csv():
-        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
-                             initialfile='summary.csv')
-        if file is not None:
-            export.export_to_csv(file.name, filters, 1)
-
     # Top 10 Window
     def show_top10(self):
         for item in list(filters):
@@ -402,6 +394,14 @@ class ViewSummary(tk.Frame):
         mainApp.title('Top 10 Cheapest Flats')
         mainApp.geometry('1300x600')
         mainApp.mainloop()
+
+    # Export Window
+    @staticmethod
+    def export_csv():
+        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
+                             initialfile='summary.csv')
+        if file is not None:
+            export.export_to_csv(file.name, filters)
 
 
 class ViewCharts(tk.Frame):
@@ -430,6 +430,27 @@ class ViewCharts(tk.Frame):
         # Initialise default bar graph
         self.selected('')
 
+    # Run this function when user selects from the dropdown list
+    def selected(self, event):
+        # Clear the previous chart & toolbar first if it is currently on the screen
+        try:
+            self.canvas.get_tk_widget().destroy()
+            self.toolbar.destroy()
+        except AttributeError:
+            pass
+
+        # Add the bar graph into the ViewCharts window
+        self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
+        # to display toolbar
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self)
+        self.toolbar.update()
+        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+    def refresh(self, controller):
+        self.town_combobox.current(0)
+        self.selected('')
+        controller.show_frame(SelectOptions)
+
     @staticmethod
     def plot_bar_graph(town=''):
         try:
@@ -446,7 +467,7 @@ class ViewCharts(tk.Frame):
             fig = Figure(figsize=(20, 5))
             ax = fig.add_subplot(111)
             # Bar graph configuration
-            bargraph = df.plot.barh(color='#24AEDE', ax=ax, zorder=2, label='Average Resale Pricing')
+            bargraph = df.plot.barh(color='#83b2fc', ax=ax, zorder=2, label='Average Resale Pricing')
             # Set x ticks to frequency of 100,000
             start, end = bargraph.get_xlim()
             bargraph.xaxis.set_ticks(arange(start, end, 100000))
@@ -485,27 +506,6 @@ class ViewCharts(tk.Frame):
         except IndexError as e:
             print(e)
 
-    # Run this function when user selects from the dropdown list
-    def selected(self, event):
-        # Clear the previous chart & toolbar first if it is currently on the screen
-        try:
-            self.canvas.get_tk_widget().destroy()
-            self.toolbar.destroy()
-        except AttributeError:
-            pass
-
-        # Add the bar graph into the ViewCharts window
-        self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
-        # to display toolbar
-        self.toolbar = NavigationToolbar2Tk(self.canvas, self)
-        self.toolbar.update()
-        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
-    def refresh(self, controller):
-        self.town_combobox.current(0)
-        self.selected('')
-        controller.show_frame(SelectOptions)
-
 
 class MainBrowser(tk.Frame):
     def __init__(self, parent, controller):
@@ -523,7 +523,6 @@ class MainBrowser(tk.Frame):
                                 sticky=(tk.N + tk.S + tk.E + tk.W))
         tk.Grid.rowconfigure(self, 1, weight=1)
         tk.Grid.columnconfigure(self, 0, weight=1)
-
 
     def on_configure(self, event):
         if self.browser_frame:
@@ -604,6 +603,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    # cef.Initialize()
+    cef.Initialize()
     app.mainloop()
-    # cef.Shutdown()
+    cef.Shutdown()
