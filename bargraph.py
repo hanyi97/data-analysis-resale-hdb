@@ -28,7 +28,7 @@ def get_filtered_data(town=''):
     return df.groupby('flat_type')['resale_price'].mean().round(2)
 
 
-def plot_bar_graph(town=''):
+def plot_bargraph(town=''):
     """Call this function to plot bar graph
     The updated graph will be auto saved whenever this function is called
 

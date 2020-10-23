@@ -437,7 +437,7 @@ class ViewCharts(tk.Frame):
             pass
 
         # Add the bar graph into the ViewCharts window
-        self.canvas = FigureCanvasTkAgg(bg.plot_bar_graph(self.town_combobox.get()), master=self)
+        self.canvas = FigureCanvasTkAgg(bg.plot_bargraph(self.town_combobox.get()), master=self)
         # to display toolbar
         self.toolbar = NavigationToolbar2Tk(self.canvas, self)
         self.toolbar.update()
