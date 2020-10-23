@@ -428,7 +428,7 @@ class ViewCharts(tk.Frame):
         self.selected('')
 
         self.export_button = tk.Button(self, text='Export as PDF', font=SMALL_FONT,
-                                       command=lambda: self.export_csv())
+                                       command=lambda: self.export_PDF())
         self.export_button.pack(padx=10, pady=10)
 
 
@@ -534,7 +534,7 @@ class MainBrowser(tk.Frame):
         tk.Grid.columnconfigure(self, 0, weight=1)
 
         self.export_button = tk.Button(self, text='Export as PDF', font=SMALL_FONT,
-                                       command=lambda: self.export_csv())
+                                       command=lambda: self.export_PDF())
         self.export_button.pack(padx=10, pady=10)
 
     def on_configure(self, event):
