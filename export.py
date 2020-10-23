@@ -20,12 +20,12 @@ heading_style.alignment = 1
 heading_style.leading = 30
 
 
-def setup_data_summary_page():
+def setup_data_summary_page(filters):
     """Function to set up data summary page
     Load filtered data and display it in a page in the pdf
     """
     # Retrieve data
-    df = get_cheapest_hdb()
+    df = get_cheapest_hdb(filters)
     if len(df) == 0:
         return []
 
@@ -34,7 +34,7 @@ def setup_data_summary_page():
     data[0] = list(map(lambda col_name: '<b>'+col_name.upper().replace('_', ' ') + '</b>', data[0]))
 
     # Create a list and add heading to list
-    elements = [Paragraph("<u>Cheapest Flats</u>", heading_style)]
+    elements = [Paragraph("<u>Top 10 Cheapest Flats</u>", heading_style)]
 
     # Format each text to allow word wrapping
     pcol_style = ParagraphStyle(name='BodyText', fontSize=8, wordWrap='CJK')
@@ -47,7 +47,8 @@ def setup_data_summary_page():
     table_styles = [('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
                     ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
                     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE')]
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                    ('BACKGROUND', (0, 0), (-1, 0), '#83b2fc')]
 
     # Create table
     table = Table(data2, colWidths=col_widths)
@@ -63,7 +64,7 @@ def setup_bargraph_page():
     """
     elements = []
     if path.isfile(CONST_BARGRAPH_PATH):
-        elements.append(Paragraph('<u>Bar Graph</u>', heading_style))
+        elements.append(Paragraph('<u>Average Resale Pricing By Flat Type</u>', heading_style))
         elements.append(Image(CONST_BARGRAPH_PATH, width=26 * cm, height=7 * cm))
         elements.append(PageBreak())
     return elements
@@ -75,39 +76,34 @@ def setup_treemap_page():
     """
     elements = []
     if path.isfile(CONST_TREEMAP_PATH):
-        elements.append(Paragraph('<u>Tree Map</u>', heading_style))
+        elements.append(Paragraph('<u>Average Resale Pricing by Region</u>', heading_style))
         elements.append(Image(CONST_TREEMAP_PATH, width=19 * cm, height=14 * cm))
         elements.append(PageBreak())
     return elements
 
 
-def export_to_pdf(file_path=CONST_PDF_PATH):
-    """Function to export summary data to PDF
-    Page 1: Bar graph
-    Page 2: Tree map
-    Page 3: Cheapest flat table
+def export_to_pdf(file_path=CONST_PDF_PATH, filters={}):
+    """Function to export chart to PDF
+
+    Parameters:
+    file_path (str): path of file to be saved
+    filters (dict): dictionary of filters that user selected
     """
     try:
         pdf = SimpleDocTemplate(file_path, pagesize=landscape(A4))
-        pdf.build(setup_bargraph_page() +
-                  setup_treemap_page() +
-                  setup_data_summary_page())
+        pdf.build(setup_data_summary_page(filters))
+
     except Exception as e:
         print(e)
 
 
-def export_to_csv(file_path=CONS_CSV_PATH, filters={}, option=1):
+def export_to_csv(file_path=CONS_CSV_PATH, filters={}):
     """Function to export filtered data to CSV
     Call get_filtered_data function from search module to retrieve user filtered data
 
     Parameters:
     file_path (str): path of file to be saved
     filters (dict): dictionary of filters that user selected
-    option (int): 1 for overview data, 2 for top 10 cheapest hdb
     """
-    if option == 1:
-        df = get_filtered_data(filters)
-    else:
-        df = get_cheapest_hdb(filters)
+    df = get_filtered_data(filters)
     df.to_csv(file_path, index=False)
-
