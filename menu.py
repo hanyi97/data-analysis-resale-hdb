@@ -6,14 +6,11 @@ import matplotlib
 import filter
 import export
 import bargraph as bg
-from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
-from numpy import arange
-from matplotlib.figure import Figure
 
 matplotlib.use('TkAgg')
 # Platforms
@@ -440,7 +437,7 @@ class ViewCharts(tk.Frame):
             pass
 
         # Add the bar graph into the ViewCharts window
-        self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
+        self.canvas = FigureCanvasTkAgg(bg.plot_bar_graph(self.town_combobox.get()), master=self)
         # to display toolbar
         self.toolbar = NavigationToolbar2Tk(self.canvas, self)
         self.toolbar.update()
@@ -450,61 +447,6 @@ class ViewCharts(tk.Frame):
         self.town_combobox.current(0)
         self.selected('')
         controller.show_frame(SelectOptions)
-
-    @staticmethod
-    def plot_bar_graph(town=''):
-        try:
-            if town == 'Select Town':
-                town = ''
-            town = town.upper()
-            df = bg.get_filtered_data(town)
-            if len(df) == 0:
-                raise IndexError('No data found!')
-            # Set town to Singapore when no town is selected
-            town = 'SINGAPORE' if town == '' else town
-
-            # Create a figure
-            fig = Figure(figsize=(20, 5))
-            ax = fig.add_subplot(111)
-            # Bar graph configuration
-            bargraph = df.plot.barh(color='#83b2fc', ax=ax, zorder=2, label='Average Resale Pricing')
-            # Set x ticks to frequency of 100,000
-            start, end = bargraph.get_xlim()
-            bargraph.xaxis.set_ticks(arange(start, end, 100000))
-            # Add comma to resale flat prices
-            bargraph.get_xaxis().set_major_formatter(FuncFormatter(lambda x, loc: '{:,}'.format(int(x))))
-            # Remove borders
-            bargraph.spines['right'].set_visible(False)
-            bargraph.spines['top'].set_visible(False)
-            bargraph.spines['left'].set_visible(False)
-            bargraph.spines['bottom'].set_visible(False)
-            # Draw vertical axis lines
-            ticks = ax.get_xticks()
-            for tick in ticks:
-                bargraph.axvline(x=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
-            # Set average resale value to bar labels
-            for i in bargraph.patches:
-                price = i.get_width()
-                bargraph.text(price + .3, i.get_y() + .15, str('${:,}'.format(int(price))),
-                              fontsize=10,
-                              color='dimgrey')
-            # Style labels and title
-            label_style = {'fontsize': 10, 'fontweight': 'heavy'}
-            bargraph.set_xlabel('Average Resale Value (SGD)',
-                                fontdict=label_style)
-            bargraph.set_ylabel('HDB Flat Type',
-                                fontdict=label_style)
-            bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
-                               fontdict={'fontsize': 12, 'fontweight': 'heavy'})
-            bargraph.legend(loc='lower right', bbox_to_anchor=(1., 1.02), borderaxespad=0.)
-            # Save bar graph as png
-            bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
-
-            return fig
-        except ValueError:
-            print('Cannot convert data to an integer!')
-        except IndexError as e:
-            print(e)
 
 
 class MainBrowser(tk.Frame):
