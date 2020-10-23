@@ -11,7 +11,7 @@ from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from cefpython3 import cefpython as cef
+# from cefpython3 import cefpython as cef
 from numpy import arange
 from matplotlib.figure import Figure
 
@@ -40,7 +40,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (SelectOptions, ViewCharts, ViewSummary, MainBrowser):
+        for F in (SelectOptions, ViewSummary, ViewCharts, MainBrowser):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky='nsew')
@@ -93,6 +93,13 @@ class SelectOptions(tk.Frame):
                                     font=NORM_FONT,
                                     command=lambda: controller.show_frame(MainBrowser))
         avgbyregion_btn.pack(pady=10, padx=10)
+
+
+    # def showCharts(self):
+    #     mainApp = chartsWindow()
+    #     mainApp.title('Charts')
+    #     mainApp.geometry('1300x600')
+    #     mainApp.mainloop()
 
 
 class ViewTop10CheapestFlatsWindow(tk.Tk):
@@ -163,9 +170,25 @@ class ViewTop10CheapestFlats(tk.Frame):
             # Return selected option for flat type
             flat_label = tk.Label(frame, text='Flat Type: ' + self.combobox_flat_types.get())
             flat_label.pack()
+
+        elif self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
+            # frame.grid_forget()
+            validation_label = tk.Label(frame, text='Please select an option for flat type',
+                             font=VALIDAITON_FONT, fg='red')
+            validation_label.pack(padx=20, pady=20)
+            self.table = Table(self.table_frame, dataframe=self.data)
+            self.table.show()
+
         else:
+
             frame.grid_forget()
 
+        # Get the filter options from combobox
+        self.filters = {'flat_type': self.combobox_flat_types.get()}
+
+        # Replace default values to ' '
+        if self.filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
+            self.filters = {}
         global filters
         filters['flat_type'] = self.combobox_flat_types.get()
         for item in list(filters):
@@ -206,6 +229,12 @@ class ViewTop10CheapestFlats(tk.Frame):
                                         fg='red')
             validation_label.pack()
 
+    # Export Window
+    def export_csv(self):
+        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
+                             initialfile='summary.csv')
+        if file is not None:
+            export.export_to_csv(file.name, self.filters)
     def export_csv(self):
         file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
                              initialfile='top10cheapest.csv')
@@ -396,27 +425,59 @@ class ViewCharts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.canvas = None
-        self.toolbar = None
-        label = tk.Label(self, text='Analyse Resale Flats by Town', font=NORM_FONT)
-        label.pack(padx=10, pady=10)
+        # self.toolbar = None
+        # label = tk.Label(self, text='Analyse Resale Flats by Town', font=LARGE_FONT)
+        # label.grid(pady=10, padx=10)
+        # back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
+        #                         command=lambda: self.refresh(controller))
+        # back_button.pack(padx=5, pady=5)
 
+        label = tk.Label(self, text= "Analyse Resale Flats by Town", font=LARGE_FONT)
+        label.grid(row=0, pady=10, padx=10)
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: self.refresh(controller))
-        back_button.pack()
+        back_button.grid(row=1, padx=5, pady=5)
 
         # Add dropdown list with list of towns:
         town_list_options = dh.get_all_towns()
         clicked = tk.StringVar()
         clicked.set(town_list_options[0])
 
+        # combobox_frame = tk.Frame(self)
+        # combobox_frame.grid(row=2)
         # Add Combobox with the list of towns onto the GUI:
         self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly')
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)
-        self.town_combobox.pack(pady=10)
+        self.town_combobox.grid(padx=5, pady=5)
 
         # Initialise default bar graph
         self.selected('')
+
+        self.focus_set()
+        self.bind('<Configure>', self.on_configure)
+
+
+        # Browser
+        self.browser_frame = Browser(self, controller)
+        # self.browser_frame.grid(row=1, column=0,
+        #                         sticky=(tk.N + tk.S + tk.E + tk.W))
+        tk.Grid.rowconfigure(self, 1, weight=1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
+
+    def on_configure(self, event):
+        if self.browser_frame:
+            self.browser_frame.on_mainframe_configure(event.width, event.height)
+
+    def get_browser(self):
+        if self.browser_frame:
+            return self.browser_frame.browser
+        return None
+
+    def get_browser_frame(self):
+        if self.browser_frame:
+            return self.browser_frame
+        return None
 
     @staticmethod
     def plot_bar_graph(town=''):
@@ -485,9 +546,14 @@ class ViewCharts(tk.Frame):
         # Add the bar graph into the ViewCharts window
         self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
         # to display toolbar
-        self.toolbar = NavigationToolbar2Tk(self.canvas, self)
-        self.toolbar.update()
-        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        # self.toolbar = NavigationToolbar2Tk(self.canvas, self)
+        # self.toolbar.update()
+        # self.canvas.get_tk_widget().grid(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        self.canvas.get_tk_widget().grid()
+        tk.Grid.rowconfigure(self, 1, weight=1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
+
+
 
     def refresh(self, controller):
         self.town_combobox.current(0)
@@ -503,12 +569,12 @@ class MainBrowser(tk.Frame):
 
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: controller.show_frame(SelectOptions))
-        back_button.grid(row=0, column=0, pady=10)
+        back_button.pack(pady=10)
 
         # Browser
         self.browser_frame = Browser(self, controller)
-        self.browser_frame.grid(row=1, column=0,
-                                sticky=(tk.N + tk.S + tk.E + tk.W))
+        # self.browser_frame.grid(row=1, column=0,
+        #                         sticky=(tk.N + tk.S + tk.E + tk.W))
         tk.Grid.rowconfigure(self, 1, weight=1)
         tk.Grid.columnconfigure(self, 0, weight=1)
 
@@ -586,11 +652,13 @@ class LoadHandler(object):
         self.browser_frame = browser_frame
 
 
+
+
 if __name__ == '__main__':
     app = WelcomeWindow()
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
