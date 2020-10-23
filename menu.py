@@ -432,6 +432,7 @@ class ViewCharts(tk.Frame):
         self.export_button.pack(padx=10, pady=10)
 
 
+
     @staticmethod
     def plot_bar_graph(town=''):
         try:
@@ -508,6 +509,12 @@ class ViewCharts(tk.Frame):
         self.selected('')
         controller.show_frame(SelectOptions)
 
+    def export_PDF(self):
+        file = asksaveasfile(filetypes=[('pdf file', '*.pdf')], defaultextension=[('pdf file', '*.pdf')],
+                             initialfile='AverageResaleFlatByFlatTypes.pdf')
+        if file is not None:
+            export.export_PDF(file.name, filters, 2)
+
 
 class MainBrowser(tk.Frame):
     def __init__(self, parent, controller):
@@ -543,6 +550,12 @@ class MainBrowser(tk.Frame):
         if self.browser_frame:
             return self.browser_frame
         return None
+
+    def export_PDF(self):
+        file = asksaveasfile(filetypes=[('pdf file', '*.pdf')], defaultextension=[('pdf file', '*.pdf')],
+                             initialfile='AverageResaleFlatByRegion.pdf')
+        if file is not None:
+            export.export_PDF(file.name, filters, 2)
 
 
 class Browser(tk.Frame):
