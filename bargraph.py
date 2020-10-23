@@ -28,7 +28,7 @@ def get_filtered_data(town=''):
     return df.groupby('flat_type')['resale_price'].mean().round(2)
 
 
-def plot_bar_graph(town=''):
+def plot_bargraph(town=''):
     """Call this function to plot bar graph
     The updated graph will be auto saved whenever this function is called
 
@@ -38,10 +38,12 @@ def plot_bar_graph(town=''):
     export (bool): pass in True to save graph as pdf
     """
     try:
+        if town == 'Select Town':
+            town = ''
         town = town.upper()
         df = get_filtered_data(town)
         if len(df) == 0:
-            raise IndexError("No data found!")
+            raise IndexError('No data found!')
         # Set town to Singapore when no town is selected
         town = 'SINGAPORE' if town == '' else town
 
@@ -49,7 +51,7 @@ def plot_bar_graph(town=''):
         fig = Figure(figsize=(20, 5))
         ax = fig.add_subplot(111)
         # Bar graph configuration
-        bargraph = df.plot.barh(color='#24AEDE', ax=ax, zorder=2, label='Average Resale Pricing')
+        bargraph = df.plot.barh(color='#83b2fc', ax=ax, zorder=2, label='Average Resale Pricing')
         # Set x ticks to frequency of 100,000
         start, end = bargraph.get_xlim()
         bargraph.xaxis.set_ticks(arange(start, end, 100000))
@@ -67,7 +69,7 @@ def plot_bar_graph(town=''):
         # Set average resale value to bar labels
         for i in bargraph.patches:
             price = i.get_width()
-            bargraph.text(price + .3, i.get_y() + .15, str(" ${:,}".format(int(price))),
+            bargraph.text(price + .3, i.get_y() + .15, str('${:,}'.format(int(price))),
                           fontsize=10,
                           color='dimgrey')
         # Style labels and title
@@ -78,7 +80,7 @@ def plot_bar_graph(town=''):
                             fontdict=label_style)
         bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
                            fontdict={'fontsize': 12, 'fontweight': 'heavy'})
-        bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02), borderaxespad=0.)
+        bargraph.legend(loc='lower right', bbox_to_anchor=(1., 1.02), borderaxespad=0.)
         # Save bar graph as png
         bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
 
