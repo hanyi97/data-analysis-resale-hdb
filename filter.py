@@ -9,8 +9,6 @@ df = data_helper.get_dataframe()
 # declare dictionary to store the values
 in_dict = {}
 
-# user filter selection input
-in_col = {'year': 2019}
 
 
 def get_unique(column):
