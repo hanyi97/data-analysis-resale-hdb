@@ -91,14 +91,15 @@ def get_filtered_data(in_dict):
 
 
 def get_cheapest_hdb(in_dict, rows=10):
-    """Get cheapest HDB based on user filtered result
-    Top n cheapest HDB based on each flat type
+    """Get cheapest flats based on user filtered result
+    Top n cheapest flats based on each flat type
 
     Parameters:
+    in_dict dictionary. key = (str) column, value = column data value
     rows (int): number of rows for each flat type
 
     Returns:
-    dataframe: dataframe of cheapest HDB based on flat type
+    dataframe: dataframe of top 10 cheapest flats based on user selected flat type
     """
     cheap_data = get_filtered_data(in_dict) \
         .sort_values(['flat_type', 'resale_price']) \
