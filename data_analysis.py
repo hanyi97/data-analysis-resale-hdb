@@ -124,7 +124,7 @@ plt.show()
 print('\033[32;1m{}\033[0m'.format('The following are the data analysis for remaining lease and resale price'))
 
 
-def get_remaining_lease_data(remaining_lease=""):
+def get_remaining_lease_data(remaining_lease=''):
     """Group all remaining_lease of Resale Flats from Year 2017 - 2019
 
     Parameters:
@@ -135,7 +135,7 @@ def get_remaining_lease_data(remaining_lease=""):
     """
     # read the dataset into a data table using Pandas
     df = data_helper.get_dataframe()
-    if remaining_lease != "":
+    if remaining_lease != '':
         df = df[(df['remaining_lease'] == remaining_lease)]
     return df.groupby('remaining_lease').size()
 
@@ -155,10 +155,10 @@ def plot_rlBargraph(remaining_lease=''):
         # Plot Histogram of Remaining Lease of Resale Flats from Year 2017 - 2019
         plt.bar(range(len(df)), df.values, align='center', color='m')
         plt.xticks(range(len(df)), df.index.values, size='small')
-        plt.title("Remaining Lease of Resale Flats from Year 2017 - 2019")
+        plt.title('Remaining Lease of Resale Flats from Year 2017 - 2019')
         plt.xlabel('Remaining Lease (Years)')
         plt.ylabel('Count')
         plt.show()
 
     except IndexError:
-        print("No data found!")
+        print('No data found!')
