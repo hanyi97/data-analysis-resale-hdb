@@ -16,8 +16,6 @@ from tkinter.filedialog import asksaveasfile, NW
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
-from numpy import arange
-from matplotlib.figure import Figure
 
 matplotlib.use('TkAgg')
 # Platforms
