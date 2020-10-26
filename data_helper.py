@@ -41,7 +41,7 @@ def get_all_regions():
 
 
 def get_all_flat_types():
-    """Retrieve all towns and sort them in ascending order
+    """Retrieve all flat types and sort them in ascending order
 
     Returns:
     list: list of all unique towns
