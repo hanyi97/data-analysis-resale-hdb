@@ -14,7 +14,7 @@ df.info()
 print('\n\033[32;1m{}\033[0m'.format('The following are the data analysis for resale price'))
 
 
-def resale_price_year(year):
+def get_resale_price_year(year):
     """Get the table of description of the resale price for the specified year
 
     Parameters:
@@ -69,16 +69,16 @@ def resale_price_year(year):
     print(year, '\n', tabulate(resale_table, tablefmt='simple', numalign='right', floatfmt='.2f'), '\n')
 
 
-resale_price_year('2017 - 2019')
+get_resale_price_year('2017 - 2019')
 
 # the histogram of resale price
 sns.histplot(df['resale_price'], bins=50)
-plt.title('Distribution of Resale price in 2017-2019')
+plt.title('Distribution of Resale Price in 2017-2019')
 plt.show()
 
 # the box and whiskers plot of resale price
 df.boxplot(column='resale_price')
-plt.title('Distribution of Resale price in 2017-2019')
+plt.title('Distribution of Resale Price in 2017-2019')
 plt.show()
 
 print('\033[32;1m{}\033[0m'.format('The following are the data analysis for year and resale price'))
@@ -86,7 +86,7 @@ print('\033[32;1m{}\033[0m'.format('The following are the data analysis for year
 year_result = df.groupby('year').agg({'resale_price': ['mean', 'min', 'max']}).apply(lambda x: round(x, 2))
 print(year_result, '\n')
 
-resale_price_year(2017), resale_price_year(2018), resale_price_year(2019)
+get_resale_price_year(2017), get_resale_price_year(2018), get_resale_price_year(2019)
 
 # the box and whiskers plot of resale price for year 2017, 2018, 2019
 sns.boxplot(
@@ -94,7 +94,7 @@ sns.boxplot(
     y='resale_price',
     data=df
 )
-plt.title('Distribution of Resale price in 2017, 2018, 2019')
+plt.title('Distribution of Resale Price in 2017, 2018, 2019')
 plt.show()
 
 print('\033[32;1m{}\033[0m'.format('The following are the data analysis for town'))
@@ -165,3 +165,6 @@ def plot_rlBargraph(remaining_lease=''):
 
     except IndexError:
         print('No data found!')
+
+print(get_remaining_lease_data())
+plot_rlBargraph()
