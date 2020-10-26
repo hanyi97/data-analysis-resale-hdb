@@ -12,7 +12,7 @@ CONST_FILE_PATH = "resources/bargraph.png"
 
 
 def get_filtered_data(town=''):
-    """Group all resale prices based on flat type
+    """Group all average resale prices based on flat type
     Optional to filter by town if being passed as parameter
 
     Parameters:
@@ -33,7 +33,6 @@ def plot_bargraph(town=''):
 
     Parameters:
     town (str): town can be empty if no filtering is needed
-    year (str): year can be empty if no filtering is needed
     export (bool): pass in True to save graph as pdf
 
     Returns:
