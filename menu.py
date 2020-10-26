@@ -445,6 +445,9 @@ class ViewCharts(tk.Frame):
 
     # Run this function when user selects from the dropdown list
     def selected(self, event):
+        """This function is run when the user selects from the dropdown list. It removes the current graph and toolbar and adds the updated bar graph and dipslays the toolbar onto the ViewCharts window.
+        Parameter: the event from the combobox"""
+
         # Clear the previous chart & toolbar first if it is currently on the screen
         try:
             self.canvas.get_tk_widget().destroy()
@@ -460,6 +463,7 @@ class ViewCharts(tk.Frame):
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
     def refresh(self, controller):
+        """This function is run when the user selects the 'Back to Home' button. It refreshes the dropdown list value back to the default and displays 'Select Town' on the dropdown list. Then, it displays the SelectOptions page."""
         self.town_combobox.current(0)
         self.selected('')
         controller.show_frame(SelectOptions)
