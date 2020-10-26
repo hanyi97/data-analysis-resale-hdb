@@ -1,7 +1,6 @@
 """This is a module to plot bar graph
 Based on average resale prices for different flat types.
-Can be filtered by town
-Auto export graph as png image"""
+Can be filtered by town"""
 
 
 from numpy import arange
@@ -14,7 +13,7 @@ CONST_FILE_PATH = "resources/bargraph.png"
 
 def get_filtered_data(town=''):
     """Group all resale prices based on flat type
-    Optional to filter by town or year (or both)
+    Optional to filter by town if being passed as parameter
 
     Parameters:
     town (str): filter data by town (optional)
@@ -36,6 +35,9 @@ def plot_bargraph(town=''):
     town (str): town can be empty if no filtering is needed
     year (str): year can be empty if no filtering is needed
     export (bool): pass in True to save graph as pdf
+
+    Returns:
+    figure: figure of the bar graph
     """
     try:
         if town == 'Select Town':

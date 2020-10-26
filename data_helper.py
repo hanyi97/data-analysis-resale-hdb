@@ -64,7 +64,7 @@ def get_filtered_region(town):
     """Retrieve the region based on town
 
     Returns:
-    list: list of regions
+    list: list of filtered regions
     """
     df = get_dataframe()
     regions = df[df['town'] == town.upper()]['region'].unique()

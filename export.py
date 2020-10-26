@@ -1,13 +1,11 @@
-"""This is a module to export data as PDF
+"""This is a module to export data as PDF or CSV
 """
 
-import os.path as path
 from filter import get_filtered_data, get_cheapest_hdb
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, PageBreak, Image
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import cm
 
 # Declare constant variables
 CONST_PDF_PATH = 'resources/summary.pdf'
@@ -23,6 +21,9 @@ heading_style.leading = 30
 def setup_data_summary_page(filters):
     """Function to set up data summary page
     Load filtered data and display it in a page in the pdf
+
+    Returns:
+    list: list of elements to be included in the pdf
     """
     # Retrieve data
     df = get_cheapest_hdb(filters)
@@ -55,30 +56,6 @@ def setup_data_summary_page(filters):
     table.setStyle(TableStyle(table_styles))
     elements.append(table)
     elements.append(PageBreak())
-    return elements
-
-
-def setup_bargraph_page():
-    """Function to set up bar graph page
-    Inserts the bar graph image into the pdf
-    """
-    elements = []
-    if path.isfile(CONST_BARGRAPH_PATH):
-        elements.append(Paragraph('<u>Average Resale Pricing By Flat Type</u>', heading_style))
-        elements.append(Image(CONST_BARGRAPH_PATH, width=26 * cm, height=7 * cm))
-        elements.append(PageBreak())
-    return elements
-
-
-def setup_treemap_page():
-    """Function to set up tree map page
-    Inserts the tree map image into the pdf
-    """
-    elements = []
-    if path.isfile(CONST_TREEMAP_PATH):
-        elements.append(Paragraph('<u>Average Resale Pricing by Region</u>', heading_style))
-        elements.append(Image(CONST_TREEMAP_PATH, width=19 * cm, height=14 * cm))
-        elements.append(PageBreak())
     return elements
 
 
