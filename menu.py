@@ -1,4 +1,9 @@
 import tkinter as tk
+from fileinput import filename
+
+import PIL
+from PIL import ImageTk
+
 import data_helper as dh
 import platform
 import ctypes
@@ -7,7 +12,7 @@ import filter
 import export
 import bargraph as bg
 from tkinter import ttk
-from tkinter.filedialog import asksaveasfile
+from tkinter.filedialog import asksaveasfile, NW
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
@@ -21,10 +26,12 @@ LINUX = (platform.system() == 'Linux')
 MAC = (platform.system() == 'Darwin')
 
 # Reusable font sizes
-LARGE_FONT = ('Open Sans', 30)
-NORM_FONT = ('Open Sans', 16)
-SMALL_FONT = ('Open Sans', 15)
-VALIDAITON_FONT = ('Open Sans', 12)
+LARGE_FONT = ('Roboto', 30, 'bold')
+HEADER_FONT = ('Roboto', 23, 'bold')
+NORM_FONT = ('Roboto', 16)
+BUTTON_FONT = ('Roboto', 15, 'bold')
+SMALL_FONT = ('Roboto', 15)
+VALIDAITON_FONT = ('Roboto', 12)
 
 CONST_FILE_PATH = 'resources/bargraph.png'
 filters = {}
@@ -62,9 +69,13 @@ class SelectOptions(tk.Frame):
         # tkinter except the root window require a parent (sometimes also called a master)
         # controller -->some
         # other object that is designed to act as a common point of interaction for several pages of widgets
-        tk.Frame.__init__(self, parent)
+        root = tk.Frame.__init__(self, parent)
         self.create_labels()
         self.create_buttons(controller)
+        # win= tk.Tk()
+        # bgImage = tk.PhotoImage(file='singapore-flats-M9ZQMUG.ppm')
+        # tk.Label(win, image=bgImage).place(relwidth=1, relheight=1)
+
 
     def create_labels(self):
         header = tk.Label(self, text='HDB Resale Flats Analyser', font=LARGE_FONT)
@@ -73,9 +84,9 @@ class SelectOptions(tk.Frame):
                               'based '
                               'on regions, '
                               'towns and flat-types.',
-                         font=NORM_FONT, wraplength=450)
-        header.pack(padx=0, pady=20)
-        label.pack(padx=10, pady=10)
+                         font=NORM_FONT, wraplength=700)
+        header.pack(padx=0, pady=30)
+        label.pack(padx=0, pady=10)
 
     def show_frame(self, cont):
         # show a table_frame for the given page name
@@ -83,18 +94,16 @@ class SelectOptions(tk.Frame):
         frame.tkraise()  # raises the table_frame to the front
 
     def create_buttons(self, controller):
-        overview_btn = tk.Button(self, text='Overview of resale flat prices', height=3, width=30, font=NORM_FONT,
+        overview_btn = tk.Button(self, text='Overview of resale flat prices', height=3, width=30, font=BUTTON_FONT, highlightbackground='#007C89', fg="white", cursor= "hand2	",
                                  command=lambda: controller.show_frame(ViewSummary))
         overview_btn.pack(padx=10, pady=10)
 
-        avgbyflattype_btn = tk.Button(self, text='View average resale value by flat type', height=3, width=30,
-                                      font=NORM_FONT,
-                                      command=lambda: controller.show_frame(ViewCharts))
+        avgbyflattype_btn = tk.Button(self, text='Average resale prices based on towns', height=3, width=30, font=BUTTON_FONT, highlightbackground='#007C89', fg="white",  cursor= "hand2	",
+                                 command=lambda: controller.show_frame(ViewCharts))
         avgbyflattype_btn.pack(padx=10, pady=10)
 
-        avgbyregion_btn = tk.Button(self, text='View average resale value by region', height=3, width=30,
-                                    font=NORM_FONT,
-                                    command=lambda: controller.show_frame(MainBrowser))
+        avgbyregion_btn = tk.Button(self, text='Average resale prices based on regions', height=3, width=30, font=BUTTON_FONT, highlightbackground='#007C89', fg="white",  cursor= "hand2	",
+                                 command=lambda: controller.show_frame(MainBrowser))
         avgbyregion_btn.pack(pady=10, padx=10)
 
 
@@ -136,9 +145,11 @@ class ViewTop10CheapestFlats(tk.Frame):
             self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + flat_types
             self.combobox_flat_types.current(0)
             # Create filter button
-            filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
+            filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20, highlightbackground='#007C89', fg="white", cursor="hand2",
                                       command=lambda: self.update_table(results_frame))
             filter_button.grid(row=0, column=1, padx=10, pady=10)
+
+
         # Search results table_frame
         results_frame = tk.Frame(self)
         results_frame.grid(row=3)
@@ -227,11 +238,16 @@ class ViewSummary(tk.Frame):
         self.CONST_SELECT_TOWN = 'Select Town'
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text='Overview of Resale Flats Prices', font=LARGE_FONT)
-        label.grid(row=0, pady=10, padx=10)
+        label = tk.Label(self, text='Overview of Resale Flats Prices', font=HEADER_FONT)
+        label.grid(row=0, padx=0, pady=30)
+        description = tk.Label(self,
+                         text='You can view the overview of resale flat prices in Singapore according to the region, town and flat type.',
+                         font=NORM_FONT, wraplength=600)
+        description.grid(row=1, padx=0,pady=5)
+
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: self.refresh(controller))
-        back_button.grid(row=1, padx=5, pady=5)
+        back_button.grid(row=2, padx=0, pady=10)
 
         # Get regions, towns and flat types from datahelper
         self.df = dh.get_dataframe()
@@ -267,9 +283,9 @@ class ViewSummary(tk.Frame):
         self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + flat_type_list
         self.combobox_flat_types.current(0)
 
-        filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
+
+        filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20, highlightbackground='#DBD9D2', fg="white", cursor='hand2', foreground='black',
                                   command=lambda: self.update_table(self.results_frame))
-        # filter_button.pack(side=tk.LEFT, padx=10, pady=10)
         filter_button.grid(row=0, column=3, padx=10, pady=10)
         # Search results table_frame
         self.results_frame = tk.Frame(self)
@@ -279,7 +295,7 @@ class ViewSummary(tk.Frame):
         self.table_frame = tk.Frame(self)
         self.table_frame.grid(row=4)
         self.table = Table(self.table_frame, dataframe=self.df, showstatusbar=True, width=1215, height=300,
-                           rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
+                           rowselectedcolor='#F6F6F4', colheadercolor='#007C89', cellbackgr='#FFFFFF', gridcolor="#403B3B",cellwidth=80, rowheight=30)
         self.table.show()
 
         self.export_button = tk.Button(self, text='Export Results as CSV', font=SMALL_FONT,
@@ -408,8 +424,8 @@ class ViewCharts(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.canvas = None
         self.toolbar = None
-        label = tk.Label(self, text='Analyse Resale Flats by Town', font=NORM_FONT)
-        label.pack(padx=10, pady=10)
+        label = tk.Label(self, text='Analyse Resale Flats by Town', font=HEADER_FONT)
+        label.pack(padx=0, pady=30)
 
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: self.refresh(controller))
@@ -457,9 +473,12 @@ class MainBrowser(tk.Frame):
         self.focus_set()
         self.bind('<Configure>', self.on_configure)
 
+        # label = tk.Label(self, text='Analyse Resale Flats by Region', font=HEADER_FONT)
+        # label.grid(row=0, column=0, pady=10)
+
         back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
                                 command=lambda: controller.show_frame(SelectOptions))
-        back_button.grid(row=0, column=0, pady=10)
+        back_button.grid(row=0, column=0, pady=20)
 
         # Browser
         self.browser_frame = Browser(self, controller)
@@ -547,6 +566,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
