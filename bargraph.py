@@ -52,7 +52,8 @@ def plot_bargraph(town=''):
         fig = Figure(figsize=(20, 5))
         ax = fig.add_subplot(111)
         # Bar graph configuration
-        bargraph = df.plot.barh(color='#E7B75F', ax=ax, zorder=2, label='Average Resale Pricing')
+
+        bargraph = df.plot.barh(color=['#E7B75F', '#C5DBF2'], ax=ax, zorder=2, label='Average Resale Pricing')
         # Set x ticks to frequency of 100,000
         start, end = bargraph.get_xlim()
         bargraph.xaxis.set_ticks(arange(start, end, 100000))
@@ -74,13 +75,13 @@ def plot_bargraph(town=''):
                           fontsize=10,
                           color='dimgrey')
         # Style labels and title
-        label_style = {'fontsize': 10, 'fontweight': 'heavy'}
+        label_style = {'fontsize': 9, 'fontweight': 'heavy'}
         bargraph.set_xlabel('Average Resale Value (SGD)',
                             fontdict=label_style)
         bargraph.set_ylabel('HDB Flat Type',
                             fontdict=label_style)
         bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
-                           fontdict={'fontsize': 12, 'fontweight': 'heavy'})
+                           fontdict={'fontsize': 10, 'fontweight': 'heavy'})
         bargraph.legend(loc='lower right', bbox_to_anchor=(1., 1.02), borderaxespad=0.)
         # Save bar graph as png
         bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)

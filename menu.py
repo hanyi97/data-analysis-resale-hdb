@@ -34,8 +34,10 @@ def rename_columns(df):
     df.columns = list(map(lambda col_name: col_name.upper().replace('_', ' '), df.columns))
 
 
- """Welcome window is the main window"""
+
 class WelcomeWindow(tk.Tk):
+    """Welcome window is the main window
+       """
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
@@ -54,10 +56,11 @@ class WelcomeWindow(tk.Tk):
         frame.tkraise()
 
 
-"""Users can to select their preferred option in main menu.
-    Options include Overview of resale flat prices, Average resale based on regions, Average resale prices based on flat types
-"""
+
 class SelectOptions(tk.Frame):
+    """Users can to select their preferred option in main menu.
+           Options include Overview of resale flat prices, Average resale based on regions, Average resale prices based on flat types
+       """
     def __init__(self, parent, controller):
         # self --> current object
         # parent --> a widget to act as the parent of the current object. All widgets in
@@ -104,8 +107,10 @@ class SelectOptions(tk.Frame):
         avgbyflattype_btn.pack(padx=10, pady=10)
 
 
- """This window is a separate pop up that is triggered when user clicks on View Top 10 in Overview of Resale Flats Prices window. """
+
 class ViewTop10CheapestFlatsWindow(tk.Tk):
+    """This window is a separate pop up that is triggered when user clicks on View Top 10 in Overview of Resale Flats Prices window.
+         """
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
@@ -117,10 +122,11 @@ class ViewTop10CheapestFlatsWindow(tk.Tk):
         self.tkraise()
 
 
-"""Top 10 Cheapest Flats table will be populated according to what user filtered in the previous window.
-   User can filter top 10 according to the flat type.
-   """
+
 class ViewTop10CheapestFlats(tk.Frame):
+    """Top 10 Cheapest Flats table will be populated according to what user filtered in the previous window.
+       User can filter top 10 according to the flat type.
+       """
     def __init__(self, parent, controller):
         self.is_table_deleted = False
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
@@ -235,9 +241,9 @@ class ViewTop10CheapestFlats(tk.Frame):
         if file is not None:
             export.export_to_pdf(file.name, filters)
 
- """Overview of resale flat prices where users can filter results based on region, town, flat type.
-    """
 class ViewSummary(tk.Frame):
+    """Overview of resale flat prices where users can filter results based on region, town, flat type.
+       """
     def __init__(self, parent, controller):
         self.is_table_deleted = False
         self.CONST_SELECT_REGION = 'Select Region'
@@ -430,6 +436,7 @@ class AverageByFlatType(tk.Frame):
         self.toolbar = None
         label = tk.Label(self, text='Analyse Resale Flats by Town', font=HEADER_FONT)
         label.pack(padx=0, pady=30)
+
 
         back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, highlightbackground='#007C89',
                                 foreground="black", cursor='hand2',
