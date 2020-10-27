@@ -1,6 +1,19 @@
 # Resale HDB Data Analysis Tool
+**Steps to set up the project (production):**  
+Pre-requisites:  
+- Python version 3.7  
+- Running Windows OS
 
-**Steps to set up the project:**
+1. Open project in IDE  
+
+2. Install all required libraries  
+``` pip install tkinter matplotlib pandas reportlab numpy seaborn orca plotly-express orca chart_studio cefpython3 sklearn tabulate```  
+  
+3. Run menu.py to start program  
+```python menu.py```
+
+
+**Steps to set up the project (development):**
 1. clone project:  
 ```git clone https://github.com/hanyi97/data-analysis-resale-hdb.git```
 
