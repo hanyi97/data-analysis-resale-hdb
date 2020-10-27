@@ -14,7 +14,7 @@ df.info()
 print('\n\033[32;1m{}\033[0m'.format('The following are the data analysis for resale price'))
 
 
-def resale_price_year(year):
+def get_resale_price_year(year):
     """Get the table of description of the resale price for the specified year
 
     Parameters:
@@ -69,16 +69,16 @@ def resale_price_year(year):
     print(year, '\n', tabulate(resale_table, tablefmt='simple', numalign='right', floatfmt='.2f'), '\n')
 
 
-resale_price_year('2017 - 2019')
+get_resale_price_year('2017 - 2019')
 
 # the histogram of resale price
 sns.histplot(df['resale_price'], bins=50)
-plt.title('Distribution of Resale price in 2017-2019')
+plt.title('Distribution of Resale Price in 2017-2019')
 plt.show()
 
 # the box and whiskers plot of resale price
 df.boxplot(column='resale_price')
-plt.title('Distribution of Resale price in 2017-2019')
+plt.title('Distribution of Resale Price in 2017-2019')
 plt.show()
 
 print('\033[32;1m{}\033[0m'.format('The following are the data analysis for year and resale price'))
@@ -86,7 +86,7 @@ print('\033[32;1m{}\033[0m'.format('The following are the data analysis for year
 year_result = df.groupby('year').agg({'resale_price': ['mean', 'min', 'max']}).apply(lambda x: round(x, 2))
 print(year_result, '\n')
 
-resale_price_year(2017), resale_price_year(2018), resale_price_year(2019)
+get_resale_price_year(2017), get_resale_price_year(2018), get_resale_price_year(2019)
 
 # the box and whiskers plot of resale price for year 2017, 2018, 2019
 sns.boxplot(
@@ -94,7 +94,7 @@ sns.boxplot(
     y='resale_price',
     data=df
 )
-plt.title('Distribution of Resale price in 2017, 2018, 2019')
+plt.title('Distribution of Resale Price in 2017, 2018, 2019')
 plt.show()
 
 print('\033[32;1m{}\033[0m'.format('The following are the data analysis for town'))
@@ -124,18 +124,19 @@ plt.show()
 print('\033[32;1m{}\033[0m'.format('The following are the data analysis for remaining lease and resale price'))
 
 
-def get_remaining_lease_data(remaining_lease=""):
+def get_remaining_lease_data(remaining_lease=''):
     """Group all remaining_lease of Resale Flats from Year 2017 - 2019
 
     Parameters:
-    remaining_lease (str)
+    remaining_lease (str): remaining_lease can be empty if no filtering is needed
 
     Returns:
     dataframe: dataframe of filtered results
     """
     # read the dataset into a data table using Pandas
     df = data_helper.get_dataframe()
-    if remaining_lease != "":
+    # Validate remaining lease input
+    if remaining_lease != '':
         df = df[(df['remaining_lease'] == remaining_lease)]
     return df.groupby('remaining_lease').size()
 
@@ -148,17 +149,22 @@ def plot_rlBargraph(remaining_lease=''):
     remaining_lease (str): remaining_lease can be empty if no filtering is needed
     """
     try:
-        # Retrieve data
+        # Validate remaining lease input
         remaining_lease = str(remaining_lease) if remaining_lease != '' else remaining_lease
+        # Retrieve remaining lease data
         df = get_remaining_lease_data(remaining_lease)
 
-        # Plot Histogram of Remaining Lease of Resale Flats from Year 2017 - 2019
+        # Plot Bar graph of Remaining Lease of Resale Flats from Year 2017 - 2019
         plt.bar(range(len(df)), df.values, align='center', color='m')
         plt.xticks(range(len(df)), df.index.values, size='small')
-        plt.title("Remaining Lease of Resale Flats from Year 2017 - 2019")
+        # Set Set labels and title for bar graph
+        plt.title('Remaining Lease of Resale Flats from Year 2017 - 2019')
         plt.xlabel('Remaining Lease (Years)')
         plt.ylabel('Count')
         plt.show()
 
     except IndexError:
-        print("No data found!")
+        print('No data found!')
+
+print(get_remaining_lease_data())
+plot_rlBargraph()

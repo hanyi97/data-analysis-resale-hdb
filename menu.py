@@ -6,37 +6,43 @@ import matplotlib
 import filter
 import export
 import bargraph as bg
-from matplotlib.ticker import FuncFormatter
 from tkinter import ttk
-from tkinter.filedialog import asksaveasfile
+from tkinter.filedialog import asksaveasfile, NW
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
+<<<<<<< HEAD
 from numpy import arange
 from matplotlib.figure import Figure
+=======
+>>>>>>> b3de3b46f5d71dec4ae7b899b1cbaac106424429
 
 matplotlib.use('TkAgg')
+
 # Platforms
 WINDOWS = (platform.system() == 'Windows')
 LINUX = (platform.system() == 'Linux')
 MAC = (platform.system() == 'Darwin')
 
 # Reusable font sizes
-LARGE_FONT = ('Open Sans', 30)
-NORM_FONT = ('Open Sans', 16)
-SMALL_FONT = ('Open Sans', 15)
-VALIDAITON_FONT = ('Open Sans', 12)
+LARGE_FONT = ('Roboto', 30, 'bold')
+HEADER_FONT = ('Roboto', 23, 'bold')
+NORM_FONT = ('Roboto', 16)
+BUTTON_FONT = ('Roboto', 14, 'bold')
+SMALL_FONT = ('Roboto', 15)
+VALIDAITON_FONT = ('Roboto', 12)
 
 CONST_FILE_PATH = 'resources/bargraph.png'
 filters = {}
-
 
 def rename_columns(df):
     df.columns = list(map(lambda col_name: col_name.upper().replace('_', ' '), df.columns))
 
 
-# Main Window
+
 class WelcomeWindow(tk.Tk):
+    """Welcome window is the main window
+       """
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
@@ -44,7 +50,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (SelectOptions, ViewSummary, ViewCharts, MainBrowser):
+        for F in (SelectOptions,ViewSummary,AverageByRegion,AverageByFlatType ):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky='nsew')
@@ -55,17 +61,23 @@ class WelcomeWindow(tk.Tk):
         frame.tkraise()
 
 
-# Select Options Window
+
 class SelectOptions(tk.Frame):
+    """Users can to select their preferred option in main menu.
+           Options include Overview of resale flat prices, Average resale based on regions, Average resale prices based on flat types
+       """
     def __init__(self, parent, controller):
         # self --> current object
         # parent --> a widget to act as the parent of the current object. All widgets in
         # tkinter except the root window require a parent (sometimes also called a master)
         # controller -->some
         # other object that is designed to act as a common point of interaction for several pages of widgets
-        tk.Frame.__init__(self, parent)
+        root = tk.Frame.__init__(self, parent)
         self.create_labels()
         self.create_buttons(controller)
+        # win= tk.Tk()
+        # bgImage = tk.PhotoImage(file='singapore-flats-M9ZQMUG.ppm')
+        # tk.Label(win, image=bgImage).place(relwidth=1, relheight=1)
 
     def create_labels(self):
         header = tk.Label(self, text='HDB Resale Flats Analyser', font=LARGE_FONT)
@@ -74,9 +86,9 @@ class SelectOptions(tk.Frame):
                               'based '
                               'on regions, '
                               'towns and flat-types.',
-                         font=NORM_FONT, wraplength=450)
-        header.pack(padx=0, pady=20)
-        label.pack(padx=10, pady=10)
+                         font=NORM_FONT, wraplength=700)
+        header.pack(padx=0, pady=30)
+        label.pack(padx=0, pady=10)
 
     def show_frame(self, cont):
         # show a table_frame for the given page name
@@ -84,30 +96,26 @@ class SelectOptions(tk.Frame):
         frame.tkraise()  # raises the table_frame to the front
 
     def create_buttons(self, controller):
-        overview_btn = tk.Button(self, text='Overview of resale flat prices', height=3, width=30, font=NORM_FONT,
+        overview_btn = tk.Button(self, text='Overview of resale flat prices', height=3, width=30, font=BUTTON_FONT,
+                                 background='#007C89', fg="white", cursor="hand2	",
                                  command=lambda: controller.show_frame(ViewSummary))
         overview_btn.pack(padx=10, pady=10)
 
-        avgbyflattype_btn = tk.Button(self, text='View average resale value by flat type', height=3, width=30,
-                                      font=NORM_FONT,
-                                      command=lambda: controller.show_frame(ViewCharts))
-        avgbyflattype_btn.pack(padx=10, pady=10)
-
-        avgbyregion_btn = tk.Button(self, text='View average resale value by region', height=3, width=30,
-                                    font=NORM_FONT,
-                                    command=lambda: controller.show_frame(MainBrowser))
+        avgbyregion_btn = tk.Button(self, text='Average resale prices based on regions', height=3, width=30,
+                                    font=BUTTON_FONT, background='#007C89', fg="white", cursor="hand2	",
+                                    command=lambda: controller.show_frame(AverageByRegion))
         avgbyregion_btn.pack(pady=10, padx=10)
 
+        avgbyflattype_btn = tk.Button(self, text='Average resale prices based on flat types', height=3, width=30,
+                                      font=BUTTON_FONT, background='#007C89', fg="white", cursor="hand2	",
+                                      command=lambda: controller.show_frame(AverageByFlatType))
+        avgbyflattype_btn.pack(padx=10, pady=10)
 
-    # def showCharts(self):
-    #     mainApp = chartsWindow()
-    #     mainApp.title('Charts')
-    #     mainApp.geometry('1300x600')
-    #     mainApp.mainloop()
 
 
 class ViewTop10CheapestFlatsWindow(tk.Tk):
-    """Separate popout window"""
+    """This window is a separate pop up that is triggered when user clicks on View Top 10 in Overview of Resale Flats Prices window.
+         """
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
@@ -119,13 +127,17 @@ class ViewTop10CheapestFlatsWindow(tk.Tk):
         self.tkraise()
 
 
+
 class ViewTop10CheapestFlats(tk.Frame):
+    """Top 10 Cheapest Flats table will be populated according to what user filtered in the previous window.
+       User can filter top 10 according to the flat type.
+       """
     def __init__(self, parent, controller):
         self.is_table_deleted = False
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
         tk.Frame.__init__(self, parent)
         # Create screen title
-        label = tk.Label(self, text='Top 10 Cheapest Flats', font=LARGE_FONT)
+        label = tk.Label(self, text='Top 10 Cheapest Flats', font=NORM_FONT)
         label.grid(row=0, padx=10, pady=10)
 
         # Get flat types from datahelper
@@ -143,22 +155,30 @@ class ViewTop10CheapestFlats(tk.Frame):
             self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + flat_types
             self.combobox_flat_types.current(0)
             # Create filter button
-            filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
+            filter_button = tk.Button(combobox_frame, text='Filter', font=BUTTON_FONT, width=20,
+                                      background='#DBD9D2', cursor='hand2', foreground='black',
                                       command=lambda: self.update_table(results_frame))
             filter_button.grid(row=0, column=1, padx=10, pady=10)
+
         # Search results table_frame
         results_frame = tk.Frame(self)
         results_frame.grid(row=3)
+
         # Plot top10 cheapest table
         self.table_frame = tk.Frame(self)
         self.table_frame.grid(row=4)
-        self.table = Table(self.table_frame, dataframe=self.data, width=1150, height=250,
-                           rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
+        self.table = Table(self.table_frame, dataframe=self.data, width=1215, height=300,
+                           rowselectedcolor='#F6F6F4', colheadercolor='#007C89', cellbackgr='#FFFFFF', cellwidth=80,
+                           rowheight=30)
         self.table.show()
         # Export to PDF button
-        self.export_button = tk.Button(self, text='Export Cheapest Flats as CSV', font=SMALL_FONT,
-                                       command=lambda: self.export_csv())
+        self.export_button = tk.Button(self, text='Export Cheapest Flats as PDF', font=BUTTON_FONT, background='#007C89',
+                                       foreground="black", cursor='hand2',
+                                       command=lambda: self.export_pdf())
         self.export_button.grid(row=5, padx=10, pady=10)
+
+
+
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
         tk.Grid.columnconfigure(self, 0, weight=1)
@@ -175,25 +195,9 @@ class ViewTop10CheapestFlats(tk.Frame):
             # Return selected option for flat type
             flat_label = tk.Label(frame, text='Flat Type: ' + self.combobox_flat_types.get())
             flat_label.pack()
-
-        elif self.combobox_flat_types.get() == self.CONST_SELECT_FLAT_TYPE:
-            # frame.grid_forget()
-            validation_label = tk.Label(frame, text='Please select an option for flat type',
-                             font=VALIDAITON_FONT, fg='red')
-            validation_label.pack(padx=20, pady=20)
-            self.table = Table(self.table_frame, dataframe=self.data)
-            self.table.show()
-
         else:
-
             frame.grid_forget()
 
-        # Get the filter options from combobox
-        self.filters = {'flat_type': self.combobox_flat_types.get()}
-
-        # Replace default values to ' '
-        if self.filters['flat_type'] == self.CONST_SELECT_FLAT_TYPE:
-            self.filters = {}
         global filters
         filters['flat_type'] = self.combobox_flat_types.get()
         for item in list(filters):
@@ -235,30 +239,28 @@ class ViewTop10CheapestFlats(tk.Frame):
             validation_label.pack()
 
     # Export Window
-    def export_csv(self):
-        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
-                             initialfile='summary.csv')
+    @staticmethod
+    def export_pdf():
+        file = asksaveasfile(filetypes=[('pdf file', '*.pdf')], defaultextension=[('pdf file', '*.pdf')],
+                             initialfile='Top10CheapestResaleFlats.pdf')
         if file is not None:
-            export.export_to_csv(file.name, self.filters)
-    def export_csv(self):
-        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
-                             initialfile='top10cheapest.csv')
-        if file is not None:
-            export.export_to_csv(file.name, filters, 2)
-
+            export.export_to_pdf(file.name, filters)
 
 class ViewSummary(tk.Frame):
+    """Overview of resale flat prices where users can filter results based on region, town, flat type.
+       """
     def __init__(self, parent, controller):
         self.is_table_deleted = False
         self.CONST_SELECT_REGION = 'Select Region'
         self.CONST_SELECT_TOWN = 'Select Town'
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text='Overview of Resale Flats Prices', font=LARGE_FONT)
-        label.grid(row=0, pady=10, padx=10)
-        back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
+        label = tk.Label(self, text='Overview of Resale Flats Prices', font=HEADER_FONT)
+        label.grid(row=0, padx=0, pady=30)
+
+        back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89', foreground="black", cursor='hand2',
                                 command=lambda: self.refresh(controller))
-        back_button.grid(row=1, padx=5, pady=5)
+        back_button.grid(row=1, padx=0, pady=10)
 
         # Get regions, towns and flat types from datahelper
         self.df = dh.get_dataframe()
@@ -272,7 +274,6 @@ class ViewSummary(tk.Frame):
         # Setting values for regions combo box
         region_list = sorted(self.regions)
         self.combobox_region = ttk.Combobox(combobox_frame, state='readonly')
-        # self.combobox_region.pack(side=tk.LEFT, padx=5, pady=5)
         self.combobox_region.grid(row=0, column=0, padx=5, pady=5)
         self.combobox_region.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox('region'))
         self.combobox_region['values'] = [self.CONST_SELECT_REGION] + region_list
@@ -294,28 +295,31 @@ class ViewSummary(tk.Frame):
         self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + flat_type_list
         self.combobox_flat_types.current(0)
 
-        filter_button = tk.Button(combobox_frame, text='Filter', font=SMALL_FONT, width=20,
+        filter_button = tk.Button(combobox_frame, text='Filter', font=BUTTON_FONT, width=20,
+                                  background='#DBD9D2', cursor='hand2', foreground='black',
                                   command=lambda: self.update_table(self.results_frame))
-        # filter_button.pack(side=tk.LEFT, padx=10, pady=10)
         filter_button.grid(row=0, column=3, padx=10, pady=10)
+
+
         # Search results table_frame
         self.results_frame = tk.Frame(self)
         self.results_frame.grid(row=3)
 
+        self.export_button = tk.Button(self, text='Export', font=BUTTON_FONT, background='#007C89', foreground="black", cursor='hand2',
+                                       command=lambda: self.export_csv())
+        self.export_button.grid(row=4, padx=0, pady=20)
+
         # Plot summary table
         self.table_frame = tk.Frame(self)
-        self.table_frame.grid(row=4)
+        self.table_frame.grid(row=5)
         self.table = Table(self.table_frame, dataframe=self.df, showstatusbar=True, width=1215, height=300,
-                           rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
+                           rowselectedcolor='#F6F6F4', colheadercolor='#007C89', cellbackgr='#FFFFFF', cellwidth=80,
+                           rowheight=30)
         self.table.show()
 
-        self.export_button = tk.Button(self, text='Export Results as CSV', font=SMALL_FONT,
-                                       command=lambda: self.export_csv())
-        self.export_button.grid(row=5, padx=10, pady=10)
-
-        self.top10_button = tk.Button(self, text='Top 10 Cheapest Flats', font=SMALL_FONT,
+        self.top10_button = tk.Button(self, text='View Top 10 Cheapest Flats',font=BUTTON_FONT, background='#DBD9D2', foreground="black", cursor='hand2',
                                       command=lambda: self.show_top10())
-        self.top10_button.grid(row=6, padx=10, pady=10)
+        self.top10_button.grid(row=6, padx=0, pady=10)
 
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
@@ -410,14 +414,6 @@ class ViewSummary(tk.Frame):
                                         fg='red')
             validation_label.pack()
 
-    # Export Window
-    @staticmethod
-    def export_csv():
-        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
-                             initialfile='summary.csv')
-        if file is not None:
-            export.export_to_csv(file.name, filters, 1)
-
     # Top 10 Window
     def show_top10(self):
         for item in list(filters):
@@ -429,40 +425,44 @@ class ViewSummary(tk.Frame):
         mainApp.geometry('1300x600')
         mainApp.mainloop()
 
+    # Export Window
+    @staticmethod
+    def export_csv():
+        file = asksaveasfile(filetypes=[('CSV Files', '*.csv')], defaultextension=[('CSV Files', '*.csv')],
+                             initialfile='ResaleFlatPrices.csv')
+        if file is not None:
+            export.export_to_csv(file.name, filters)
 
-class ViewCharts(tk.Frame):
+
+class AverageByFlatType(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.canvas = None
-        # self.toolbar = None
-        # label = tk.Label(self, text='Analyse Resale Flats by Town', font=LARGE_FONT)
-        # label.grid(pady=10, padx=10)
-        # back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
-        #                         command=lambda: self.refresh(controller))
-        # back_button.pack(padx=5, pady=5)
+        self.toolbar = None
+        label = tk.Label(self, text='Analyse Resale Flats by Town', font=HEADER_FONT)
+        label.pack(padx=0, pady=30)
 
-        label = tk.Label(self, text= "Analyse Resale Flats by Town", font=LARGE_FONT)
-        label.grid(row=0, pady=10, padx=10)
-        back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
+
+        back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89',
+                                foreground="black", cursor='hand2',
                                 command=lambda: self.refresh(controller))
-        back_button.grid(row=1, padx=5, pady=5)
+        back_button.pack()
 
         # Add dropdown list with list of towns:
         town_list_options = dh.get_all_towns()
         clicked = tk.StringVar()
         clicked.set(town_list_options[0])
 
-        # combobox_frame = tk.Frame(self)
-        # combobox_frame.grid(row=2)
         # Add Combobox with the list of towns onto the GUI:
-        self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly')
+        self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly', background="#007C89")
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)
-        self.town_combobox.grid(padx=5, pady=5)
+        self.town_combobox.pack(pady=10)
 
         # Initialise default bar graph
         self.selected('')
 
+<<<<<<< HEAD
     #     self.focus_set()
     #     self.bind('<Configure>', self.on_configure)
     #
@@ -543,8 +543,13 @@ class ViewCharts(tk.Frame):
         except IndexError as e:
             print(e)
 
+=======
+>>>>>>> b3de3b46f5d71dec4ae7b899b1cbaac106424429
     # Run this function when user selects from the dropdown list
     def selected(self, event):
+        """This function is run when the user selects from the dropdown list. It removes the current graph and toolbar and adds the updated bar graph and dipslays the toolbar onto the ViewCharts window.
+        Parameter: the event from the combobox"""
+
         # Clear the previous chart & toolbar first if it is currently on the screen
         try:
             self.canvas.get_tk_widget().destroy()
@@ -553,39 +558,47 @@ class ViewCharts(tk.Frame):
             pass
 
         # Add the bar graph into the ViewCharts window
-        self.canvas = FigureCanvasTkAgg(self.plot_bar_graph(self.town_combobox.get()), master=self)
+        self.canvas = FigureCanvasTkAgg(bg.plot_bargraph(self.town_combobox.get()), master=self)
         # to display toolbar
-        # self.toolbar = NavigationToolbar2Tk(self.canvas, self)
-        # self.toolbar.update()
-        # self.canvas.get_tk_widget().grid(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        self.canvas.get_tk_widget().grid()
-        tk.Grid.rowconfigure(self, 1, weight=1)
-        tk.Grid.columnconfigure(self, 0, weight=1)
-
-
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self)
+        self.toolbar.update()
+        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
     def refresh(self, controller):
+        """This function is run when the user selects the 'Back to Home' button. It refreshes the dropdown list value back to the default and displays 'Select Town' on the dropdown list. Then, it displays the SelectOptions page."""
         self.town_combobox.current(0)
         self.selected('')
         controller.show_frame(SelectOptions)
 
 
-class MainBrowser(tk.Frame):
+class AverageByRegion(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.focus_set()
         self.bind('<Configure>', self.on_configure)
 
-        back_button = tk.Button(self, text='Back to Home', font=SMALL_FONT,
+        label = tk.Label(self, text='Analyse Resale Flats by Region', font=HEADER_FONT)
+        label.grid(row=0, column=0, pady=10)
+
+        back_button = tk.Button(self, text='Back to Home',font=BUTTON_FONT, background='#007C89',
+                                foreground="black", cursor='hand2',
                                 command=lambda: controller.show_frame(SelectOptions))
-        back_button.pack(pady=10)
+        back_button.grid(row=1, column=0, pady=20)
 
         # Browser
+<<<<<<< HEAD
         self.browser_frame = Browser(self, controller)
         self.browser_frame.pack()
         # tk.pack()
         # tk.Grid.rowconfigure(self, 1, weight=1)
         # tk.Grid.columnconfigure(self, 0, weight=1)
+=======
+        self.browser_frame = EmbeddedBrowser(self, controller)
+        self.browser_frame.grid(row=2, column=0,
+                                sticky=(tk.N + tk.S + tk.E + tk.W))
+        tk.Grid.rowconfigure(self, 1, weight=1)
+        tk.Grid.columnconfigure(self, 0, weight=1)
+>>>>>>> b3de3b46f5d71dec4ae7b899b1cbaac106424429
 
     def on_configure(self, event):
         if self.browser_frame:
@@ -602,7 +615,7 @@ class MainBrowser(tk.Frame):
         return None
 
 
-class Browser(tk.Frame):
+class EmbeddedBrowser(tk.Frame):
     def __init__(self, parent, controller):
         self.browser = None
         tk.Frame.__init__(self, parent)
@@ -659,8 +672,6 @@ class Browser(tk.Frame):
 class LoadHandler(object):
     def __init__(self, browser_frame):
         self.browser_frame = browser_frame
-
-
 
 
 if __name__ == '__main__':

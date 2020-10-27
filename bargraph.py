@@ -1,7 +1,6 @@
 """This is a module to plot bar graph
 Based on average resale prices for different flat types.
-Can be filtered by town
-Auto export graph as png image"""
+Can be filtered by town"""
 
 
 from numpy import arange
@@ -13,8 +12,8 @@ CONST_FILE_PATH = "resources/bargraph.png"
 
 
 def get_filtered_data(town=''):
-    """Group all resale prices based on flat type
-    Optional to filter by town or year (or both)
+    """Group all average resale prices based on flat type
+    Optional to filter by town if being passed as parameter
 
     Parameters:
     town (str): filter data by town (optional)
@@ -28,20 +27,24 @@ def get_filtered_data(town=''):
     return df.groupby('flat_type')['resale_price'].mean().round(2)
 
 
-def plot_bar_graph(town=''):
+def plot_bargraph(town=''):
     """Call this function to plot bar graph
     The updated graph will be auto saved whenever this function is called
 
     Parameters:
     town (str): town can be empty if no filtering is needed
-    year (str): year can be empty if no filtering is needed
     export (bool): pass in True to save graph as pdf
+
+    Returns:
+    figure: figure of the bar graph
     """
     try:
+        if town == 'Select Town':
+            town = ''
         town = town.upper()
         df = get_filtered_data(town)
         if len(df) == 0:
-            raise IndexError("No data found!")
+            raise IndexError('No data found!')
         # Set town to Singapore when no town is selected
         town = 'SINGAPORE' if town == '' else town
 
@@ -49,7 +52,8 @@ def plot_bar_graph(town=''):
         fig = Figure(figsize=(20, 5))
         ax = fig.add_subplot(111)
         # Bar graph configuration
-        bargraph = df.plot.barh(color='#24AEDE', ax=ax, zorder=2, label='Average Resale Pricing')
+
+        bargraph = df.plot.barh(color='#E7B75F', ax=ax, zorder=2, label='Average Resale Pricing')
         # Set x ticks to frequency of 100,000
         start, end = bargraph.get_xlim()
         bargraph.xaxis.set_ticks(arange(start, end, 100000))
@@ -67,18 +71,18 @@ def plot_bar_graph(town=''):
         # Set average resale value to bar labels
         for i in bargraph.patches:
             price = i.get_width()
-            bargraph.text(price + .3, i.get_y() + .15, str(" ${:,}".format(int(price))),
+            bargraph.text(price + .3, i.get_y() + .15, str('${:,}'.format(int(price))),
                           fontsize=10,
                           color='dimgrey')
         # Style labels and title
-        label_style = {'fontsize': 10, 'fontweight': 'heavy'}
+        label_style = {'fontsize': 9, 'fontweight': 'heavy'}
         bargraph.set_xlabel('Average Resale Value (SGD)',
                             fontdict=label_style)
         bargraph.set_ylabel('HDB Flat Type',
                             fontdict=label_style)
         bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
-                           fontdict={'fontsize': 12, 'fontweight': 'heavy'})
-        bargraph.legend(loc="lower right", bbox_to_anchor=(1., 1.02), borderaxespad=0.)
+                           fontdict={'fontsize': 10, 'fontweight': 'heavy'})
+        bargraph.legend(loc='lower right', bbox_to_anchor=(1., 1.02), borderaxespad=0.)
         # Save bar graph as png
         bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
 

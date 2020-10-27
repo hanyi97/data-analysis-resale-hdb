@@ -41,7 +41,7 @@ def get_all_regions():
 
 
 def get_all_flat_types():
-    """Retrieve all towns and sort them in ascending order
+    """Retrieve all flat types and sort them in ascending order
 
     Returns:
     list: list of all unique towns
@@ -64,7 +64,7 @@ def get_filtered_region(town):
     """Retrieve the region based on town
 
     Returns:
-    list: list of regions
+    list: list of filtered regions
     """
     df = get_dataframe()
     regions = df[df['town'] == town.upper()]['region'].unique()
