@@ -2,13 +2,13 @@
 The objective of the program is to help the target audience decide which area, town, and flat type
 to buy resale HDB flats. By allowing the user to view various types of graphs within the program, they can make better 
 decisions on the area and type of HDB flat to buy that best suits their needs.  
+## Production
 
-### Steps to set up the project (production):
-**Pre-requisites:**  
+###Pre-requisites:
 - Python version 3.7  
 - Running Windows OS
 
-**External libraries used:**  
+###External libraries used:
 - tkinter
 - matplotlib
 - pandas
@@ -21,7 +21,7 @@ decisions on the area and type of HDB flat to buy that best suits their needs.
 - cefpython3 
 - sklearn
 - tabulate
-
+### Steps to set up the project:
 1. Open project in IDE  
 
 2. Install all required libraries  
@@ -30,8 +30,8 @@ decisions on the area and type of HDB flat to buy that best suits their needs.
 3. Run menu.py to start program  
 ```python menu.py```
 
----
-### Steps to set up the project (development):
+##Development
+### Steps to set up the project:
 1. clone project:  
 ```git clone https://github.com/hanyi97/data-analysis-resale-hdb.git```
 
@@ -73,14 +73,14 @@ or
 
 **Note: Best practice to commit your changes regularly**
 
-**Naming conventions:**  
-Git branches:  
+###Naming conventions:
+####Git branches:  
 gui/main-menu  
 feature/export  
 feature/filter  
 feature/bargraph
 
-**Code:**  
+####Code:
 Variables, Function and Module names to be lowercase and separated by “_”.  
 csv_helper.py  
 get_data()  
