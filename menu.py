@@ -463,30 +463,30 @@ class ViewCharts(tk.Frame):
         # Initialise default bar graph
         self.selected('')
 
-        self.focus_set()
-        self.bind('<Configure>', self.on_configure)
-
-
-        # Browser
-        self.browser_frame = Browser(self, controller)
-        # self.browser_frame.grid(row=1, column=0,
-        #                         sticky=(tk.N + tk.S + tk.E + tk.W))
-        tk.Grid.rowconfigure(self, 1, weight=1)
-        tk.Grid.columnconfigure(self, 0, weight=1)
-
-    def on_configure(self, event):
-        if self.browser_frame:
-            self.browser_frame.on_mainframe_configure(event.width, event.height)
-
-    def get_browser(self):
-        if self.browser_frame:
-            return self.browser_frame.browser
-        return None
-
-    def get_browser_frame(self):
-        if self.browser_frame:
-            return self.browser_frame
-        return None
+    #     self.focus_set()
+    #     self.bind('<Configure>', self.on_configure)
+    #
+    #
+    #     # Browser
+    #     self.browser_frame = Browser(self, controller)
+    #     # self.browser_frame.grid(row=1, column=0,
+    #     #                         sticky=(tk.N + tk.S + tk.E + tk.W))
+    #     tk.Grid.rowconfigure(self, 1, weight=1)
+    #     tk.Grid.columnconfigure(self, 0, weight=1)
+    #
+    # def on_configure(self, event):
+    #     if self.browser_frame:
+    #         self.browser_frame.on_mainframe_configure(event.width, event.height)
+    #
+    # def get_browser(self):
+    #     if self.browser_frame:
+    #         return self.browser_frame.browser
+    #     return None
+    #
+    # def get_browser_frame(self):
+    #     if self.browser_frame:
+    #         return self.browser_frame
+    #     return None
 
     @staticmethod
     def plot_bar_graph(town=''):
