@@ -92,18 +92,18 @@ class SelectOptions(tk.Frame):
         frame.tkraise()  # raises the table_frame to the front
 
     def create_buttons(self, controller):
-        overview_btn = tk.Button(self, text='Overview of resale flat prices', height=3, width=30, font=BUTTON_FONT,
-                                 background='#007C89', fg="white", cursor="hand2	",
+        overview_btn = tk.Button(self, text='Overview of resale flat prices', height=3, width=45, font=BUTTON_FONT,
+                                 background='#007C89', fg="white", cursor="hand2",
                                  command=lambda: controller.show_frame(ViewSummary))
         overview_btn.pack(padx=10, pady=10)
 
-        avgbyregion_btn = tk.Button(self, text='Average resale prices based on regions', height=3, width=30,
-                                    font=BUTTON_FONT, background='#007C89', fg="white", cursor="hand2	",
+        avgbyregion_btn = tk.Button(self, text='Average resale prices based on regions', height=3, width=45,
+                                    font=BUTTON_FONT, background='#007C89', fg="white", cursor="hand2",
                                     command=lambda: controller.show_frame(AverageByRegion))
         avgbyregion_btn.pack(pady=10, padx=10)
 
-        avgbyflattype_btn = tk.Button(self, text='Average resale prices based on flat types', height=3, width=30,
-                                      font=BUTTON_FONT, background='#007C89', fg="white", cursor="hand2	",
+        avgbyflattype_btn = tk.Button(self, text='Average resale prices based on flat types', height=3, width=45,
+                                      font=BUTTON_FONT, background='#007C89', fg="white", cursor="hand2",
                                       command=lambda: controller.show_frame(AverageByFlatType))
         avgbyflattype_btn.pack(padx=10, pady=10)
 
@@ -170,7 +170,7 @@ class ViewTop10CheapestFlats(tk.Frame):
         # Export to PDF button
         self.export_button = tk.Button(self, text='Export Cheapest Flats as PDF', font=BUTTON_FONT,
                                        background='#007C89',
-                                       foreground="black", cursor='hand2',
+                                       foreground="white", cursor='hand2',
                                        command=lambda: self.export_pdf())
         self.export_button.grid(row=5, padx=10, pady=10)
 
@@ -255,7 +255,7 @@ class ViewSummary(tk.Frame):
         label = tk.Label(self, text='Overview of Resale Flats Prices', font=HEADER_FONT)
         label.grid(row=0, padx=0, pady=30)
 
-        back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89', foreground="black",
+        back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89', foreground="white",
                                 cursor='hand2',
                                 command=lambda: self.refresh(controller))
         back_button.grid(row=1, padx=0, pady=10)
@@ -298,11 +298,11 @@ class ViewSummary(tk.Frame):
                                   command=lambda: self.update_table(self.results_frame))
         filter_button.grid(row=0, column=3, padx=10, pady=10)
 
-        # Search results table_frame
+        # Search results table_frames
         self.results_frame = tk.Frame(self)
         self.results_frame.grid(row=3)
 
-        self.export_button = tk.Button(self, text='Export', font=BUTTON_FONT, background='#007C89', foreground="black",
+        self.export_button = tk.Button(self, text='Export', font=BUTTON_FONT, background='#007C89', foreground="white",
                                        cursor='hand2',
                                        command=lambda: self.export_csv())
         self.export_button.grid(row=4, padx=0, pady=20)
@@ -442,7 +442,7 @@ class AverageByFlatType(tk.Frame):
         label.pack(padx=0, pady=30)
 
         back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89',
-                                foreground="black", cursor='hand2',
+                                foreground="white", cursor='hand2',
                                 command=lambda: self.refresh(controller))
         back_button.pack()
 
@@ -500,12 +500,8 @@ class AverageByRegion(tk.Frame):
         label = tk.Label(top_frame, text='Analyse Resale Flats by Region', font=HEADER_FONT)
         label.pack(pady=10)
 
-<<<<<<< HEAD
-        back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89',
-=======
         back_button = tk.Button(top_frame, text='Back to Home', font=BUTTON_FONT, background='#007C89',
->>>>>>> b1bde79e1a7ce2c1047d46e379dccdc878064a73
-                                foreground="black", cursor='hand2',
+                                foreground="white", cursor='hand2',
                                 command=lambda: controller.show_frame(SelectOptions))
         back_button.pack(pady=20)
 
@@ -595,6 +591,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    cef.Initialize()
+    # cef.Initialize()
     app.mainloop()
-    cef.Shutdown()
+    # cef.Shutdown()
