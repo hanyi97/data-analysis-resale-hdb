@@ -3,11 +3,9 @@ The objective of the program is to help the target audience decide which area, t
 to buy resale HDB flats. By allowing the user to view various types of graphs within the program, they can make better 
 decisions on the area and type of HDB flat to buy that best suits their needs.  
 ## Production
-
 ###Pre-requisites:
 - Python version 3.7  
 - Running Windows OS
-
 ###External libraries used:
 - tkinter
 - matplotlib
