@@ -7,7 +7,7 @@ import filter
 import export
 import bargraph as bg
 from tkinter import ttk
-from tkinter.filedialog import asksaveasfile, NW
+from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
@@ -481,7 +481,9 @@ class AverageByFlatType(tk.Frame):
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
     def refresh(self, controller):
-        """This function is run when the user selects the 'Back to Home' button. It refreshes the dropdown list value back to the default and displays 'Select Town' on the dropdown list. Then, it displays the SelectOptions page."""
+        """This function is run when the user selects the 'Back to Home' button. It refreshes the dropdown list value
+        back to the default and displays 'Select Town' on the dropdown list. Then, it displays the SelectOptions
+        page. """
         self.town_combobox.current(0)
         self.selected('')
         controller.show_frame(SelectOptions)
@@ -493,17 +495,23 @@ class AverageByRegion(tk.Frame):
         self.focus_set()
         self.bind('<Configure>', self.on_configure)
 
-        label = tk.Label(self, text='Analyse Resale Flats by Region', font=HEADER_FONT)
-        label.grid(row=0, column=0, pady=10)
+        top_frame = tk.Frame(self)
+        top_frame.grid(row=0)
+        label = tk.Label(top_frame, text='Analyse Resale Flats by Region', font=HEADER_FONT)
+        label.pack(pady=10)
 
+<<<<<<< HEAD
         back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89',
+=======
+        back_button = tk.Button(top_frame, text='Back to Home', font=BUTTON_FONT, background='#007C89',
+>>>>>>> b1bde79e1a7ce2c1047d46e379dccdc878064a73
                                 foreground="black", cursor='hand2',
                                 command=lambda: controller.show_frame(SelectOptions))
-        back_button.grid(row=1, column=0, pady=20)
+        back_button.pack(pady=20)
 
         # Browser
         self.browser_frame = EmbeddedBrowser(self, controller)
-        self.browser_frame.grid(row=2, column=0,
+        self.browser_frame.grid(row=1, column=0,
                                 sticky=(tk.N + tk.S + tk.E + tk.W))
         tk.Grid.rowconfigure(self, 1, weight=1)
         tk.Grid.columnconfigure(self, 0, weight=1)
@@ -587,6 +595,6 @@ if __name__ == '__main__':
     app.title('HDB Resale Flats Analyser')
     width, height = app.winfo_screenwidth(), app.winfo_screenheight()  # Retrieve screen size
     app.geometry('%dx%d' % (width, height))  # Set full screen with tool bar on top
-    # cef.Initialize()
+    cef.Initialize()
     app.mainloop()
-    # cef.Shutdown()
+    cef.Shutdown()
