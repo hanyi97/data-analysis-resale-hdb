@@ -7,15 +7,10 @@ import filter
 import export
 import bargraph as bg
 from tkinter import ttk
-from tkinter.filedialog import asksaveasfile, NW
+from tkinter.filedialog import asksaveasfile
 from pandastable import Table, TableModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from cefpython3 import cefpython as cef
-<<<<<<< HEAD
-from numpy import arange
-from matplotlib.figure import Figure
-=======
->>>>>>> b3de3b46f5d71dec4ae7b899b1cbaac106424429
 
 matplotlib.use('TkAgg')
 
@@ -35,14 +30,15 @@ VALIDAITON_FONT = ('Roboto', 12)
 CONST_FILE_PATH = 'resources/bargraph.png'
 filters = {}
 
+
 def rename_columns(df):
     df.columns = list(map(lambda col_name: col_name.upper().replace('_', ' '), df.columns))
-
 
 
 class WelcomeWindow(tk.Tk):
     """Welcome window is the main window
        """
+
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
@@ -50,7 +46,7 @@ class WelcomeWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (SelectOptions,ViewSummary,AverageByRegion,AverageByFlatType ):
+        for F in (SelectOptions, ViewSummary, AverageByRegion, AverageByFlatType):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky='nsew')
@@ -61,11 +57,11 @@ class WelcomeWindow(tk.Tk):
         frame.tkraise()
 
 
-
 class SelectOptions(tk.Frame):
     """Users can to select their preferred option in main menu.
            Options include Overview of resale flat prices, Average resale based on regions, Average resale prices based on flat types
        """
+
     def __init__(self, parent, controller):
         # self --> current object
         # parent --> a widget to act as the parent of the current object. All widgets in
@@ -112,10 +108,10 @@ class SelectOptions(tk.Frame):
         avgbyflattype_btn.pack(padx=10, pady=10)
 
 
-
 class ViewTop10CheapestFlatsWindow(tk.Tk):
     """This window is a separate pop up that is triggered when user clicks on View Top 10 in Overview of Resale Flats Prices window.
          """
+
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
@@ -127,11 +123,11 @@ class ViewTop10CheapestFlatsWindow(tk.Tk):
         self.tkraise()
 
 
-
 class ViewTop10CheapestFlats(tk.Frame):
     """Top 10 Cheapest Flats table will be populated according to what user filtered in the previous window.
        User can filter top 10 according to the flat type.
        """
+
     def __init__(self, parent, controller):
         self.is_table_deleted = False
         self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
@@ -172,12 +168,11 @@ class ViewTop10CheapestFlats(tk.Frame):
                            rowheight=30)
         self.table.show()
         # Export to PDF button
-        self.export_button = tk.Button(self, text='Export Cheapest Flats as PDF', font=BUTTON_FONT, background='#007C89',
+        self.export_button = tk.Button(self, text='Export Cheapest Flats as PDF', font=BUTTON_FONT,
+                                       background='#007C89',
                                        foreground="black", cursor='hand2',
                                        command=lambda: self.export_pdf())
         self.export_button.grid(row=5, padx=10, pady=10)
-
-
 
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
@@ -246,9 +241,11 @@ class ViewTop10CheapestFlats(tk.Frame):
         if file is not None:
             export.export_to_pdf(file.name, filters)
 
+
 class ViewSummary(tk.Frame):
     """Overview of resale flat prices where users can filter results based on region, town, flat type.
        """
+
     def __init__(self, parent, controller):
         self.is_table_deleted = False
         self.CONST_SELECT_REGION = 'Select Region'
@@ -258,7 +255,8 @@ class ViewSummary(tk.Frame):
         label = tk.Label(self, text='Overview of Resale Flats Prices', font=HEADER_FONT)
         label.grid(row=0, padx=0, pady=30)
 
-        back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89', foreground="black", cursor='hand2',
+        back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89', foreground="black",
+                                cursor='hand2',
                                 command=lambda: self.refresh(controller))
         back_button.grid(row=1, padx=0, pady=10)
 
@@ -300,12 +298,12 @@ class ViewSummary(tk.Frame):
                                   command=lambda: self.update_table(self.results_frame))
         filter_button.grid(row=0, column=3, padx=10, pady=10)
 
-
         # Search results table_frame
         self.results_frame = tk.Frame(self)
         self.results_frame.grid(row=3)
 
-        self.export_button = tk.Button(self, text='Export', font=BUTTON_FONT, background='#007C89', foreground="black", cursor='hand2',
+        self.export_button = tk.Button(self, text='Export', font=BUTTON_FONT, background='#007C89', foreground="black",
+                                       cursor='hand2',
                                        command=lambda: self.export_csv())
         self.export_button.grid(row=4, padx=0, pady=20)
 
@@ -317,7 +315,8 @@ class ViewSummary(tk.Frame):
                            rowheight=30)
         self.table.show()
 
-        self.top10_button = tk.Button(self, text='View Top 10 Cheapest Flats',font=BUTTON_FONT, background='#DBD9D2', foreground="black", cursor='hand2',
+        self.top10_button = tk.Button(self, text='View Top 10 Cheapest Flats', font=BUTTON_FONT, background='#DBD9D2',
+                                      foreground="black", cursor='hand2',
                                       command=lambda: self.show_top10())
         self.top10_button.grid(row=6, padx=0, pady=10)
 
@@ -442,7 +441,6 @@ class AverageByFlatType(tk.Frame):
         label = tk.Label(self, text='Analyse Resale Flats by Town', font=HEADER_FONT)
         label.pack(padx=0, pady=30)
 
-
         back_button = tk.Button(self, text='Back to Home', font=BUTTON_FONT, background='#007C89',
                                 foreground="black", cursor='hand2',
                                 command=lambda: self.refresh(controller))
@@ -454,7 +452,8 @@ class AverageByFlatType(tk.Frame):
         clicked.set(town_list_options[0])
 
         # Add Combobox with the list of towns onto the GUI:
-        self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly', background="#007C89")
+        self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly',
+                                          background="#007C89")
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)
         self.town_combobox.pack(pady=10)
@@ -462,89 +461,6 @@ class AverageByFlatType(tk.Frame):
         # Initialise default bar graph
         self.selected('')
 
-<<<<<<< HEAD
-    #     self.focus_set()
-    #     self.bind('<Configure>', self.on_configure)
-    #
-    #
-    #     # Browser
-    #     self.browser_frame = Browser(self, controller)
-    #     # self.browser_frame.grid(row=1, column=0,
-    #     #                         sticky=(tk.N + tk.S + tk.E + tk.W))
-    #     tk.Grid.rowconfigure(self, 1, weight=1)
-    #     tk.Grid.columnconfigure(self, 0, weight=1)
-    #
-    # def on_configure(self, event):
-    #     if self.browser_frame:
-    #         self.browser_frame.on_mainframe_configure(event.width, event.height)
-    #
-    # def get_browser(self):
-    #     if self.browser_frame:
-    #         return self.browser_frame.browser
-    #     return None
-    #
-    # def get_browser_frame(self):
-    #     if self.browser_frame:
-    #         return self.browser_frame
-    #     return None
-
-    @staticmethod
-    def plot_bar_graph(town=''):
-        try:
-            if town == 'Select Town':
-                town = ''
-            town = town.upper()
-            df = bg.get_filtered_data(town)
-            if len(df) == 0:
-                raise IndexError('No data found!')
-            # Set town to Singapore when no town is selected
-            town = 'SINGAPORE' if town == '' else town
-
-            # Create a figure
-            fig = Figure(figsize=(20, 5))
-            ax = fig.add_subplot(111)
-            # Bar graph configuration
-            bargraph = df.plot.barh(color='#24AEDE', ax=ax, zorder=2, label='Average Resale Pricing')
-            # Set x ticks to frequency of 100,000
-            start, end = bargraph.get_xlim()
-            bargraph.xaxis.set_ticks(arange(start, end, 100000))
-            # Add comma to resale flat prices
-            bargraph.get_xaxis().set_major_formatter(FuncFormatter(lambda x, loc: '{:,}'.format(int(x))))
-            # Remove borders
-            bargraph.spines['right'].set_visible(False)
-            bargraph.spines['top'].set_visible(False)
-            bargraph.spines['left'].set_visible(False)
-            bargraph.spines['bottom'].set_visible(False)
-            # Draw vertical axis lines
-            ticks = ax.get_xticks()
-            for tick in ticks:
-                bargraph.axvline(x=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
-            # Set average resale value to bar labels
-            for i in bargraph.patches:
-                price = i.get_width()
-                bargraph.text(price + .3, i.get_y() + .15, str('${:,}'.format(int(price))),
-                              fontsize=10,
-                              color='dimgrey')
-            # Style labels and title
-            label_style = {'fontsize': 10, 'fontweight': 'heavy'}
-            bargraph.set_xlabel('Average Resale Value (SGD)',
-                                fontdict=label_style)
-            bargraph.set_ylabel('HDB Flat Type',
-                                fontdict=label_style)
-            bargraph.set_title('Town: (%s)\nAverage HDB resale value by flat type' % town,
-                               fontdict={'fontsize': 12, 'fontweight': 'heavy'})
-            bargraph.legend(loc='lower right', bbox_to_anchor=(1., 1.02), borderaxespad=0.)
-            # Save bar graph as png
-            bargraph.get_figure().savefig(CONST_FILE_PATH, bbox_inches='tight', dpi=300)
-
-            return fig
-        except ValueError:
-            print('Cannot convert data to an integer!')
-        except IndexError as e:
-            print(e)
-
-=======
->>>>>>> b3de3b46f5d71dec4ae7b899b1cbaac106424429
     # Run this function when user selects from the dropdown list
     def selected(self, event):
         """This function is run when the user selects from the dropdown list. It removes the current graph and toolbar and adds the updated bar graph and dipslays the toolbar onto the ViewCharts window.
@@ -584,25 +500,17 @@ class AverageByRegion(tk.Frame):
         label = tk.Label(top_frame, text='Analyse Resale Flats by Region', font=HEADER_FONT)
         label.pack(pady=10)
 
-        back_button = tk.Button(top_frame, text='Back to Home',font=BUTTON_FONT, background='#007C89',
+        back_button = tk.Button(top_frame, text='Back to Home', font=BUTTON_FONT, background='#007C89',
                                 foreground="black", cursor='hand2',
                                 command=lambda: controller.show_frame(SelectOptions))
         back_button.pack(pady=20)
 
         # Browser
-<<<<<<< HEAD
-        self.browser_frame = Browser(self, controller)
-        self.browser_frame.pack()
-        # tk.pack()
-        # tk.Grid.rowconfigure(self, 1, weight=1)
-        # tk.Grid.columnconfigure(self, 0, weight=1)
-=======
         self.browser_frame = EmbeddedBrowser(self, controller)
         self.browser_frame.grid(row=1, column=0,
                                 sticky=(tk.N + tk.S + tk.E + tk.W))
         tk.Grid.rowconfigure(self, 1, weight=1)
         tk.Grid.columnconfigure(self, 0, weight=1)
->>>>>>> b3de3b46f5d71dec4ae7b899b1cbaac106424429
 
     def on_configure(self, event):
         if self.browser_frame:
