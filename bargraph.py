@@ -53,7 +53,7 @@ def plot_bargraph(town=''):
         ax = fig.add_subplot(111)
         # Bar graph configuration
 
-        bargraph = df.plot.barh(color=['#E7B75F', '#C5DBF2'], ax=ax, zorder=2, label='Average Resale Pricing')
+        bargraph = df.plot.barh(color='#E7B75F', ax=ax, zorder=2, label='Average Resale Pricing')
         # Set x ticks to frequency of 100,000
         start, end = bargraph.get_xlim()
         bargraph.xaxis.set_ticks(arange(start, end, 100000))
