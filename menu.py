@@ -301,7 +301,8 @@ class ViewSummary(tk.Frame):
         self.results_frame = tk.Frame(self)
         self.results_frame.grid(row=3, columnspan=3)
 
-        self.export_button = tk.Button(self, text='Export as CSV', font=BUTTON_FONT, background='#007C89', foreground="white",
+        self.export_button = tk.Button(self, text='Export as CSV', font=BUTTON_FONT, background='#007C89',
+                                       foreground="white",
                                        cursor='hand2',
                                        command=lambda: self.export_csv())
         self.export_button.grid(row=5, padx=0, pady=20)
@@ -398,7 +399,8 @@ class ViewSummary(tk.Frame):
         if self.is_table_deleted:
             self.table_frame.grid(row=4)
             self.table = Table(self.table_frame, showstatusbar=True, width=1215, height=300,
-                               rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
+                               rowselectedcolor='#F6F6F4', colheadercolor='#007C89', cellbackgr='#FFFFFF', cellwidth=80,
+                               rowheight=30)
             self.table.show()
             self.export_button.grid(row=5, padx=0, pady=20)
             self.top10_button.grid(row=6, padx=0, pady=5)
