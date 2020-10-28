@@ -26,6 +26,7 @@ NORM_FONT = ('Roboto', 16)
 BUTTON_FONT = ('Roboto', 14, 'bold')
 SMALL_FONT = ('Roboto', 15)
 VALIDAITON_FONT = ('Roboto', 12)
+# RESULTS_LABEL_FONT = ('Roboto', 10, 'bold')
 
 CONST_FILE_PATH = 'resources/bargraph.png'
 filters = {}
@@ -305,11 +306,11 @@ class ViewSummary(tk.Frame):
         self.export_button = tk.Button(self, text='Export', font=BUTTON_FONT, background='#007C89', foreground="white",
                                        cursor='hand2',
                                        command=lambda: self.export_csv())
-        self.export_button.grid(row=4, padx=0, pady=20)
+        self.export_button.grid(row=5, padx=0, pady=20)
 
         # Plot summary table
         self.table_frame = tk.Frame(self)
-        self.table_frame.grid(row=5)
+        self.table_frame.grid(row=4)
         self.table = Table(self.table_frame, dataframe=self.df, showstatusbar=True, width=1215, height=300,
                            rowselectedcolor='#F6F6F4', colheadercolor='#007C89', cellbackgr='#FFFFFF', cellwidth=80,
                            rowheight=30)
@@ -318,7 +319,7 @@ class ViewSummary(tk.Frame):
         self.top10_button = tk.Button(self, text='View Top 10 Cheapest Flats', font=BUTTON_FONT, background='#DBD9D2',
                                       foreground="black", cursor='hand2',
                                       command=lambda: self.show_top10())
-        self.top10_button.grid(row=6, padx=0, pady=10)
+        self.top10_button.grid(row=6, padx=0, pady=5)
 
         # Center widgets
         tk.Grid.rowconfigure(self, 1)
@@ -359,19 +360,19 @@ class ViewSummary(tk.Frame):
                 and selected_flat_type == self.CONST_SELECT_FLAT_TYPE:
             frame.grid_forget()
         results_label = tk.Label(frame, text='Your Results', font=NORM_FONT)
-        results_label.pack()
+        results_label.grid(row=1, columnspan=3)
         if selected_region != self.CONST_SELECT_REGION:
             # Return selected option for region
             region_label = tk.Label(frame, text='Region: ' + selected_region)
-            region_label.pack()
+            region_label.grid(row=2, column=0)
         if selected_town != self.CONST_SELECT_TOWN:
             # Return selected option for town
             town_label = tk.Label(frame, text='Town: ' + selected_town)
-            town_label.pack()
+            town_label.grid(row=2, column=1)
         if selected_flat_type != self.CONST_SELECT_FLAT_TYPE:
             # Return selected option for flat type
             flat_label = tk.Label(frame, text='Flat Type: ' + selected_flat_type)
-            flat_label.pack()
+            flat_label.grid(row=2, column=2)
 
         global filters
         # Get the filter options from combobox
@@ -388,7 +389,7 @@ class ViewSummary(tk.Frame):
         # Return total number of records for search results
         total_records = str(len(filtered_data))
         total_rows_label = tk.Label(frame, text='Total number of records found: ' + total_records)
-        total_rows_label.pack(padx=10, pady=0)
+        total_rows_label.grid(row=3, columnspan=3)
 
         # Repopulate table with filtered results
         if self.is_table_deleted:
@@ -411,7 +412,7 @@ class ViewSummary(tk.Frame):
                                         text='Sorry, no matching records found based on filters. Please '
                                              'try another search criterion.', font=VALIDAITON_FONT,
                                         fg='red')
-            validation_label.pack()
+            validation_label.grid(row=4, columnspan=3)
 
     # Top 10 Window
     def show_top10(self):
