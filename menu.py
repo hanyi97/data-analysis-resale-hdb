@@ -24,6 +24,7 @@ LARGE_FONT = ('Roboto', 30, 'bold')
 HEADER_FONT = ('Roboto', 23, 'bold')
 NORM_FONT = ('Roboto', 16)
 BUTTON_FONT = ('Roboto', 14, 'bold')
+COMBOBOX_FONT = ('Roboto', 14)
 SMALL_FONT = ('Roboto', 15)
 VALIDAITON_FONT = ('Roboto', 12)
 # RESULTS_LABEL_FONT = ('Roboto', 10, 'bold')
@@ -169,7 +170,7 @@ class ViewTop10CheapestFlats(tk.Frame):
                            rowheight=30)
         self.table.show()
         # Export to PDF button
-        self.export_button = tk.Button(self, text='Export Cheapest Flats as PDF', font=BUTTON_FONT,
+        self.export_button = tk.Button(self, text='Export as PDF', font=BUTTON_FONT,
                                        background='#007C89',
                                        foreground="white", cursor='hand2',
                                        command=lambda: self.export_pdf())
@@ -272,7 +273,7 @@ class ViewSummary(tk.Frame):
         combobox_frame.grid(row=2)
         # Setting values for regions combo box
         region_list = sorted(self.regions)
-        self.combobox_region = ttk.Combobox(combobox_frame, state='readonly')
+        self.combobox_region = ttk.Combobox(combobox_frame, state='readonly', font=COMBOBOX_FONT)
         self.combobox_region.grid(row=0, column=0, padx=5, pady=5)
         self.combobox_region.bind('<<ComboboxSelected>>', lambda x: self.update_town_combobox('region'))
         self.combobox_region['values'] = [self.CONST_SELECT_REGION] + region_list
@@ -280,7 +281,7 @@ class ViewSummary(tk.Frame):
 
         # Setting values for town combo box
         town_list = sorted(self.towns)
-        self.combobox_town = ttk.Combobox(combobox_frame, state='readonly')
+        self.combobox_town = ttk.Combobox(combobox_frame, state='readonly', font=COMBOBOX_FONT)
         # self.combobox_town.pack(side=tk.LEFT, padx=5, pady=5)
         self.combobox_town.grid(row=0, column=1, padx=5, pady=5)
         self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.town_selected(''))
@@ -289,7 +290,7 @@ class ViewSummary(tk.Frame):
 
         # Setting values for flat types combo box
         flat_type_list = sorted(self.flat_types)
-        self.combobox_flat_types = ttk.Combobox(combobox_frame, state='readonly')
+        self.combobox_flat_types = ttk.Combobox(combobox_frame, state='readonly', font=COMBOBOX_FONT)
         self.combobox_flat_types.grid(row=0, column=2, padx=5, pady=5)
         self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + flat_type_list
         self.combobox_flat_types.current(0)
@@ -303,7 +304,7 @@ class ViewSummary(tk.Frame):
         self.results_frame = tk.Frame(self)
         self.results_frame.grid(row=3, columnspan=3)
 
-        self.export_button = tk.Button(self, text='Export', font=BUTTON_FONT, background='#007C89', foreground="white",
+        self.export_button = tk.Button(self, text='Export as CSV', font=BUTTON_FONT, background='#007C89', foreground="white",
                                        cursor='hand2',
                                        command=lambda: self.export_csv())
         self.export_button.grid(row=5, padx=0, pady=20)
@@ -461,7 +462,7 @@ class AverageByFlatType(tk.Frame):
 
         # Add Combobox with the list of towns onto the GUI:
         self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly',
-                                          background="#007C89")
+                                          background="#007C89", font=COMBOBOX_FONT)
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)
         self.town_combobox.pack(pady=10)
