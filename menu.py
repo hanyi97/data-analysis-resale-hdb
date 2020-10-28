@@ -247,9 +247,9 @@ class ViewSummary(tk.Frame):
 
     def __init__(self, parent, controller):
         self.is_table_deleted = False
-        self.CONST_SELECT_REGION = 'Select Region'
-        self.CONST_SELECT_TOWN = 'Select Town'
-        self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
+        self.CONST_SELECT_REGION = 'SELECT REGION'
+        self.CONST_SELECT_TOWN = 'SELECT TOWN'
+        self.CONST_SELECT_FLAT_TYPE = 'SELECT FLAT TYPE'
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text='Overview of Resale Flats Prices', font=HEADER_FONT)
         label.grid(row=0, padx=0, pady=30)
@@ -279,7 +279,6 @@ class ViewSummary(tk.Frame):
         # Setting values for town combo box
         town_list = sorted(self.towns)
         self.combobox_town = ttk.Combobox(combobox_frame, state='readonly', font=COMBOBOX_FONT)
-        # self.combobox_town.pack(side=tk.LEFT, padx=5, pady=5)
         self.combobox_town.grid(row=0, column=1, padx=5, pady=5)
         self.combobox_town.bind('<<ComboboxSelected>>', lambda x: self.town_selected(''))
         self.combobox_town['values'] = [self.CONST_SELECT_TOWN] + town_list
@@ -460,7 +459,7 @@ class AverageByFlatType(tk.Frame):
         clicked.set(town_list_options[0])
 
         # Add Combobox with the list of towns onto the GUI:
-        self.town_combobox = ttk.Combobox(self, value=['Select Town'] + town_list_options, state='readonly',
+        self.town_combobox = ttk.Combobox(self, value=['SELECT TOWN'] + town_list_options, state='readonly',
                                           background="#007C89", font=COMBOBOX_FONT)
         self.town_combobox.current(0)
         self.town_combobox.bind('<<ComboboxSelected>>', self.selected)

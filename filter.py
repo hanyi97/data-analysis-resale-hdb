@@ -40,7 +40,7 @@ def dict_input(filter_option, selected_input):
     in_dict dictionary. key = (str) column, value = column data value
     """
     try:
-        if selected_input == 'Select Region':
+        if selected_input == 'SELECT REGION':
             selected_input = ''
         in_dict.update({filter_option: selected_input})
         # if the filter option is in the in_dict dictionary, the new input will be updated
@@ -50,7 +50,7 @@ def dict_input(filter_option, selected_input):
         if filter_option == 'region':
             region_input = selected_input
             if region_input == '':
-                return ['Select Town'] + data_helper.get_all_towns()
+                return ['SELECT TOWN'] + data_helper.get_all_towns()
             else:
                 return data_helper.get_filtered_towns(region_input)
         # if the filter_option is 'town', the available inputs for 'region' will be updated

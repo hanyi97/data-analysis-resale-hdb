@@ -37,7 +37,7 @@ def plot_bargraph(town=''):
     figure: figure of the bar graph
     """
     try:
-        if town == 'Select Town':
+        if town == 'SELECT TOWN':
             town = ''
         town = town.upper()
         df = get_filtered_data(town)
