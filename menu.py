@@ -23,6 +23,7 @@ MAC = (platform.system() == 'Darwin')
 LARGE_FONT = ('Roboto', 30, 'bold')
 HEADER_FONT = ('Roboto', 23, 'bold')
 NORM_FONT = ('Roboto', 16)
+NORM_FONT_BOLD = ('Roboto', 11, 'bold')
 BUTTON_FONT = ('Roboto', 14, 'bold')
 SMALL_FONT = ('Roboto', 15)
 VALIDAITON_FONT = ('Roboto', 12)
@@ -301,7 +302,7 @@ class ViewSummary(tk.Frame):
 
         # Search results table_frames
         self.results_frame = tk.Frame(self)
-        self.results_frame.grid(row=3)
+        self.results_frame.grid(row=3, columnspan=3)
 
         self.export_button = tk.Button(self, text='Export', font=BUTTON_FONT, background='#007C89', foreground="white",
                                        cursor='hand2',
@@ -358,21 +359,26 @@ class ViewSummary(tk.Frame):
         selected_flat_type = self.combobox_flat_types.get()
         if selected_region == self.CONST_SELECT_REGION and selected_town == self.CONST_SELECT_TOWN \
                 and selected_flat_type == self.CONST_SELECT_FLAT_TYPE:
+            # Hide results if default options are selected
             frame.grid_forget()
+
         results_label = tk.Label(frame, text='Your Results', font=NORM_FONT)
-        results_label.grid(row=1, columnspan=3)
+        results_label.grid(row=1)
+        filter_label_text = ""
         if selected_region != self.CONST_SELECT_REGION:
-            # Return selected option for region
-            region_label = tk.Label(frame, text='Region: ' + selected_region)
-            region_label.grid(row=2, column=0)
+            filter_label_text += 'REGION: (%s) ' % selected_region
         if selected_town != self.CONST_SELECT_TOWN:
             # Return selected option for town
-            town_label = tk.Label(frame, text='Town: ' + selected_town)
-            town_label.grid(row=2, column=1)
+            if len(filter_label_text) > 0:
+                filter_label_text += '| '
+            filter_label_text += 'TOWN: (%s) ' % selected_town
         if selected_flat_type != self.CONST_SELECT_FLAT_TYPE:
             # Return selected option for flat type
-            flat_label = tk.Label(frame, text='Flat Type: ' + selected_flat_type)
-            flat_label.grid(row=2, column=2)
+            if len(filter_label_text) > 0:
+                filter_label_text += '| '
+            filter_label_text += 'FLAT TYPE: (%s) ' % selected_flat_type
+        filter_labels = tk.Label(frame, text=filter_label_text)
+        filter_labels.grid(row=2)
 
         global filters
         # Get the filter options from combobox
@@ -389,7 +395,7 @@ class ViewSummary(tk.Frame):
         # Return total number of records for search results
         total_records = str(len(filtered_data))
         total_rows_label = tk.Label(frame, text='Total number of records found: ' + total_records)
-        total_rows_label.grid(row=3, columnspan=3)
+        total_rows_label.grid(row=3)
 
         # Repopulate table with filtered results
         if self.is_table_deleted:
@@ -414,7 +420,7 @@ class ViewSummary(tk.Frame):
                                         text='Sorry, no matching records found based on filters. Please '
                                              'try another search criterion.', font=VALIDAITON_FONT,
                                         fg='red')
-            validation_label.grid(row=4, columnspan=3)
+            validation_label.grid(row=4)
 
     # Top 10 Window
     def show_top10(self):
