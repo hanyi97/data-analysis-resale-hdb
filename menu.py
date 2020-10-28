@@ -397,7 +397,8 @@ class ViewSummary(tk.Frame):
             self.table = Table(self.table_frame, showstatusbar=True, width=1215, height=300,
                                rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
             self.table.show()
-            self.export_button.grid(row=5)
+            self.export_button.grid(row=5, padx=0, pady=20)
+            self.top10_button.grid(row=6, padx=0, pady=5)
             self.is_table_deleted = False
         self.table.updateModel(TableModel(filtered_data))
         self.table.redraw()
@@ -407,6 +408,7 @@ class ViewSummary(tk.Frame):
             del filtered_data
             self.table_frame.grid_forget()
             self.export_button.grid_forget()
+            self.top10_button.grid_forget()
             self.is_table_deleted = True
             validation_label = tk.Label(frame,
                                         text='Sorry, no matching records found based on filters. Please '
