@@ -10,7 +10,6 @@ df = data_helper.get_dataframe()
 in_dict = {}
 
 
-
 def get_unique(column):
     """Display all the values of a column in a dataframe
 

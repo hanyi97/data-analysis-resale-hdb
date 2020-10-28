@@ -73,9 +73,6 @@ class SelectOptions(tk.Frame):
         root = tk.Frame.__init__(self, parent)
         self.create_labels()
         self.create_buttons(controller)
-        # win= tk.Tk()
-        # bgImage = tk.PhotoImage(file='singapore-flats-M9ZQMUG.ppm')
-        # tk.Label(win, image=bgImage).place(relwidth=1, relheight=1)
 
     def create_labels(self):
         header = tk.Label(self, text='HDB Resale Flats Analyser', font=LARGE_FONT)

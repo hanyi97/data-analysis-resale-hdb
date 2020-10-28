@@ -8,10 +8,8 @@ from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 
 # Declare constant variables
-CONST_PDF_PATH = 'resources/summary.pdf'
-CONS_CSV_PATH = 'resources/summary.csv'
-CONST_BARGRAPH_PATH = 'resources/bargraph.png'
-CONST_TREEMAP_PATH = 'resources/treemap.png'
+CONST_PDF_PATH = 'resources/Top10CheapestResaleFlats.pdf'
+CONS_CSV_PATH = 'resources/ResaleFlatPrices.csv'
 # Declare style for page headings
 heading_style = getSampleStyleSheet()['Heading1']
 heading_style.alignment = 1
@@ -69,7 +67,6 @@ def export_to_pdf(file_path=CONST_PDF_PATH, filters={}):
     try:
         pdf = SimpleDocTemplate(file_path, pagesize=landscape(A4))
         pdf.build(setup_data_summary_page(filters))
-
     except Exception as e:
         print(e)
 
@@ -82,5 +79,8 @@ def export_to_csv(file_path=CONS_CSV_PATH, filters={}):
     file_path (str): path of file to be saved
     filters (dict): dictionary of filters that user selected
     """
-    df = get_filtered_data(filters)
-    df.to_csv(file_path, index=False)
+    try:
+        df = get_filtered_data(filters)
+        df.to_csv(file_path, index=False)
+    except Exception as e:
+        print(e)
