@@ -2,7 +2,7 @@
 The objective of the program is to help the target audience decide which area, town, and flat type
 to buy resale HDB flats. By allowing the user to view various types of graphs within the program, they can make better 
 decisions on the area and type of HDB flat to buy that best suits their needs.  
-## Production
+## Installation Guide
 ### Pre-requisites:
 - Python version 3.7  
 - Running Windows OS
@@ -28,7 +28,7 @@ decisions on the area and type of HDB flat to buy that best suits their needs.
 3. Run menu.py to start program  
 ```python menu.py```
 
-## Development
+## Development Guide
 ### Steps to set up the project:
 1. clone project:  
 ```git clone https://github.com/hanyi97/data-analysis-resale-hdb.git```
