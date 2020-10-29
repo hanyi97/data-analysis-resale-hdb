@@ -36,18 +36,18 @@ def setup_data_summary_page(filters):
     elements = [Paragraph("<u>Top 10 Cheapest Flats</u>", heading_style)]
 
     # Format each text to allow word wrapping
-    pcol_style = ParagraphStyle(name='BodyText', fontSize=8, wordWrap='CJK')
+    pcol_style = ParagraphStyle(name='BodyText', fontSize=8, wordWrap='CJK', textColor=colors.white)
     pstyle = ParagraphStyle(name='BodyText', fontSize=8, wordWrap='CJK')
     data2 = [[Paragraph(str(row), pcol_style) for row in data[0]]] + \
             [[Paragraph(str(cell), pstyle) for cell in row] for row in data[1:]]
 
     # Table configurations
-    col_widths = [50, 50, 70, 50, 60, 50, 100, 50, 40, 80, 50, 50, 50]
+    col_widths = [50, 50, 70, 50, 60, 50, 90, 50, 40, 80, 70, 60, 50]
     table_styles = [('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
                     ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
                     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                     ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                    ('BACKGROUND', (0, 0), (-1, 0), '#83b2fc')]
+                    ('BACKGROUND', (0, 0), (-1, 0), '#007C89')]
 
     # Create table
     table = Table(data2, colWidths=col_widths)
