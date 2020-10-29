@@ -27,9 +27,8 @@ BUTTON_FONT = ('Roboto', 14, 'bold')
 COMBOBOX_FONT = ('Roboto', 14)
 SMALL_FONT = ('Roboto', 15)
 VALIDAITON_FONT = ('Roboto', 12)
-# RESULTS_LABEL_FONT = ('Roboto', 10, 'bold')
 
-CONST_FILE_PATH = 'resources/bargraph.png'
+# Global dictionary that stores user filters
 filters = {}
 
 
@@ -129,7 +128,7 @@ class ViewTop10CheapestFlats(tk.Frame):
 
     def __init__(self, parent, controller):
         self.is_table_deleted = False
-        self.CONST_SELECT_FLAT_TYPE = 'Select Flat Type'
+        self.CONST_SELECT_FLAT_TYPE = 'SELECT FLAT TYPE'
         tk.Frame.__init__(self, parent)
         # Create screen title
         label = tk.Label(self, text='Top 10 Cheapest Flats', font=NORM_FONT)
@@ -145,7 +144,7 @@ class ViewTop10CheapestFlats(tk.Frame):
             combobox_frame = tk.Frame(self)
             combobox_frame.grid(row=2)
             # Setting values for flat types combo box
-            self.combobox_flat_types = ttk.Combobox(combobox_frame, state='readonly')
+            self.combobox_flat_types = ttk.Combobox(combobox_frame, state='readonly', font=COMBOBOX_FONT)
             self.combobox_flat_types.grid(row=0, column=0, padx=5, pady=5)
             self.combobox_flat_types['values'] = [self.CONST_SELECT_FLAT_TYPE] + flat_types
             self.combobox_flat_types.current(0)
@@ -212,8 +211,9 @@ class ViewTop10CheapestFlats(tk.Frame):
         # Repopulate table with filtered results
         if self.is_table_deleted:
             self.table_frame.grid(row=4)
-            self.table = Table(self.table_frame, dataframe=filtered_data, width=1150, height=250,
-                               rowselectedcolor='#83b2fc', colheadercolor='#535b71', cellbackgr='#FFF')
+            self.table = Table(self.table_frame, width=1215, height=300,
+                               rowselectedcolor='#F6F6F4', colheadercolor='#007C89', cellbackgr='#FFFFFF', cellwidth=80,
+                               rowheight=30)
             self.table.show()
             self.export_button.grid(row=5)
             self.is_table_deleted = False
