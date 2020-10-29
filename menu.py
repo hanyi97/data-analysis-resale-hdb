@@ -528,10 +528,10 @@ class AverageByRegion(tk.Frame):
             return self.browser_frame.browser
         return None
 
-    def get_browser_frame(self):
-        if self.browser_frame:
-            return self.browser_frame
-        return None
+    # def get_browser_frame(self):
+    #     if self.browser_frame:
+    #         return self.browser_frame
+    #     return None
 
 
 class EmbeddedBrowser(tk.Frame):
